@@ -29,7 +29,7 @@ file_list_column = [
 ]
 
 diagramm_viewer_column = [
-    [sg.Text("Choose your Code from the left: ")],
+    [sg.Text("Choose your Code from the left. ")],
     [sg.Text(size=(40, 1), key="-TOUT-")],
     [sg.Image(key='-IMAGE-')],
 ]
