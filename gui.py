@@ -5,7 +5,7 @@ import os.path
 java_file_list_column = [
     [  
         sg.Text('Java Folder'),
-        sg.In(size=(25, 1), enable_events=True, key="-FOLDER-"),
+        sg.In(size=(25, 1), enable_events=True, key="-JAVA FOLDER-"),
         sg.FolderBrowse(),
     ],
     [
@@ -18,7 +18,7 @@ java_file_list_column = [
 file_list_column = [
     [  
         sg.Text('Output Folder'),
-        sg.In(size=(25, 1), enable_events=True, key="-FOLDER-"),
+        sg.In(size=(25, 1), enable_events=True, key="-OUTPUT FOLDER-"),
         sg.FolderBrowse(),
     ],
     [
@@ -50,12 +50,12 @@ window = sg.Window('Nassi Viewer', layout)
 
 while True:
     event, values = window.read()
-
     if event == 'Exit' or event == sg.WIN_CLOSED:
         break
 
-    if event == '-FOLDER-':
-        folder = values['-FOLDER-']
+    if event == '-OUTPUT FOLDER-':
+        folder = values['-OUTPUT FOLDER-']
+        print(folder)
         try:
             file_list = os.listdir(folder)
         except:
@@ -70,7 +70,7 @@ while True:
     elif event == '-OUTPUT FILE LIST-':
         try:
             filename = os.path.join(
-                values["-FOLDER-"], values["-OUTPUT FILE LIST-"][0]
+                values["-OUTPUT FOLDER-"], values["-OUTPUT FILE LIST-"][0]
             )
             window["-TOUT-"].update(filename)
             window["-IMAGE-"].update(filename=filename)
