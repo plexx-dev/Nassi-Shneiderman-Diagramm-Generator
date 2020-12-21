@@ -5,6 +5,7 @@ import PySimpleGUI as sg
 import os.path
 
 #sg.theme_previewer()
+sg.theme('DarkGrey11')
 
 java_file_list_column = [
     [  
@@ -47,6 +48,7 @@ layout = [
         #sg.Column(file_list_column),
         #sg.VSeparator(),
         sg.Column(diagramm_viewer_column),
+        
     ]
 ]
 
