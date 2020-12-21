@@ -45,8 +45,8 @@ layout = [
     [
         sg.Column(java_file_list_column),
         sg.VSeparator(),
-        #sg.Column(file_list_column),
-        #sg.VSeparator(),
+        sg.Column(file_list_column),
+        sg.VSeparator(),
         sg.Column(diagramm_viewer_column),
         
     ]
