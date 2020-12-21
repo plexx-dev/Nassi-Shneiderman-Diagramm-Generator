@@ -1,5 +1,5 @@
 
-from NassiShneidermann import NassiShneidermanDiagram, nassi
+from to_nassi import nassi
 
 import PySimpleGUI as sg
 import os.path
@@ -99,10 +99,7 @@ while True:
             )
 
             window["-TOUT-"].update(filename)
-
-            from Iinstruction import *
-            NSD = NassiShneidermanDiagram(True)
-            nassi(NSD)
+            nassi(filename)
 
         except:
             pass

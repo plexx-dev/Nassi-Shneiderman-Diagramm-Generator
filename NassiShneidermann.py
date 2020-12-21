@@ -50,18 +50,16 @@ class NassiShneidermanDiagram:
         for line in filtered_lines:
             if line.startswith("while("):
 
-def nassi(NSD):
 
-    NSD.load_from_file("res/input/input.java")
 
-    NSD.convert_to_image("Nina", 500)
+
     
-if __name__ == "__main__":
-    """for debugging"""
+"""if __name__ == "__main__":
+    #for debugging
     from Iinstruction import *
 
     NSD = NassiShneidermanDiagram(True)
 
     NSD.load_from_file("res/input/input.java")
 
-    NSD.convert_to_image("Nina", 500)
+    NSD.convert_to_image("Nina", 500)"""
