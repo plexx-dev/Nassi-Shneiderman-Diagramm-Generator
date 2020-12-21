@@ -10,20 +10,20 @@ java_file_list_column = [
     ],
     [
         sg.Listbox(
-            values=[], enable_events=True, size=(40, 20), key="-FILE LIST-"
+            values=[], enable_events=True, size=(40, 20), key="-JAVA FILE LIST-"
         )
     ],
 ]
 
 file_list_column = [
     [  
-        sg.Text('Image Folder'),
+        sg.Text('Output Folder'),
         sg.In(size=(25, 1), enable_events=True, key="-FOLDER-"),
         sg.FolderBrowse(),
     ],
     [
         sg.Listbox(
-            values=[], enable_events=True, size=(40, 20), key="-FILE LIST-"
+            values=[], enable_events=True, size=(40, 20), key="-OUTPUT FILE LIST-"
         )
     ],
 ]
@@ -66,11 +66,11 @@ while True:
             if os.path.isfile(os.path.join(folder, f))
             and f.lower().endswith(('.png', '.gif'))
         ]
-        window['-FILE LIST-'].update(fnames)
-    elif event == '-FILE LIST-':
+        window['-OUTPUT FILE LIST-'].update(fnames)
+    elif event == '-OUTPUT FILE LIST-':
         try:
             filename = os.path.join(
-                values["-FOLDER-"], values["-FILE LIST-"][0]
+                values["-FOLDER-"], values["-OUTPUT FILE LIST-"][0]
             )
             window["-TOUT-"].update(filename)
             window["-IMAGE-"].update(filename=filename)
