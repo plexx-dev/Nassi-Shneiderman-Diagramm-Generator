@@ -1,7 +1,8 @@
+from os import cpu_count
 from code_to_image import NSD_save
 from Iinstruction import Iinstruction
+import interpet_source as itp
 import logging
-import re
 
 class NassiShneidermanDiagram:
 
@@ -29,44 +30,14 @@ class NassiShneidermanDiagram:
             x, y = instruction.to_image(x, y, x_sz, 200)
         cti.NSD_save(filename)
 
-    @staticmethod
-    def load_code_lines(filepath):
-        lines = []
-        try:
-            with open(filepath) as file:
-                for _line in file:
-                    line:str = _line.strip()
-                    if line and not re.match(r"""^//|^#|^COMMENT|^--""", line):
-                        lines.append(line)
-        except:
-            logging.error(f"Failed to open input file {filepath}!")
-        
-        return lines
-
-    def load_from_file(self, filepath: str):
-        filtered_lines = self.load_code_lines(filepath)
-        global_scope = []
-        current_scope = global_scope
-        for line in filtered_lines:
-            logging.debug(line)
-            if line.__contains__('}'):
-                current_scope.append("scope exit")
-                current_scope = global_scope[-1] # does not get correct parent scope
-                #TODO: get correct parent scope
-            if line.__contains__('{'):
-                current_scope.append("scope enter")
-                current_scope.append([])
-                current_scope = current_scope[-1]
-
-            elif not line.__contains__('}'):
-                current_scope.append("generic instruction")
-        print(global_scope)
-
+    def load_from_file(self, filepath:str):
+        source_code = itp.load_src(filepath)
+        instructions = itp.get_scoped_instructions(filepath)
 
 
 
     
-"""if __name__ == "__main__":
+if __name__ == "__main__":
     #for debugging
     from Iinstruction import *
 
@@ -74,4 +45,4 @@ class NassiShneidermanDiagram:
 
     NSD.load_from_file("res/input/input.java")
 
-    NSD.convert_to_image("Nina", 500)"""
+    NSD.convert_to_image("Nina", 500)
