@@ -1,7 +1,7 @@
 from os import cpu_count
 from code_to_image import NSD_save
 from Iinstruction import Iinstruction
-import interpet_source as itp
+from interpet_source import load_src, get_scoped_instructions
 import logging
 
 class NassiShneidermanDiagram:
@@ -31,8 +31,8 @@ class NassiShneidermanDiagram:
         cti.NSD_save(filename)
 
     def load_from_file(self, filepath:str):
-        source_code = itp.load_src(filepath)
-        instructions = itp.get_scoped_instructions(filepath)
+        source_code = load_src(filepath)
+        instructions = get_scoped_instructions(filepath)
 
 
 
