@@ -1,7 +1,7 @@
 from Iinstruction import *
 import logging
 import re
-from typing import Any, Iterator
+from typing import Any, List
 
 class Scope():
 
@@ -15,7 +15,7 @@ class Scope():
     def add_subscope(self, subscope) -> None:
         self.contents.append(subscope)
 
-def load_src(filepath: str) -> list[str]:
+def load_src(filepath: str) -> List[str]:
     lines = []
     try:
         with open(filepath) as file:

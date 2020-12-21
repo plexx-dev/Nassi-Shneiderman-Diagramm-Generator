@@ -1,4 +1,3 @@
-
 from to_nassi import nassi
 
 import PySimpleGUI as sg
