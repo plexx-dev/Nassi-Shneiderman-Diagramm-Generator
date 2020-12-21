@@ -45,13 +45,13 @@ class NassiShneidermanDiagram:
 
     def load_from_file(self, filepath: str):
         filtered_lines = self.load_code_lines(filepath)
-        scopes = []
-        current_scope = scopes
+        global_scope = []
+        current_scope = global_scope
         for line in filtered_lines:
             logging.debug(line)
             if line.__contains__('}'):
                 current_scope.append("scope exit")
-                current_scope = scopes[-1] # does not get correct parent scope
+                current_scope = global_scope[-1] # does not get correct parent scope
                 #TODO: get correct parent scope
             if line.__contains__('{'):
                 current_scope.append("scope enter")
@@ -60,7 +60,7 @@ class NassiShneidermanDiagram:
 
             elif not line.__contains__('}'):
                 current_scope.append("generic instruction")
-        print(scopes)
+        print(global_scope)
 
 
 
