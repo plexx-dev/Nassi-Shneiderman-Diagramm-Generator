@@ -1,4 +1,4 @@
-from NassiShneidermann import NassiShneidermanDiagram, nassi
+from NassiShneidermann import NassiShneidermanDiagram
 from Iinstruction import *
 
 
