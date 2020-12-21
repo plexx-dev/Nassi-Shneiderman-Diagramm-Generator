@@ -1,6 +1,10 @@
 
+from to_nassi import nassi
+
 import PySimpleGUI as sg
 import os.path
+
+#sg.theme_previewer()
 
 java_file_list_column = [
     [  
@@ -46,7 +50,7 @@ layout = [
     ]
 ]
 
-window = sg.Window('Nassi Viewer', layout)
+window = sg.Window('Nassi Viewer', layout, resizable=True)
 
 while True:
     event, values = window.read()
@@ -78,7 +82,6 @@ while True:
             pass
     if event == '-JAVA FOLDER-':
         folder = values['-JAVA FOLDER-']
-        print(folder)
         try:
             file_list = os.listdir(folder)
         except:
@@ -90,7 +93,17 @@ while True:
             and f.lower().endswith(('.java', '.txt'))
         ]
         window['-JAVA FILE LIST-'].update(fnames)
-        
-        
+    elif event == '-JAVA FILE LIST-':
+        try:
+            filename = os.path.join(
+                values["-JAVA FOLDER-"], values["-JAVA FILE LIST-"][0]
+            )
+
+            window["-TOUT-"].update(filename)
+            nassi(filename)
+
+        except:
+            pass
+    
 
 window.close()

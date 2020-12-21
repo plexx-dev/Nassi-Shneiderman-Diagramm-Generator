@@ -39,25 +39,39 @@ class NassiShneidermanDiagram:
                     if line and not re.match(r"""^//|^#|^COMMENT|^--""", line):
                         lines.append(line)
         except:
-            logging.error(f"Failed to open input path {filepath}!")
+            logging.error(f"Failed to open input file {filepath}!")
         
         return lines
 
     def load_from_file(self, filepath: str):
         filtered_lines = self.load_code_lines(filepath)
-        print(filtered_lines)
-        num_brace
+        global_scope = []
+        current_scope = global_scope
         for line in filtered_lines:
-            if line.startswith("while("):
+            logging.debug(line)
+            if line.__contains__('}'):
+                current_scope.append("scope exit")
+                current_scope = global_scope[-1] # does not get correct parent scope
+                #TODO: get correct parent scope
+            if line.__contains__('{'):
+                current_scope.append("scope enter")
+                current_scope.append([])
+                current_scope = current_scope[-1]
+
+            elif not line.__contains__('}'):
+                current_scope.append("generic instruction")
+        print(global_scope)
+
+
+
 
     
-if __name__ == "__main__":
-    """for debugging"""
-
+"""if __name__ == "__main__":
+    #for debugging
     from Iinstruction import *
 
     NSD = NassiShneidermanDiagram(True)
 
     NSD.load_from_file("res/input/input.java")
 
-    NSD.convert_to_image("Nina", 500)
+    NSD.convert_to_image("Nina", 500)"""
