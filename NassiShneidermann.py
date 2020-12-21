@@ -39,7 +39,7 @@ class NassiShneidermanDiagram:
                     if line and not re.match(r"""^//|^#|^COMMENT|^--""", line):
                         lines.append(line)
         except:
-            logging.error(f"Failed to open input path {filepath}!")
+            logging.error(f"Failed to open input file {filepath}!")
         
         return lines
 
