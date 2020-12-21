@@ -131,5 +131,5 @@ if __name__ == "__main__":
         if_instruction("shouldNiet()", [ generic_instruction("hiet()") ], [generic_instruction("hiet()")]),
     ])
     NSD_init(500, 500)
-    test.to_image(0, 0, 250, 500)
+    test.to_image(0, 0, 500, 500)
     NSD_save("Iinstruction")
