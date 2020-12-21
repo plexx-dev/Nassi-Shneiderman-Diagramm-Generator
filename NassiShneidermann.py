@@ -45,10 +45,22 @@ class NassiShneidermanDiagram:
 
     def load_from_file(self, filepath: str):
         filtered_lines = self.load_code_lines(filepath)
-        print(filtered_lines)
-        num_brace
+        scopes = []
+        current_scope = scopes
         for line in filtered_lines:
-            if line.startswith("while("):
+            logging.debug(line)
+            if line.__contains__('}'):
+                current_scope.append("scope exit")
+                current_scope = scopes[-1] # does not get correct parent scope
+                #TODO: get correct parent scope
+            if line.__contains__('{'):
+                current_scope.append("scope enter")
+                current_scope.append([])
+                current_scope = current_scope[-1]
+
+            elif not line.__contains__('}'):
+                current_scope.append("generic instruction")
+        print(scopes)
 
 
 
