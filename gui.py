@@ -82,7 +82,6 @@ while True:
             pass
     if event == '-JAVA FOLDER-':
         folder = values['-JAVA FOLDER-']
-        print(folder)
         try:
             file_list = os.listdir(folder)
         except:
@@ -105,7 +104,6 @@ while True:
 
         except:
             pass
-        
-        
+    
 
 window.close()
