@@ -1,13 +1,13 @@
 from Iinstruction import *
 import logging
 import re
-from typing import Any, List
+from typing import Any, List, Union
 
 class Scope():
 
     def __init__(self, enclosing_scope) -> None:
         self.enclosing_scope = enclosing_scope
-        self.contents = []
+        self.contents: List = []
     
     def add_instruction(self, instruction) -> None:
         self.contents.append(instruction)
@@ -16,11 +16,11 @@ class Scope():
         self.contents.append(subscope)
 
 def load_src(filepath: str) -> List[str]:
-    lines = []
+    lines: List[str] = []
     try:
         with open(filepath) as file:
             for _line in file:
-                line:str = _line.strip()
+                line = _line.strip()
                 if line and not re.match(r"""^//|^#|^COMMENT|^--""", line):
                     lines.append(line)
     except:
@@ -28,7 +28,10 @@ def load_src(filepath: str) -> List[str]:
     
     return lines
 
-def get_scopes(src: list[str]):
+#TODO: remove debugging-only str
+scope_contents = Union[str, Iinstruction, Scope]
+
+def get_scopes(src: List[str]):
     global_scope = Scope(None)
     current_scope = global_scope
 
@@ -48,7 +51,7 @@ def get_scopes(src: list[str]):
     
     return global_scope
 
-def get_instructions(scope: Scope) -> list[Any]:
+def get_instructions(scope: Scope) -> List[scope_contents]:
     instructions = []
 
     for item in scope.contents:
@@ -61,7 +64,7 @@ def get_instructions(scope: Scope) -> list[Any]:
 
 
 
-def get_scoped_instructions(filepath:str) -> list[Any]:
+def get_scoped_instructions(filepath:str) -> List[scope_contents]:
     source_code = load_src(filepath)
     global_scope = get_scopes(source_code)
 
@@ -69,16 +72,19 @@ def get_scoped_instructions(filepath:str) -> list[Any]:
     return instructions
 
 if __name__ == "__main__":
+    """debuging"""
 
     def print_scope(scope: Scope):
-        print('[', end='')
+        print('{')
         for item in scope.contents:
             if isinstance(item, Scope):
                 print_scope(item)
             else:
-                print(item, end=", ")
-        print(']')
+                print(item, end=";\n")
+        print('}')
 
     logging.basicConfig(level=logging.DEBUG)
-    inst = get_scoped_instructions("res/input/input.java")
-    print(inst)
+    #inst = get_scoped_instructions("res/input/input.java")
+    lines = load_src("res/input/input.java")
+    global_scope = get_scopes(lines)
+    print_scope(global_scope)
