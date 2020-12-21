@@ -4,6 +4,9 @@ from to_nassi import nassi
 import PySimpleGUI as sg
 import os.path
 
+#sg.theme_previewer()
+sg.theme('DarkGrey11')
+
 java_file_list_column = [
     [  
         sg.Text('Java Folder'),
@@ -42,13 +45,14 @@ layout = [
     [
         sg.Column(java_file_list_column),
         sg.VSeparator(),
-        sg.Column(file_list_column),
-        sg.VSeparator(),
+        #sg.Column(file_list_column),
+        #sg.VSeparator(),
         sg.Column(diagramm_viewer_column),
+        
     ]
 ]
 
-window = sg.Window('Nassi Viewer', layout)
+window = sg.Window('Nassi Viewer', layout, resizable=True)
 
 while True:
     event, values = window.read()
@@ -80,7 +84,6 @@ while True:
             pass
     if event == '-JAVA FOLDER-':
         folder = values['-JAVA FOLDER-']
-        print(folder)
         try:
             file_list = os.listdir(folder)
         except:
@@ -103,7 +106,6 @@ while True:
 
         except:
             pass
-        
-        
+    
 
 window.close()
