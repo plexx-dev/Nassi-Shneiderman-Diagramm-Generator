@@ -1,4 +1,6 @@
 
+from NassiShneidermann import NassiShneidermanDiagram, nassi
+
 import PySimpleGUI as sg
 import os.path
 
@@ -95,8 +97,13 @@ while True:
             filename = os.path.join(
                 values["-JAVA FOLDER-"], values["-JAVA FILE LIST-"][0]
             )
-            
+
             window["-TOUT-"].update(filename)
+
+            from Iinstruction import *
+            NSD = NassiShneidermanDiagram(True)
+            nassi(NSD)
+
         except:
             pass
         
