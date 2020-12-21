@@ -6,10 +6,12 @@ COMMENT this is a comment
 fahre();
 fahre();
 
-while(shouldNiet()) {
+while(shouldNiet()) 
+{
     niet();
     niet();
-    if(true) {
+    if(true) 
+    {
         niet();
         niet();
     }
