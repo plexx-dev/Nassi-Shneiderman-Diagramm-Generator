@@ -4,6 +4,8 @@ from to_nassi import nassi
 import PySimpleGUI as sg
 import os.path
 
+#sg.theme_previewer()
+
 java_file_list_column = [
     [  
         sg.Text('Java Folder'),
@@ -48,7 +50,7 @@ layout = [
     ]
 ]
 
-window = sg.Window('Nassi Viewer', layout)
+window = sg.Window('Nassi Viewer', layout, resizable=True)
 
 while True:
     event, values = window.read()
