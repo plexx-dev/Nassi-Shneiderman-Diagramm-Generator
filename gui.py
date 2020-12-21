@@ -1,16 +1,21 @@
 from to_nassi import nassi
-
 import PySimpleGUI as sg
 import os.path
+
 
 #sg.theme_previewer()
 sg.theme('DarkGrey11')
 
 java_file_list_column = [
     [  
+        #! Folder
         sg.Text('Java Folder'),
         sg.In(size=(25, 1), enable_events=True, key="-JAVA FOLDER-"),
         sg.FolderBrowse(),
+        #! File
+        # sg.Text('Single Java File'),
+        # sg.In(size=(25, 1), enable_events=True, key="-JAVA FILE-"),
+        # sg.FileBrowse(),
     ],
     [
         sg.Listbox(
@@ -41,7 +46,8 @@ diagramm_viewer_column = [
 
 
 layout = [
-    [
+    [   
+        
         sg.Column(java_file_list_column),
         sg.VSeparator(),
         sg.Column(file_list_column),
