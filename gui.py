@@ -74,8 +74,23 @@ while True:
             )
             window["-TOUT-"].update(filename)
             window["-IMAGE-"].update(filename=filename)
-
         except:
             pass
+    if event == '-JAVA FOLDER-':
+        folder = values['-JAVA FOLDER-']
+        print(folder)
+        try:
+            file_list = os.listdir(folder)
+        except:
+            file_list = []
+        fnames = [
+            f
+            for f in file_list
+            if os.path.isfile(os.path.join(folder, f))
+            and f.lower().endswith(('.java', '.txt'))
+        ]
+        window['-JAVA FILE LIST-'].update(fnames)
+        
+        
 
 window.close()
