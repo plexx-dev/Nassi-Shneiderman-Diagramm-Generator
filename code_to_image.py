@@ -17,15 +17,15 @@ def NSD_init(x: float, y: float):
     img = Image.new("RGB", (x, y), "white")
     output_img = ImageDraw.Draw(img)
     #font = ImageFont.load_default()
-    font = ImageFont.truetype("res/fonts/NotoSans-Regular.ttf", 12)
+    font = ImageFont.truetype("res/fonts/SpaceGrotesk-Light.ttf", 12)
 
 def draw_generic_instruction(instruction: str, x, y, xsize, ysize) -> Iterable[float]:
     if not output_img:
         raise Exception("Output image was not initialized! Make sure to call NSD_init first")
     
     #size shit
-    text_y_size = font.getsize(instruction, direction="ltr")[1]
-    ysize = max(text_y_size, ysize) # ensure it is alway at least big enought to fit the text
+    #text_y_size = font.getsize(instruction, direction="ltr")[1]
+    #ysize = max(text_y_size, ysize) # ensure it is alway at least big enought to fit the text
 
     #draw shit
     output_img.rectangle((x,y) + (x + xsize, y + ysize), outline=(0), width=1)
