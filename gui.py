@@ -90,6 +90,15 @@ while True:
             and f.lower().endswith(('.java', '.txt'))
         ]
         window['-JAVA FILE LIST-'].update(fnames)
+    elif event == '-JAVA FILE LIST-':
+        try:
+            filename = os.path.join(
+                values["-JAVA FOLDER-"], values["-JAVA FILE LIST-"][0]
+            )
+            
+            window["-TOUT-"].update(filename)
+        except:
+            pass
         
         
 
