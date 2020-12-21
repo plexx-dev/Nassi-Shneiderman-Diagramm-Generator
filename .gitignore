@@ -1,3 +1,5 @@
-__pycache__/
-res/output/
-res/input/
+__pycache__/*
+res/output/*
+res/input/*
+.vscode/*
+*.pyc

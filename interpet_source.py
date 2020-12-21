@@ -1,6 +1,7 @@
+from Iinstruction import *
 import logging
 import re
-from typing import Iterator
+from typing import Any, Iterator
 
 class Scope():
 
@@ -27,7 +28,7 @@ def load_src(filepath: str) -> list[str]:
     
     return lines
 
-def read_scopes(src: list[str]):
+def get_scopes(src: list[str]):
     global_scope = Scope(None)
     current_scope = global_scope
 
@@ -47,18 +48,37 @@ def read_scopes(src: list[str]):
     
     return global_scope
 
-def print_scope(scope: Scope):
-    print('[', end='')
+def get_instructions(scope: Scope) -> list[Any]:
+    instructions = []
+
     for item in scope.contents:
         if isinstance(item, Scope):
-            print_scope(item)
+            instructions.extend(get_instructions(item))
         else:
-            print(item, end=", ")
-    print(']')
+            instructions.append(item)
+    
+    return instructions
+
+
+
+def get_scoped_instructions(filepath:str) -> list[Any]:
+    source_code = load_src(filepath)
+    global_scope = get_scopes(source_code)
+
+    instructions = get_instructions(global_scope)
+    return instructions
 
 if __name__ == "__main__":
+
+    def print_scope(scope: Scope):
+        print('[', end='')
+        for item in scope.contents:
+            if isinstance(item, Scope):
+                print_scope(item)
+            else:
+                print(item, end=", ")
+        print(']')
+
     logging.basicConfig(level=logging.DEBUG)
-    lines = load_src("res/input/input.java")
-    scope = read_scopes(lines)
-    
-    print_scope(scope)
+    inst = get_scoped_instructions("res/input/input.java")
+    print(inst)

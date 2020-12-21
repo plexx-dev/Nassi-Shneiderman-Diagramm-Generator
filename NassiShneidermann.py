@@ -1,6 +1,7 @@
 from os import cpu_count
 from code_to_image import NSD_save
 from Iinstruction import Iinstruction
+import interpet_source as itp
 import logging
 
 class NassiShneidermanDiagram:
@@ -29,6 +30,9 @@ class NassiShneidermanDiagram:
             x, y = instruction.to_image(x, y, x_sz, 200)
         cti.NSD_save(filename)
 
+    def load_from_file(self, filepath:str):
+        source_code = itp.load_src(filepath)
+        instructions = itp.get_scoped_instructions(filepath)
 
 
 
@@ -39,6 +43,6 @@ if __name__ == "__main__":
 
     NSD = NassiShneidermanDiagram(True)
 
-    #NSD.load_from_file("res/input/input.java")
+    NSD.load_from_file("res/input/input.java")
 
     NSD.convert_to_image("Nina", 500)
