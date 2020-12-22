@@ -12,9 +12,6 @@ java_file_list_column = [
         sg.In(size=(25, 1), enable_events=True, key="-JAVA FOLDER-"),
         sg.FileBrowse(file_types=(('Java-File', '*.java'), ('ALL Files','*.*')), key='-JAVA FILE-'),  # ('ALL Files','*.*')
     ],
-    [
-        sg.popup_ok(title='Hello')
-    ],
 ]
 
 file_list_column = [
@@ -48,7 +45,6 @@ layout = [
         sg.Button(button_text='Create Image', key='-CREATE-'),
         sg.VSeparator(),
         sg.Column(diagramm_viewer_column),
-        
     ]
 ]
 
@@ -66,7 +62,6 @@ while True:
 
     if event == '-OUTPUT FOLDER-':
         folder = values['-OUTPUT FOLDER-']
-        print(folder)
         try:
             file_list = os.listdir(folder)
         except:
@@ -89,16 +84,6 @@ while True:
             pass
     if event == '-JAVA FOLDER-':
         folder = values['-JAVA FOLDER-']
-        # try:
-        #     file_list = os.listdir(folder)
-        # except:
-        #     file_list = []
-        # fnames = [
-        #     f
-        #     for f in file_list
-        #     if os.path.isfile(os.path.join(folder, f))
-        #     and f.lower().endswith(('.java', '.txt'))
-        # ]
         window['-JAVA FOLDER-'].update(values['-JAVA FILE-'])
 
     elif event == '-CREATE-':
@@ -110,7 +95,7 @@ while True:
                 )
                 except :
                     print('No file selected')
-                
+                sg.popup_annoying('Succsessful created!' , title='Info')
                 nassi(filename)
             elif values['-JAVA FOLDER-']:
                 print('No Output')
