@@ -1,8 +1,7 @@
-from os import cpu_count
-from code_to_image import NSD_save
 from Iinstruction import Iinstruction
-from interpet_source import load_src, get_scoped_instructions
+import interpret_source as itp
 import logging
+from typing import List
 
 class NassiShneidermanDiagram:
 
@@ -24,16 +23,20 @@ class NassiShneidermanDiagram:
 
     def convert_to_image(self, filename: str, x_size=200):
         logging.info(f"Saving NSD to {filename}.png")
-        cti.NSD_init(x_size, 1000)
+        cti.NSD_init(x_size, 5000)
         x, y, x_sz = 0, 0, x_size
         for _k, instruction in self.instructions.items():
-            x, y = instruction.to_image(x, y, x_sz, 200)
+            x, y = instruction.to_image(x, y, x_sz, 750)
         cti.NSD_save(filename)
 
     def load_from_file(self, filepath:str):
-        source_code = load_src(filepath)
-        instructions = get_scoped_instructions(filepath)
+        src_code = itp.load_src(filepath)
+        global_scope = itp.get_instructions_in_scope(src_code)[0]
+        self.add_instructions_from_scope(global_scope)
 
+    def add_instructions_from_scope(self, scope: List[Iinstruction]):
+        for inst in scope:
+            self.add_instruction(inst)
 
 
     

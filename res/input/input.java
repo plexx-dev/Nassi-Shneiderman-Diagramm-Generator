@@ -1,23 +1,36 @@
-#comment
-//comment
-COMMENT this is a comment
---comment
-
-fahre();
-fahre();
-
-while(shouldNiet()) 
-{
-    niet();
-    niet();
-    if(true) 
-    {
-        niet();
-        niet();
+fahre1();
+fahre2();
+while(shouldNiet()) {
+    niet4();
+    niet5();
+    if(if6) {
+        niet7();
+        niet8();
+    } else {
+        niet10();
+        niet11();
     }
+    if(if13) {
+        niet14();
+        niet15();
+        if(if16) {
+            niet17();
+            niet18();
+        } else {
+            niet20();
+            niet21();
+            if(if22) {
+                niet23()
+            }
+        }
+    } else {
+        niet27();
+        niet28();
+    }
+    niet30();
 }
-niet();
-niet();
+niet32();
+niet33();
 
 // drehe("links");
 // while(huegelVorhanden("rechts"))
