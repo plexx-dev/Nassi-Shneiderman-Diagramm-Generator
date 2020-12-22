@@ -87,7 +87,7 @@ while True:
             if values['-JAVA FOLDER-'] and values['-OUTPUT FOLDER-']:
                 try:
                     file_path = os.path.join(
-                    values["-JAVA FOLDER-"], #values["-JAVA FILE LIST-"][0]
+                    values["-JAVA FOLDER-"],
                     )
                     sg.popup_annoying('Succsessful created!' , title='Info')
                     
@@ -96,10 +96,12 @@ while True:
                 nassi(file_path, str(output_path))
             elif values['-JAVA FOLDER-']:
                 print('No Output')
+                sg.popup_annoying('No Output' , title='Error', auto_close_duration=5, auto_close=True)
             elif values['-OUTPUT FOLDER-']:
                 print('No Input')
+                sg.popup_annoying('No Input' , title='Error', auto_close_duration=5, auto_close=True)
             else:
-                pass
+                sg.popup_annoying('Unexpected Case!' , title='Error')
         except:
             pass
 
