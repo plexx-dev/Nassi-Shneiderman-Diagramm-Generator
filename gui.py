@@ -109,7 +109,8 @@ while True:
             )
 
             window["-TOUT-"].update(filename)
-            #nassi(filename)
+            
+            nassi(filename)
 
         except:
             pass
