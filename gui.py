@@ -50,17 +50,13 @@ layout = [
 
 window = sg.Window('Nassi Viewer', layout, resizable=True)
 
-def get_output_file():
-    values = window.read()
-    output_file = values['-OUTPUT FOLDER-']
-    return output_file
-
 while True:
     event, values = window.read()
     if event == 'Exit' or event == sg.WIN_CLOSED:
         break
 
     if event == '-OUTPUT FOLDER-':
+        output_path = values['-OUTPUT FOLDER-']
         folder = values['-OUTPUT FOLDER-']
         try:
             file_list = os.listdir(folder)
@@ -90,13 +86,13 @@ while True:
         try:
             if values['-JAVA FOLDER-'] and values['-OUTPUT FOLDER-']:
                 try:
-                    filename = os.path.join(
+                    file_path = os.path.join(
                     values["-JAVA FOLDER-"], #values["-JAVA FILE LIST-"][0]
                 )
                 except :
                     print('No file selected')
                 sg.popup_annoying('Succsessful created!' , title='Info')
-                nassi(filename)
+                nassi(file_path, output_path)
             elif values['-JAVA FOLDER-']:
                 print('No Output')
             elif values['-OUTPUT FOLDER-']:
