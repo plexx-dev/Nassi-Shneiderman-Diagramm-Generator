@@ -54,6 +54,11 @@ layout = [
 
 window = sg.Window('Nassi Viewer', layout, resizable=True)
 
+def get_output_file():
+    values = window.read()
+    output_file = values['-OUTPUT FOLDER-']
+    return output_file
+
 while True:
     event, values = window.read()
     if event == 'Exit' or event == sg.WIN_CLOSED:
