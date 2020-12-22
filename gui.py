@@ -47,6 +47,8 @@ layout = [
         sg.VSeparator(),
         sg.Column(file_list_column),
         sg.VSeparator(),
+        sg.Button(button_text='Create Image', key='-CREATE-'),
+        sg.VSeparator(),
         sg.Column(diagramm_viewer_column),
         
     ]
@@ -107,9 +109,21 @@ while True:
             )
 
             window["-TOUT-"].update(filename)
-            nassi(filename)
+            #nassi(filename)
 
         except:
+            pass
+    elif event == '-CREATE-':
+        if values['-JAVA FOLDER-'] and values['-OUTPUT FOLDER-']:
+            filename = os.path.join(
+                values["-JAVA FOLDER-"], values["-JAVA FILE LIST-"][0]
+            )
+            nassi(filename)
+        elif values['-JAVA FILE LIST-']:
+            print('No Output')
+        elif values['-OUTPUT FOLDER-']:
+            print('No Input')
+        else:
             pass
     
 
