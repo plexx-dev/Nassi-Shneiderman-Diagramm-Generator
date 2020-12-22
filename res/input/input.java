@@ -17,6 +17,11 @@ while(shouldNiet()) {
 niet15();
 niet16();
 
+do{
+    niet21();
+    niet22();
+}while(bool23);
+
 // drehe("links");
 // while(huegelVorhanden("rechts"))
 // {
