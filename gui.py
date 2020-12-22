@@ -8,14 +8,9 @@ sg.theme('DarkGrey11')
 
 java_file_list_column = [
     [  
-        #! Folder
         sg.Text('Java Folder'),
         sg.In(size=(25, 1), enable_events=True, key="-JAVA FOLDER-"),
         sg.FolderBrowse(),
-        #! File
-        # sg.Text('Single Java File'),
-        # sg.In(size=(25, 1), enable_events=True, key="-JAVA FILE-"),
-        # sg.FileBrowse(),
     ],
     [
         sg.Listbox(
