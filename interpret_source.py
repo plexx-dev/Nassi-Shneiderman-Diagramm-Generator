@@ -18,7 +18,7 @@ def load_src(filepath: str) -> List[str]:
     try:
         with open(filepath) as file:
             for _line in file:
-                line = _line.strip()
+                line = _line.strip().replace(' ', '')
                 if line and not re.match(r"""^//|^#|^COMMENT|^--""", line):
                     lines.append(line)
                 if line.__contains__('{'):
@@ -57,6 +57,15 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
                 if src[i].__contains__("else"): #if there is an else statement, check it
                     false_instructions, i = get_instructions_in_scope(src, i+2)
                 outer_scope.add_instruction(if_instruction(instruction_txt, true_instructions, false_instructions))
+
+            elif line.startswith("do{"):
+                logging.debug("Found start of do-while instruction in line: %i", i)
+                child_instructions, i = get_instructions_in_scope(src, i+1)
+                end_line = src[i]
+                #line: }while(...);
+                bracket_idx = end_line.rindex(");")
+                instruction_txt = end_line[7: bracket_idx]
+                outer_scope.add_instruction(while_instruction_back(instruction_txt, child_instructions))
             
             else:
                 logging.debug("Found generic instruction in line: %i", i+1)
