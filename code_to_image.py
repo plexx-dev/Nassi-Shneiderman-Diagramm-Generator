@@ -102,7 +102,7 @@ def draw_while_loop_back(condition: str, x: int, y: int, xsize: int, ysize: int)
 
 def NSD_save(filename: str):
     """Save the created file"""
-    img.save(filename + datei_endung ,".png")
+    img.save(filename + datei_endung ,"PNG")
 
 #x_offset , y_offset, x_size, y_size = draw_while_loop("lol", 0, 0, 100, 200)
 if __name__ == "__main__":
