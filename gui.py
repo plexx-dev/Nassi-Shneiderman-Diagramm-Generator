@@ -13,7 +13,7 @@ java_file_list_column = [
         sg.FileBrowse(file_types=(('Java-File', '*.java'), ('ALL Files','*.*')), key='-JAVA FILE-'),  # ('ALL Files','*.*')
     ],
     [
-        sg.Image(),
+        sg.popup_ok(title='Hello')
     ],
 ]
 
