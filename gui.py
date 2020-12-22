@@ -10,12 +10,10 @@ java_file_list_column = [
     [  
         sg.Text('Java Folder'),
         sg.In(size=(25, 1), enable_events=True, key="-JAVA FOLDER-"),
-        sg.FolderBrowse(),
+        sg.FileBrowse(file_types=(('Java-File', '*.java'), ('ALL Files','*.*')), key='-JAVA FILE-'),  # ('ALL Files','*.*')
     ],
     [
-        sg.Listbox(
-            values=[], enable_events=True, size=(40, 20), key="-JAVA FILE LIST-"
-        )
+        sg.Image(),
     ],
 ]
 
@@ -91,41 +89,30 @@ while True:
             pass
     if event == '-JAVA FOLDER-':
         folder = values['-JAVA FOLDER-']
-        try:
-            file_list = os.listdir(folder)
-        except:
-            file_list = []
-        fnames = [
-            f
-            for f in file_list
-            if os.path.isfile(os.path.join(folder, f))
-            and f.lower().endswith(('.java', '.txt'))
-        ]
-        window['-JAVA FILE LIST-'].update(fnames)
-    elif event == '-JAVA FILE LIST-':
-        try:
-            filename = os.path.join(
-                values["-JAVA FOLDER-"], values["-JAVA FILE LIST-"][0]
-            )
+        # try:
+        #     file_list = os.listdir(folder)
+        # except:
+        #     file_list = []
+        # fnames = [
+        #     f
+        #     for f in file_list
+        #     if os.path.isfile(os.path.join(folder, f))
+        #     and f.lower().endswith(('.java', '.txt'))
+        # ]
+        window['-JAVA FOLDER-'].update(values['-JAVA FILE-'])
 
-            window["-TOUT-"].update(filename)
-            
-            nassi(filename)
-
-        except:
-            pass
     elif event == '-CREATE-':
         try:
             if values['-JAVA FOLDER-'] and values['-OUTPUT FOLDER-']:
                 try:
                     filename = os.path.join(
-                    values["-JAVA FOLDER-"], values["-JAVA FILE LIST-"][0]
+                    values["-JAVA FOLDER-"], #values["-JAVA FILE LIST-"][0]
                 )
                 except :
-                    print('sth')
+                    print('No file selected')
                 
                 nassi(filename)
-            elif values['-JAVA FILE LIST-']:
+            elif values['-JAVA FOLDER-']:
                 print('No Output')
             elif values['-OUTPUT FOLDER-']:
                 print('No Input')
