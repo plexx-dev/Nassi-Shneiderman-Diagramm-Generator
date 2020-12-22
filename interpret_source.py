@@ -52,10 +52,10 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
                 logging.debug("Found if instruction in line: %i", i+1)
                 bracket_idx = line.rindex(')') # throws if the contruct is illformed
                 instruction_txt = line[3:bracket_idx]
-                true_instructions, i = get_instructions_in_scope(src, i+1)
+                true_instructions, i = get_instructions_in_scope(src, i+2)
                 false_instructions = None
                 if src[i].__contains__("else"): #if there is an else statement, check it
-                    false_instructions, i = get_instructions_in_scope(src, i+1)
+                    false_instructions, i = get_instructions_in_scope(src, i+2)
                 outer_scope.add_instruction(if_instruction(instruction_txt, true_instructions, false_instructions))
             
             else:

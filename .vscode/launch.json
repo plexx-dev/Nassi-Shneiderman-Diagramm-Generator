@@ -8,7 +8,7 @@
             "name": "Python: Aktuelle Datei",
             "type": "python",
             "request": "launch",
-            "program": "gui.py",
+            "program": "interpret_source.py",
             "console": "integratedTerminal"
         }
     ]
