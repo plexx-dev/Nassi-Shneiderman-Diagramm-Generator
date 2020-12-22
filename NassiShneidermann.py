@@ -1,7 +1,9 @@
-from Iinstruction import Iinstruction
-import interpret_source as itp
-import logging
 from typing import List
+from Iinstruction import Iinstruction
+import logging
+import interpret_source as itp
+import code_to_image as cti
+
 
 class NassiShneidermanDiagram:
 
@@ -26,7 +28,7 @@ class NassiShneidermanDiagram:
         cti.NSD_init(x_size, 5000)
         x, y, x_sz = 0, 0, x_size
         for _k, instruction in self.instructions.items():
-            x, y = instruction.to_image(x, y, x_sz, 750)
+            x, y = instruction.to_image(x, y, x_sz, 800)
         cti.NSD_save(filename)
 
     def load_from_file(self, filepath:str):
@@ -41,9 +43,6 @@ class NassiShneidermanDiagram:
 
     
 if __name__ == "__main__":
-    #for debugging
-    from Iinstruction import *
-
     NSD = NassiShneidermanDiagram(True)
 
     NSD.load_from_file("res/input/input.java")
