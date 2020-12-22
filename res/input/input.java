@@ -3,10 +3,12 @@ fahre2();
 while(shouldNiet()) {
     niet4();
     niet5();
-    if(if6) {
+    if(if6)
+    {
         niet7();
         niet8();
-    } else {
+    } else
+    {
         niet10();
         niet11();
     }
