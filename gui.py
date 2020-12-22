@@ -109,22 +109,28 @@ while True:
             )
 
             window["-TOUT-"].update(filename)
-            nassi(filename)
+            #nassi(filename)
 
         except:
             pass
     elif event == '-CREATE-':
-        if values['-JAVA FOLDER-'] and values['-OUTPUT FOLDER-']:
-            filename = os.path.join(
-                values["-JAVA FOLDER-"], values["-JAVA FILE LIST-"][0]
-            )
-            nassi(filename)
-        elif values['-JAVA FILE LIST-']:
-            print('No Output')
-        elif values['-OUTPUT FOLDER-']:
-            print('No Input')
-        else:
+        try:
+            if values['-JAVA FOLDER-'] and values['-OUTPUT FOLDER-']:
+                try:
+                    filename = os.path.join(
+                    values["-JAVA FOLDER-"], values["-JAVA FILE LIST-"][0]
+                )
+                except :
+                    print('sth')
+                
+                nassi(filename)
+            elif values['-JAVA FILE LIST-']:
+                print('No Output')
+            elif values['-OUTPUT FOLDER-']:
+                print('No Input')
+            else:
+                pass
+        except:
             pass
-    
 
 window.close()
