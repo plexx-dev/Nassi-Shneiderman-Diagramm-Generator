@@ -60,15 +60,14 @@ while True:
 
     if event == '-OUTPUT FOLDER-':
         output_path = values['-OUTPUT FOLDER-']
-        folder = values['-OUTPUT FOLDER-']
         try:
-            file_list = os.listdir(folder)
+            file_list = os.listdir(output_path)
         except:
             file_list = []
         fnames = [
             f
             for f in file_list
-            if os.path.isfile(os.path.join(folder, f))
+            if os.path.isfile(os.path.join(output_path, f))
             and f.lower().endswith(('.png', '.gif'))
         ]
         window['-OUTPUT FILE LIST-'].update(fnames)
@@ -94,9 +93,23 @@ while True:
                     )
                     sg.popup_annoying('Succsessful created!' , title='Info')
                     
-                except :
-                    print('No file selected')
+                except:
+                    pass
+                output_path = values['-OUTPUT FOLDER-']
                 nassi(file_path, str(output_path))
+                try:
+                    file_list = os.listdir(output_path)
+                except:
+                    file_list = []
+                fnames = [
+                    f
+                    for f in file_list
+                    if os.path.isfile(os.path.join(output_path, f))
+                    and f.lower().endswith(('.png', '.gif'))
+                ]
+                
+                window['-OUTPUT FILE LIST-'].update(fnames)
+
             elif values['-JAVA FOLDER-']:
                 print('No Output')
                 sg.popup_annoying('No Output' , title='Error', auto_close_duration=5, auto_close=True)
