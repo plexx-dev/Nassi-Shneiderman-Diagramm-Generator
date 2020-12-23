@@ -1,6 +1,7 @@
 from gui.utils import nassi, output
 import PySimpleGUI as sg
 import os.path
+import random
 
 def gui():
     #sg.theme_previewer()
@@ -57,6 +58,9 @@ def gui():
         event, values = window.read()
         if event == 'Exit' or event == sg.WIN_CLOSED:
             break
+        
+        if event == '-DONATE-':
+            sg.popup_annoying(('You donated $'+ str(random.randint(0, 1000000000000000)) + '.') , title='Error')
 
         if event == '-OUTPUT FOLDER-':
             fnames = output(values)
