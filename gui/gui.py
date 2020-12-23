@@ -60,7 +60,7 @@ def gui():
             break
         
         if event == '-DONATE-':
-            sg.popup_annoying(('You donated $'+ str(random.randint(0, 1000000000000000)) + '.') , title='Error')
+            sg.popup_notify(('You donated $'+ str(random.randint(0, 1000000000000000)) + '.') , title='Error')
 
         if event == '-OUTPUT FOLDER-':
             fnames = output(values)
@@ -85,7 +85,7 @@ def gui():
                         file_path = os.path.join(
                         values["-JAVA FOLDER-"],
                         )
-                        sg.popup_annoying('Succsessful created!' , title='Info')
+                        sg.popup_notify('Succsessful created!' , title='Created')
                         
                     except:
                         pass
