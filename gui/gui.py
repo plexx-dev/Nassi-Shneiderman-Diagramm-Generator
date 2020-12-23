@@ -1,4 +1,4 @@
-from gui.utils import nassi
+from gui.utils import nassi, output
 import PySimpleGUI as sg
 import os.path
 
@@ -59,17 +59,7 @@ def gui():
             break
 
         if event == '-OUTPUT FOLDER-':
-            output_path = values['-OUTPUT FOLDER-']
-            try:
-                file_list = os.listdir(output_path)
-            except:
-                file_list = []
-            fnames = [
-                f
-                for f in file_list
-                if os.path.isfile(os.path.join(output_path, f))
-                and f.lower().endswith(('.png', '.gif'))
-            ]
+            fnames = output(values)
             window['-OUTPUT FILE LIST-'].update(fnames)
         elif event == '-OUTPUT FILE LIST-':
             try:
@@ -96,18 +86,9 @@ def gui():
                     except:
                         pass
                     output_path = values['-OUTPUT FOLDER-']
-                    nassi(file_path, str(output_path))
-                    try:
-                        file_list = os.listdir(output_path)
-                    except:
-                        file_list = []
-                    fnames = [
-                        f
-                        for f in file_list
-                        if os.path.isfile(os.path.join(output_path, f))
-                        and f.lower().endswith(('.png', '.gif'))
-                    ]
+                    nassi(file_path, output_path)
                     
+                    fnames = output(values)
                     window['-OUTPUT FILE LIST-'].update(fnames)
 
                 elif values['-JAVA FOLDER-']:
