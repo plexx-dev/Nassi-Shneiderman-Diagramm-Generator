@@ -28,21 +28,24 @@ file_list_column = [
 ]
 
 diagramm_viewer_column = [
-    [sg.Text("Choose your Code from the left. ")],
+    [sg.Text("Choose your Code. ")],
     [sg.Text(size=(40, 1), key="-TOUT-")],
     [sg.Image(key='-IMAGE-')],
 ]
 
+buttons_column = [
+    [sg.Button(button_text='Create Image', key='-CREATE-')],
+    [sg.Button(button_text='Donate', key='-DONATE-')],
+]
 
 
 layout = [
     [   
-        
         sg.Column(java_file_list_column),
         sg.VSeparator(),
         sg.Column(file_list_column),
         sg.VSeparator(),
-        sg.Button(button_text='Create Image', key='-CREATE-'),
+        sg.Column(buttons_column),
         sg.VSeparator(),
         sg.Column(diagramm_viewer_column),
     ]
