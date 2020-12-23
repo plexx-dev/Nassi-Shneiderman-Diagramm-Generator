@@ -1,7 +1,8 @@
-from Iinstruction import *
 import logging
 import re
 from typing import List, Tuple
+
+from draw.Iinstruction import *
 
 class Scope():
 

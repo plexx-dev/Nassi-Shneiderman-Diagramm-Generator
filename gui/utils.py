@@ -1,5 +1,5 @@
-from NassiShneidermann import NassiShneidermanDiagram
-from Iinstruction import *
+from interpreter.NassiShneidermann import NassiShneidermanDiagram
+from draw.Iinstruction import *
 
 
 def nassi(filepath:str, output_path: str):

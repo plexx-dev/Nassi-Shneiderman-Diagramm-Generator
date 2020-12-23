@@ -1,8 +1,10 @@
-import code_to_image as cti
+
+
 from typing import Iterable, List
 from abc import abstractmethod
 
-from code_to_image import NSD_init, NSD_save
+from draw import code_to_image as cti
+
 
 
 class Iinstruction:
@@ -130,6 +132,6 @@ if __name__ == "__main__":
         generic_instruction("hiet()"),
         if_instruction("shouldNiet()", [ generic_instruction("hiet()") ], [generic_instruction("hiet()")]),
     ])
-    NSD_init(500, 500)
+    cti.NSD_init(500, 500)
     test.to_image(0, 0, 500, 500)
-    NSD_save("Iinstruction")
+    cti.NSD_save("Iinstruction")

@@ -1,8 +1,9 @@
 from typing import List
-from Iinstruction import Iinstruction
 import logging
-import interpret_source as itp
-import code_to_image as cti
+
+from draw.Iinstruction import Iinstruction
+from interpreter import interpret_source as itp
+from draw import code_to_image as cti
 
 
 class NassiShneidermanDiagram:
