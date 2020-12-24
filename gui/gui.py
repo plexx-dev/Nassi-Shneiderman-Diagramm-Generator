@@ -85,15 +85,16 @@ def gui():
                         file_path = os.path.join(
                         values["-JAVA FOLDER-"],
                         )
+                        output_path = values['-OUTPUT FOLDER-']
+                        nassi(file_path, output_path)
+                    
+                        fnames = output(values)
+                        window['-OUTPUT FILE LIST-'].update(fnames)
                         sg.popup_notify('Succsessful created!' , title='Created')
                         
                     except:
                         pass
-                    output_path = values['-OUTPUT FOLDER-']
-                    nassi(file_path, output_path)
                     
-                    fnames = output(values)
-                    window['-OUTPUT FILE LIST-'].update(fnames)
 
                 elif values['-JAVA FOLDER-']:
                     print('No Output')
