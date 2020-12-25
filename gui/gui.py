@@ -3,20 +3,22 @@ import PySimpleGUI as sg
 import os.path
 import random
 
+
 def gui():
-    #sg.theme_previewer()
+    
     sg.theme('DarkGrey11')
 
     java_file_list_column = [
-        [  
+        [
             sg.Text('Java File'),
             sg.In(size=(25, 1), enable_events=True, key="-JAVA FOLDER-"),
-            sg.FileBrowse(file_types=(('Java-File', '*.java'), ('ALL Files','*.*')), key='-JAVA FILE-'),  # ('ALL Files','*.*')
+            sg.FileBrowse(file_types=(('Java-File', '*.java'), ('ALL Files',
+                                                                '*.*')), key='-JAVA FILE-'),  # ('ALL Files','*.*')
         ],
     ]
 
     file_list_column = [
-        [  
+        [
             sg.Text('Output Folder'),
             sg.In(size=(25, 1), enable_events=True, key="-OUTPUT FOLDER-"),
             sg.FolderBrowse(),
@@ -29,19 +31,19 @@ def gui():
     ]
 
     diagramm_viewer_column = [
-        [sg.Text("Choose your Code. ")],
+        [sg.Text("Choose your Code for preview. ", size=(100, 10))],
         [sg.Text(size=(40, 1), key="-TOUT-")],
         [sg.Image(key='-IMAGE-')],
     ]
 
     buttons_column = [
         [sg.Button(button_text='Create Image', key='-CREATE-')],
+        # * fun feature
         [sg.Button(button_text='Donate', key='-DONATE-')],
     ]
 
-
     layout = [
-        [   
+        [
             sg.Column(java_file_list_column),
             sg.VSeparator(),
             sg.Column(file_list_column),
@@ -58,9 +60,10 @@ def gui():
         event, values = window.read()
         if event == 'Exit' or event == sg.WIN_CLOSED:
             break
-        
+
         if event == '-DONATE-':
-            sg.popup_notify(('You donated $'+ str(random.randint(0, 1000000000000000)) + '.') , title='Thanks')
+            sg.popup_notify(
+                ('You donated $' + str(random.randint(0, 1000000000000000)) + '.'), title='Thanks')
 
         if event == '-OUTPUT FOLDER-':
             fnames = output(values)
@@ -83,27 +86,29 @@ def gui():
                 if values['-JAVA FOLDER-'] and values['-OUTPUT FOLDER-']:
                     try:
                         file_path = os.path.join(
-                        values["-JAVA FOLDER-"],
+                            values["-JAVA FOLDER-"],
                         )
                         output_path = values['-OUTPUT FOLDER-']
                         nassi(file_path, output_path)
-                    
+
                         fnames = output(values)
                         window['-OUTPUT FILE LIST-'].update(fnames)
-                        sg.popup_notify('Succsessful created!' , title='Created')
-                        
+                        sg.popup_notify('Succsessful created!',
+                                        title='Created')
+
                     except:
                         pass
-                    
 
                 elif values['-JAVA FOLDER-']:
                     print('No Output')
-                    sg.popup_annoying('No Output' , title='Error', auto_close_duration=5, auto_close=True)
+                    sg.popup_annoying('No Output', title='Error',
+                                      auto_close_duration=5, auto_close=True)
                 elif values['-OUTPUT FOLDER-']:
                     print('No Input')
-                    sg.popup_annoying('No Input' , title='Error', auto_close_duration=5, auto_close=True)
+                    sg.popup_annoying('No Input', title='Error',
+                                      auto_close_duration=5, auto_close=True)
                 else:
-                    sg.popup_annoying('Unexpected Case!' , title='Error')
+                    sg.popup_annoying('Unexpected Case!', title='Error')
             except:
                 pass
 
