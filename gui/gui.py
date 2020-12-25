@@ -63,7 +63,7 @@ def gui():
 
         if event == '-DONATE-':
             sg.popup_notify(
-                ('You donated $' + str(random.randint(0, 1000000000000000)) + '.'), title='Thanks')
+                ('You donated $' + str(random.randint(500, 100000000)) + '.'), title='Thanks')
 
         if event == '-OUTPUT FOLDER-':
             fnames = output(values)
