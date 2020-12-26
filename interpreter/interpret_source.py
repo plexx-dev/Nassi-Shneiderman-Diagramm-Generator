@@ -6,8 +6,9 @@ from typing import List, Text, Tuple
 from draw.Iinstruction import *
 
 COMMENT_REGEX = r"""^//|^#|^COMMENT|^--"""
+REMOVE_KEYWORDS = [' ', "public", "private", "void"]
+
 WHILE_TAG = "solange " #german for 'while'. Change this depending on your language
-REMOVE_KEYWORDS = (' ', "public", "private", "void")
 
 REPLACE = dict((re.escape(k), '') for k in REMOVE_KEYWORDS)
 remove_pattern = re.compile("|".join(REPLACE.keys()))
@@ -42,21 +43,25 @@ def load_src(filepath: str) -> List[str]:
     
     return lines
 
-def get_scope_start_offset(src: List[str], start_idx: int) -> int:
+def get_next_occurence_of(src: List[str], start_idx:int, tag:str) -> int:
     i = start_idx
     while i < len(src):
-        line = src[i]
-        if line.__contains__("{"):
-            return i - start_idx + 1
+        if src[i].__contains__(tag):
+            return i
         i += 1
+
+def get_scope_start_offset(src: List[str], start_idx: int) -> int:
+    i = get_next_occurence_of(src, start_idx, '{')
+    if i != len(src):
+        return i + 1
     raise ScopeNotFoundException("Unable to find scope start. Is the program ill-formed?")
+
 
 def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[Iinstruction], int]:
     outer_scope: List[Iinstruction] = []
     i = start_idx
     while i < len(src):
         line = src[i]
-        logging.debug(line)
         try:
             if line.__contains__('}'): #We exited this scope, return it
                 return outer_scope, i
@@ -82,10 +87,16 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
                 true_instructions, i = get_instructions_in_scope(src, i+brace_offset)
 
                 false_instructions = None
-                if src[i].__contains__("else"): #if there is an else statement, check it
+                #if there is an else statement, check it
+                if src[i].__contains__("else"):
                     logging.debug("found else construct in line: %i", i+1)
                     brace_offset = get_scope_start_offset(src, i)
-                    false_instructions, i = get_instructions_in_scope(src, i+2)
+                    false_instructions, i = get_instructions_in_scope(src, i+brace_offset)
+                elif src[i+1].__contains__("else"):
+                    logging.debug("found else construct in line: %i", i+2)
+                    brace_offset = get_scope_start_offset(src, i+1)
+                    false_instructions, i = get_instructions_in_scope(src, i+1+brace_offset)
+
                 
                 outer_scope.append(if_instruction(instruction_txt, true_instructions, false_instructions))
 
@@ -105,7 +116,7 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
                 logging.debug("Found generic instruction in line: %i", i+1)
                 outer_scope.append(generic_instruction(line))
         except:
-            logging.error("Encountered error in line: %i", i)
+            logging.error("Encountered error in line: %i", i+1)
             raise # rethrow
         i += 1
     return outer_scope, 0
