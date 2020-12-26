@@ -31,10 +31,6 @@ def draw_debug_tile(x, y, x_sz, y_sz):
 def draw_generic_instruction(instruction: str, x, y, xsize, ysize) -> Iterable[float]:
     if not output_img:
         raise Exception("Output image was not initialized! Make sure to call NSD_init first")
-    
-    #size shit
-    text_y_size = font.getsize(instruction, direction="ltr")[1]
-    ysize = max(text_y_size, ysize) # ensure the bounding box is alway at least big enought to fit the text
 
     #draw shit
     output_img.rectangle((x,y) + (x + xsize, y + ysize), outline=(0), width=1)
