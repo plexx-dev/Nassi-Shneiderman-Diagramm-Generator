@@ -3,3 +3,4 @@ res/output/
 res/input/
 .vscode/
 *.pyc
+*.png

@@ -24,7 +24,7 @@ class NassiShneidermanDiagram:
         self.instructions[instruction_key] = instruction
         logging.debug("added instruction %s : %s", instruction_key, instruction.instruction_text)
 
-    def convert_to_image(self, filename: str, x_size=200):
+    def convert_to_image(self, filename: str, x_size: int=200):
         logging.info(f"Saving NSD to {filename}.png")
         cti.NSD_init(x_size, 5000)
         x, y, x_sz = 0, 0, x_size
