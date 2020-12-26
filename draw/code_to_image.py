@@ -1,4 +1,3 @@
-import sys
 from typing import Iterable
 from PIL import Image, ImageDraw, ImageFont
 
@@ -16,12 +15,12 @@ def NSD_init(x: float, y: float):
     img = Image.new("RGB", (x, y), "white")
     output_img = ImageDraw.Draw(img)
     #font = ImageFont.load_default()
-    font = ImageFont.truetype("res/fonts/SpaceGrotesk-Light.ttf", 14)
+    font = ImageFont.truetype("res/fonts/SpaceGrotesk-Light.ttf", 12)
 
 def get_text_size(text: str):
     if not font:
         raise Exception("Output image was not initialized! Make sure to call NSD_init first")
-    return font.getsize(text, direction="ltr")
+    return font.getsize(text)
 
 def draw_debug_tile(x, y, x_sz, y_sz):
     from random import randint
