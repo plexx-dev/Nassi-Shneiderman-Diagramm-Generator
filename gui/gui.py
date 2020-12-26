@@ -145,7 +145,8 @@ class Gui:
                         except:
                             logging.error(
                                 ('Failed to create Image with values = ' + str(values)))
-                            sg.popup_error(('Failed to create an image: '))                
+                            sg.popup_error(('Failed to create an image. '))
+                            raise                 
 
                     elif values['-JAVA FOLDER-']:
                         logging.error('No Output')
