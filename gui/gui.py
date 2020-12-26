@@ -1,4 +1,4 @@
-from gui.utils import nassi, output
+from utils import nassi, output
 import PySimpleGUI as sg
 import os.path
 import random
