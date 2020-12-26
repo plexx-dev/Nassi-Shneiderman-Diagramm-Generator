@@ -76,7 +76,7 @@ class gui:
         window = sg.Window('Nassi Viewer', layout, resizable=True)
         return window
 
-    def show_gui(self, theme: str, window: sg.Window):
+    def show_gui(self, window: sg.Window):
 
         while True:
             event, values = window.read()
