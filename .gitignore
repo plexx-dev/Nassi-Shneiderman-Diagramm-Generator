@@ -1,6 +1,7 @@
 __pycache__/
 res/output/
-res/input/
+res/input/*
+.vscode/*
 *.json
 *.pyc
 *.png
