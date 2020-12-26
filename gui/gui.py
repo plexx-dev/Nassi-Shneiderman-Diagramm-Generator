@@ -6,7 +6,7 @@ import random
 import logging
 
 
-class gui:
+class Gui:
 
     def __init__(self, theme: str, debug_mode: bool):
         self.debug_mode = debug_mode
