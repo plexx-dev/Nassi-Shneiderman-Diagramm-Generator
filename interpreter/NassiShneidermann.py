@@ -4,13 +4,14 @@ import logging
 from draw.Iinstruction import Iinstruction
 from interpreter import interpret_source as itp
 from draw import code_to_image as cti
+from gui.gui import gui
 
 
 class NassiShneidermanDiagram:
 
     def __init__(self, debug: bool=False) -> None:
         self.instructions: dict[str, Iinstruction] = {}
-        self.init_logging(debug)
+        self.init_logging(gui.debug_mode)
 
     def init_logging(self, debug: bool):
         logLevel = logging.INFO
