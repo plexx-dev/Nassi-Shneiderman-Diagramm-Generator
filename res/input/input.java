@@ -1,6 +1,7 @@
 fahre1();
 fahre2();
-while(shouldNiet()) {
+while(shouldNiet())
+{
     niet4();
     niet5();
     if(if6)

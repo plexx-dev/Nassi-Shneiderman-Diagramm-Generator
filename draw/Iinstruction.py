@@ -1,5 +1,3 @@
-
-
 from typing import Iterable, List
 from abc import abstractmethod
 from draw import code_to_image as cti
