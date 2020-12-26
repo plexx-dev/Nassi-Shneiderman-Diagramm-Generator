@@ -1,5 +1,5 @@
 from gui.utils import nassi, output
-from interpreter.interpret_source import JavaSyntaxError, ScopeNotFoundExeption
+from interpreter.interpret_source import JavaSyntaxError, ScopeNotFoundException
 import PySimpleGUI as sg
 import os.path
 import random
