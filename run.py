@@ -1,3 +1,3 @@
 from gui.gui import gui
 
-gui()
+gui(theme='DarkGrey11', debug_mode=True)

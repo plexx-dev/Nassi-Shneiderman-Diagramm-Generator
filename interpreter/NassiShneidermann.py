@@ -4,6 +4,7 @@ import logging
 from draw.Iinstruction import Iinstruction
 from interpreter import interpret_source as itp
 from draw import code_to_image as cti
+# from gui.gui import 
 
 
 class NassiShneidermanDiagram:
