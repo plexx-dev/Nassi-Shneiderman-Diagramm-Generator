@@ -8,7 +8,7 @@ import logging
 class gui:
 
     def __init__(self, theme: str, debug_mode: bool):
-        self.get_debug_mode(mode=debug_mode)
+        self.debug_mode = debug_mode
         window = self.init_gui(theme=theme)
         self.show_gui(window=window)
 
@@ -19,6 +19,8 @@ class gui:
         logging.basicConfig(level=loging_level)
 
     def init_gui(self, theme: str):
+        self.get_debug_mode(self.debug_mode)
+
         sg.theme(theme)
         logging.info(('Theme = ' + theme))
 
