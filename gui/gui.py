@@ -134,11 +134,14 @@ class Gui:
                                             title='Created')
                         
                         except JavaSyntaxError as JsE:
-                            logging.error(('||SyntaxError in Java File||Failed to create Image with values = ' + str(values)))
+                            logging.error(('||SyntaxError in Java File|| Failed to create Image with values = ' + str(values)))
                             sg.popup_error((str(JsE)))
                         except ScopeNotFoundException as SnFe:
-                            logging.error(('||ScopeNotFoundExeption||Failed to create Image with values = ' + str(values)))
+                            logging.error(('||ScopeNotFoundExeption|| Failed to create Image with values = ' + str(values)))
                             sg.popup_error((str(SnFe)))
+                        except FileNotFoundError as FnFe:
+                            logging.error(('||FileNotFoundError|| Failed to create Image with values = ' + str(values)))
+                            sg.popup_error((str(FnFe) + 'File ' + str(file_path) + ' or ' + str(output_path) + ' is not reachable.'))
                         except:
                             logging.error(
                                 ('Failed to create Image with values = ' + str(values)))
