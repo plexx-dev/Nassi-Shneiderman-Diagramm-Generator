@@ -1,11 +1,16 @@
 import logging
+from os import remove
 import re
-from typing import List, Tuple
+from typing import List, Text, Tuple
 
 from draw.Iinstruction import *
 
 COMMENT_REGEX = r"""^//|^#|^COMMENT|^--"""
 WHILE_TAG = "solange " #german for 'while'. Change this depending on your language
+REMOVE_KEYWORDS = (' ', "public", "private", "void")
+
+REPLACE = dict((re.escape(k), '') for k in REMOVE_KEYWORDS)
+remove_pattern = re.compile("|".join(REPLACE.keys()))
 
 class JavaSyntaxError(Exception):
     pass
@@ -13,13 +18,16 @@ class JavaSyntaxError(Exception):
 class ScopeNotFoundException(Exception):
     pass
 
+def replace_all_tags(org: str):
+    return remove_pattern.sub(lambda m: REPLACE[re.escape(m.group(0))], org)
+
 def load_src(filepath: str) -> List[str]:
     lines: List[str] = []
     brace_open_count, brace_closed_count = 0,0
     try:
         with open(filepath, encoding="utf-8") as file:
             for _line in file:
-                line = _line.strip().replace(' ', '')
+                line = replace_all_tags(_line.strip())
                 if line and not re.match(COMMENT_REGEX, line):
                     lines.append(line)
                 if line.__contains__('{'):
@@ -48,6 +56,7 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
     i = start_idx
     while i < len(src):
         line = src[i]
+        logging.debug(line)
         try:
             if line.__contains__('}'): #We exited this scope, return it
                 return outer_scope, i

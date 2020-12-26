@@ -27,6 +27,10 @@
 
 //the following code was heavily distorted in order to test the interpreter. Sorry to everyone who has to read this
 
+void
+
+private void
+
 drehe("links");
 while(huegelVorhanden("rechts"))
 {
