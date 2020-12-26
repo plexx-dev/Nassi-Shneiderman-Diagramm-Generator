@@ -1,5 +1,5 @@
 from gui.utils import nassi, output
-from interpreter.interpret_source import JavaSyntaxError
+from interpreter.interpret_source import JavaSyntaxError, ScopeNotFoundExeption
 import PySimpleGUI as sg
 import os.path
 import random
@@ -133,9 +133,12 @@ class gui:
                             sg.popup_notify('Succsessful created!',
                                             title='Created')
                         
-                        except JavaSyntaxError:
+                        except JavaSyntaxError as JsE:
                             logging.error(('||SyntaxError in Java File||Failed to create Image with values = ' + str(values)))
-                            sg.popup_error(('Failed to create an image: SyntaxError in your Javacode'))
+                            sg.popup_error((str(JsE)))
+                        except ScopeNotFoundExeption as SnFe:
+                            logging.error(('||ScopeNotFoundExeption||Failed to create Image with values = ' + str(values)))
+                            sg.popup_error((str(SnFe)))
                         except:
                             logging.error(
                                 ('Failed to create Image with values = ' + str(values)))
