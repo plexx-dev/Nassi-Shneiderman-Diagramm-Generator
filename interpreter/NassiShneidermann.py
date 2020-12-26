@@ -8,9 +8,9 @@ from draw import code_to_image as cti
 
 class NassiShneidermanDiagram:
 
-    def __init__(self, gui):
-        self.instructions: dict[str, Iinstruction] = {}
-        self.init_logging(gui.debug_mode)
+    def __init__(self, do_debug: bool):
+        self.instructions: List[Iinstruction] = []
+        self.init_logging(do_debug)
 
     def init_logging(self, debug: bool):
         logLevel = logging.INFO
@@ -20,16 +20,23 @@ class NassiShneidermanDiagram:
         logging.basicConfig(level=logLevel)
     
     def add_instruction(self, instruction: Iinstruction):
-        instruction_key = "instruction#" + str(len(self.instructions))
-        self.instructions[instruction_key] = instruction
-        logging.debug("added instruction %s : %s", instruction_key, instruction.instruction_text)
+        self.instructions.append(instruction)
+
+    def get_image_height(self) -> int:
+        h = 0
+        for inst in self.instructions:
+            h += inst.getblksize()
+        return int(h)
 
     def convert_to_image(self, filename: str, x_size: int=200):
         logging.info(f"Saving NSD to {filename}.png")
-        cti.NSD_init(x_size, 5000)
-        x, y, x_sz = 0, 0, x_size
-        for _k, instruction in self.instructions.items():
-            x, y = instruction.to_image(x, y, x_sz)
+        image_y_sz = self.get_image_height()
+        cti.NSD_init(x_size, image_y_sz)
+        x, y = 0, 0
+
+        for instruction in self.instructions:
+            x, y = instruction.to_image(x, y, x_size)
+        
         cti.NSD_save(filename)
 
     def load_from_file(self, filepath:str):

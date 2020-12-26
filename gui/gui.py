@@ -110,7 +110,7 @@ class Gui:
                     pass
             if event == '-JAVA FOLDER-':
                 logging.debug(('event = ' + str(event) +
-                              ' value = ' + str(values['-JAVA FOLDER-'])))
+                             ' value = ' + str(values['-JAVA FOLDER-'])))
                 folder = values['-JAVA FOLDER-']
                 window['-JAVA FOLDER-'].update(values['-JAVA FILE-'])
 

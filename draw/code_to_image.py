@@ -5,7 +5,7 @@ datei_endung = ".png"
 
 img = None
 output_img = None
-font = None
+font = ImageFont.truetype("res/fonts/SpaceGrotesk-Light.ttf", 12)
 
 
 def NSD_init(x: float, y: float):
@@ -14,8 +14,6 @@ def NSD_init(x: float, y: float):
     #img = Image.open(input_dir + file_name + datei_endung)
     img = Image.new("RGB", (x, y), "white")
     output_img = ImageDraw.Draw(img)
-    #font = ImageFont.load_default()
-    font = ImageFont.truetype("res/fonts/SpaceGrotesk-Light.ttf", 12)
 
 def get_text_size(text: str):
     if not font:
@@ -36,7 +34,7 @@ def draw_generic_instruction(instruction: str, x, y, xsize, ysize) -> Iterable[f
     output_img.rectangle((x,y) + (x + xsize, y + ysize), outline=(0), width=1)
 
     #text shit
-    output_img.multiline_text((x + 5, y + ysize * .5), instruction, font=font, anchor="lm", align="right", fill=(0))
+    output_img.multiline_text((x + xsize * .5, y + ysize * .5), instruction, font=font, anchor="mm", align="right", fill=(0))
 
     return x, y + ysize
 
@@ -57,7 +55,7 @@ def draw_if_statement(condition: str, x: int, y: int, xsize: int, ysize: int):
     output_img.line((x + xsize / 2, y + text_y_size) + (x + xsize / 2, y + ysize), fill=(0))
 
     # condition text
-    output_img.multiline_text((x + xsize / 2, y + text_y_size), condition, fill=(0), font=font, anchor="md", spacing=4, align='right')
+    output_img.multiline_text((x + xsize / 2, y + text_y_size / 2), condition, fill=(0), font=font, anchor="mm", spacing=4, align='right')
 
     # true / false
     output_img.text((x + 5, y + text_y_size), "true", font = font, fill = (0), anchor="ld")
@@ -82,7 +80,7 @@ def draw_while_loop_front(condition: str, x: int, y: int, xsize: int, ysize: int
     output_img.line((x + xsize * .1, y + ysize) + (x + xsize * .1, y + text_y_sz), fill=(0))
 
     #the text
-    output_img.text((x + xsize * .1, y + text_y_sz * 0.5), condition, font = font, fill = (0), anchor="lm")
+    output_img.text((x + xsize * .1, y + text_y_sz * .5), condition, font = font, fill = (0), anchor="lm")
 
     #the x, y offset then the x,y draw size (the canvas)
     return x + xsize * .1, y + text_y_sz, xsize * .9
