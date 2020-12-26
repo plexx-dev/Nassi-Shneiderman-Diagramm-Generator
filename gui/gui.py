@@ -84,7 +84,7 @@ class gui:
         while True:
             event, values = window.read()
             if event == 'Exit' or event == sg.WIN_CLOSED:
-                logging.debug(('event = ' + str(event)))
+                logging.debug(('Exit GUI'))
                 break
 
             if event == '-DONATE-':
