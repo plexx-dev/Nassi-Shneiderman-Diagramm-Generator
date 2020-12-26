@@ -29,7 +29,7 @@ class NassiShneidermanDiagram:
         cti.NSD_init(x_size, 5000)
         x, y, x_sz = 0, 0, x_size
         for _k, instruction in self.instructions.items():
-            x, y = instruction.to_image(x, y, x_sz, 800)
+            x, y = instruction.to_image(x, y, x_sz)
         cti.NSD_save(filename)
 
     def load_from_file(self, filepath:str):
