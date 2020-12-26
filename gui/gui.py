@@ -22,7 +22,7 @@ class gui:
         self.get_debug_mode(self.debug_mode)
 
         sg.theme(theme)
-        logging.info(('Theme = ' + theme))
+        logging.debug(('Theme = ' + theme))
 
         java_file_list_column = [
             [
@@ -32,7 +32,7 @@ class gui:
                                                                     '*.*')), key='-JAVA FILE-'),  # ('ALL Files','*.*')
             ],
         ]
-        logging.info('set java_file_list_column GUI')
+        logging.debug('set java_file_list_column GUI')
 
         file_list_column = [
             [
@@ -46,21 +46,21 @@ class gui:
                 )
             ],
         ]
-        logging.info('set file_list_column GUI')
+        logging.debug('set file_list_column GUI')
 
         diagramm_viewer_column = [
             [sg.Text("Choose your Code for preview. ", size=(100, 10))],
             [sg.Text(size=(40, 1), key="-TOUT-")],
             [sg.Image(key='-IMAGE-')],
         ]
-        logging.info('set diagramm_viewer_column GUI')
+        logging.debug('set diagramm_viewer_column GUI')
 
         buttons_column = [
             [sg.Button(button_text='Create Image', key='-CREATE-')],
             # * fun feature
             [sg.Button(button_text='Donate', key='-DONATE-')],
         ]
-        logging.info('set buttons_column GUI')
+        logging.debug('set buttons_column GUI')
 
         layout = [
             [
@@ -73,7 +73,7 @@ class gui:
                 sg.Column(diagramm_viewer_column),
             ]
         ]
-        logging.info('init layout GUI')
+        logging.debug('init layout GUI')
 
         window = sg.Window('Nassi Viewer', layout, resizable=True)
         return window
@@ -83,21 +83,21 @@ class gui:
         while True:
             event, values = window.read()
             if event == 'Exit' or event == sg.WIN_CLOSED:
-                logging.info(('event = ' + str(event)))
+                logging.debug(('event = ' + str(event)))
                 break
 
             if event == '-DONATE-':
-                logging.info(('event = ' + str(event)))
+                logging.debug(('event = ' + str(event)))
                 sg.popup_notify(
                     ('You donated $' + str(random.randint(500, 100000000)) + '.'), title='Thanks')
 
             if event == '-OUTPUT FOLDER-':
-                logging.info(('event = ' + str(event) +
+                logging.debug(('event = ' + str(event) +
                               ' value = ' + str(values['-OUTPUT FOLDER-'])))
                 fnames = output(values)
                 window['-OUTPUT FILE LIST-'].update(fnames)
             elif event == '-OUTPUT FILE LIST-':
-                logging.info(('event = ' + str(event) +
+                logging.debug(('event = ' + str(event) +
                               ' value = ' + str(values['-OUTPUT FILE LIST-'])))
                 try:
                     filename = os.path.join(
@@ -108,17 +108,17 @@ class gui:
                 except:
                     pass
             if event == '-JAVA FOLDER-':
-                logging.info(('event = ' + str(event) +
+                logging.debug(('event = ' + str(event) +
                               ' value = ' + str(values['-JAVA FOLDER-'])))
                 folder = values['-JAVA FOLDER-']
                 window['-JAVA FOLDER-'].update(values['-JAVA FILE-'])
 
             elif event == '-CREATE-':
-                logging.info(('event = ' + str(event) +
+                logging.debug(('event = ' + str(event) +
                               'values = ' + str(values)))
                 try:
                     if values['-JAVA FOLDER-'] and values['-OUTPUT FOLDER-']:
-                        logging.info(
+                        logging.debug(
                             ('Try create Image with values = ' + str(values)))
                         try:
                             file_path = os.path.join(
