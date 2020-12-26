@@ -125,7 +125,7 @@ class gui:
                                 values["-JAVA FOLDER-"],
                             )
                             output_path = values['-OUTPUT FOLDER-']
-                            nassi(file_path, output_path)
+                            nassi(file_path, output_path, gui=self)
 
                             fnames = output(values)
                             window['-OUTPUT FILE LIST-'].update(fnames)
