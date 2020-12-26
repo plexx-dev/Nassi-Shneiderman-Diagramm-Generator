@@ -94,12 +94,12 @@ class Gui:
 
             if event == '-OUTPUT FOLDER-':
                 logging.debug(('event = ' + str(event) +
-                              ' value = ' + str(values['-OUTPUT FOLDER-'])))
+                               ' value = ' + str(values['-OUTPUT FOLDER-'])))
                 fnames = output(values)
                 window['-OUTPUT FILE LIST-'].update(fnames)
             elif event == '-OUTPUT FILE LIST-':
                 logging.debug(('event = ' + str(event) +
-                              ' value = ' + str(values['-OUTPUT FILE LIST-'])))
+                               ' value = ' + str(values['-OUTPUT FILE LIST-'])))
                 try:
                     filename = os.path.join(
                         values["-OUTPUT FOLDER-"], values["-OUTPUT FILE LIST-"][0]
@@ -110,13 +110,13 @@ class Gui:
                     pass
             if event == '-JAVA FOLDER-':
                 logging.debug(('event = ' + str(event) +
-                              ' value = ' + str(values['-JAVA FOLDER-'])))
+                               ' value = ' + str(values['-JAVA FOLDER-'])))
                 folder = values['-JAVA FOLDER-']
                 window['-JAVA FOLDER-'].update(values['-JAVA FILE-'])
 
             elif event == '-CREATE-':
                 logging.debug(('event = ' + str(event) +
-                              'values = ' + str(values)))
+                               'values = ' + str(values)))
                 try:
                     if values['-JAVA FOLDER-'] and values['-OUTPUT FOLDER-']:
                         logging.debug(
@@ -132,21 +132,25 @@ class Gui:
                             window['-OUTPUT FILE LIST-'].update(fnames)
                             sg.popup_notify('Succsessful created!',
                                             title='Created')
-                        
+
                         except JavaSyntaxError as JsE:
-                            logging.error(('||SyntaxError in Java File|| Failed to create Image with values = ' + str(values)))
+                            logging.error(
+                                ('||SyntaxError in Java File|| Failed to create Image with values = ' + str(values)))
                             sg.popup_error((str(JsE)))
                         except ScopeNotFoundException as SnFe:
-                            logging.error(('||ScopeNotFoundExeption|| Failed to create Image with values = ' + str(values)))
+                            logging.error(
+                                ('||ScopeNotFoundExeption|| Failed to create Image with values = ' + str(values)))
                             sg.popup_error((str(SnFe)))
                         except FileNotFoundError as FnFe:
-                            logging.error(('||FileNotFoundError|| Failed to create Image with values = ' + str(values)))
-                            sg.popup_error((str(FnFe) + 'File ' + str(file_path) + ' or ' + str(output_path) + ' is not reachable.'))
+                            logging.error(
+                                ('||FileNotFoundError|| Failed to create Image with values = ' + str(values)))
+                            sg.popup_error(
+                                (str(FnFe) + 'File ' + str(file_path) + ' or ' + str(output_path) + ' is not reachable.'))
                         except:
                             logging.error(
                                 ('Failed to create Image with values = ' + str(values)))
                             sg.popup_error(('Failed to create an image. '))
-                            raise                 
+                            raise
 
                     elif values['-JAVA FOLDER-']:
                         logging.error('No Output')
