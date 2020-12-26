@@ -136,7 +136,7 @@ class gui:
                         except JavaSyntaxError as JsE:
                             logging.error(('||SyntaxError in Java File||Failed to create Image with values = ' + str(values)))
                             sg.popup_error((str(JsE)))
-                        except ScopeNotFoundExeption as SnFe:
+                        except ScopeNotFoundException as SnFe:
                             logging.error(('||ScopeNotFoundExeption||Failed to create Image with values = ' + str(values)))
                             sg.popup_error((str(SnFe)))
                         except:
