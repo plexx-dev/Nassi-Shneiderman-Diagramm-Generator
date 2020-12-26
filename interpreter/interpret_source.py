@@ -9,11 +9,14 @@ COMMENT_REGEX = r"""^//|^#|^COMMENT|^--"""
 class JavaSyntaxError(Exception):
     pass
 
+class ScopeNotFoundException(Exception):
+    pass
+
 def load_src(filepath: str) -> List[str]:
     lines: List[str] = []
     brace_open_count, brace_closed_count = 0,0
     try:
-        with open(filepath) as file:
+        with open(filepath, encoding="utf-8") as file:
             for _line in file:
                 line = _line.strip().replace(' ', '')
                 if line and not re.match(COMMENT_REGEX, line):
@@ -36,7 +39,8 @@ def get_scope_start_offset(src: List[str], start_idx: int) -> int:
         line = src[i]
         if line.__contains__("{"):
             return i - start_idx + 1
-    raise Exception("Unable to find scope start. Is the program ill-formed?")
+        i += 1
+    raise ScopeNotFoundException("Unable to find scope start. Is the program ill-formed?")
 
 def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[Iinstruction], int]:
     outer_scope: List[Iinstruction] = []
@@ -48,23 +52,17 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
                 return outer_scope, i
             
             if line.startswith("while("):
-                #construct:
-                #while(...)
-                #{
-                #...
-                #}
                 logging.debug("Found while instruction in line: %i", i+1)
 
                 bracket_idx = line.rindex(')') # throws if while contruct is illformed
 
                 instruction_txt = line[6:bracket_idx]
-                child_instructions, i = get_instructions_in_scope(src, i+2)
+                brace_offset = get_scope_start_offset(src, i)
+                child_instructions, i = get_instructions_in_scope(src, i+brace_offset)
 
                 outer_scope.append(while_instruction_front(instruction_txt, child_instructions))
             
             elif line.startswith("if("):
-                #line: if(...)
-
                 logging.debug("Found if instruction in line: %i", i+1)
 
                 bracket_idx = line.rindex(')') # throws if the contruct is illformed
@@ -86,7 +84,8 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
                 #}while(...);
                 logging.debug("Found start of do-while instruction in line: %i", i)
 
-                child_instructions, i = get_instructions_in_scope(src, i+1)
+                brace_offset = get_scope_start_offset(src, i)
+                child_instructions, i = get_instructions_in_scope(src, i+brace_offset)
 
                 end_line = src[i]
                 bracket_idx = end_line.rindex(");")
@@ -102,11 +101,3 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
             raise # rethrow
         i += 1
     return outer_scope, 0
-
-if __name__ == "__main__":
-    """debuging"""
-
-    logging.basicConfig(level=logging.DEBUG)
-    lines = load_src("res/input/input.java")
-    global_scope = get_instructions_in_scope(lines)
-    print(global_scope)
