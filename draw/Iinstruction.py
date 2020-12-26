@@ -130,13 +130,9 @@ class while_instruction_back(while_instruction_front):
         while_instruction_front.__init__(self, condition, instructions)
     
     def to_image(self, x:int, y:int, x_sz: int):
-        children_x, children_y, children_sz_x, children_sz_y = cti.draw_while_loop_back(self.instruction_text, x, y, x_sz, y_sz)
-        blk_size = self.draw_children(children_x, children_y, children_sz_x)
-        return x
-
-    def draw_children(self, x:float, y:float, x_sz:float):
-        for instruction in self.child_instructions:
-            x, y = instruction.to_image(x, y, x_sz)
+        children_x, children_y, children_sz_x = cti.draw_while_loop_back(self.instruction_text, x, y, x_sz, self.getblksize())
+        self.draw_children(children_x, children_y, children_sz_x)
+        return x, y + self.getblksize()
     
 
 if __name__ == "__main__":

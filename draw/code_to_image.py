@@ -90,21 +90,21 @@ def draw_while_loop_back(condition: str, x: int, y: int, xsize: int, ysize: int)
     if not output_img:
         raise Exception("Output image was not initialized! Make sure to call NSD_init first")
 
-    #ole #TODO
+    text_y_sz = get_text_size(condition)[1]
 
     #the box
     output_img.line((x,y) + (x + xsize * .1, y), fill=0)
-    output_img.line((x + xsize * .1, y) + (x + xsize * .1, y + ysize * .9), fill=0)
-    output_img.line((x + xsize * .1, y + ysize * .9) + (x + xsize, y + ysize * .9), fill=0)
-    output_img.line((x + xsize, y + ysize * .9) + (x + xsize, y + ysize), fill=0)
+    output_img.line((x + xsize * .1, y) + (x + xsize * .1, y + ysize - text_y_sz), fill=0)
+    output_img.line((x + xsize * .1, y + ysize - text_y_sz) + (x + xsize, y + ysize - text_y_sz), fill=0)
+    output_img.line((x + xsize, y + ysize - text_y_sz) + (x + xsize, y + ysize), fill=0)
     output_img.line((x,y + ysize) + (x + xsize, y + ysize), fill=0)
     output_img.line((x,y) + (x, y + ysize), fill=0)
 
     #the text
-    output_img.text((x + xsize * .1, y + ysize * .95), condition, font = font, fill = (0), anchor="lm")
+    output_img.text((x + xsize * .1, y + ysize - text_y_sz * .5), condition, font = font, fill = (0), anchor="lm")
 
     #the x, y offset then the x,y draw size (the canvas)
-    return x + xsize * .1, y, xsize * .9, ysize * .9
+    return x + xsize * .1, y, xsize * .9
 
 def NSD_save(filename: str):
     """Save the created file"""

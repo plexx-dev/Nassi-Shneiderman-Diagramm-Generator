@@ -25,30 +25,96 @@
 //     niet22();
 // }while(bool23);
 
+//the following code was heavily distorted in order to test the interpreter. Sorry to everyone who has to read this
+
 drehe("links");
 while(huegelVorhanden("rechts"))
 {
-    gesteinSammeln();
+                    gesteinSammeln();
     fahre();
+
+
+
+
+
 }
 drehe("rechts");
-gesteinSammeln();
+    
+    
+    
+    
+    gesteinSammeln();
+
+
 
 fahre();
-while(huegelVorhanden("rechts"))
+
+
+                   while(huegelVorhanden("rechts"))
 {
-    gesteinSammeln();
+                    gesteinSammeln();
     fahre();
 }
 drehe("rechts");
-gesteinSammeln();
+
+        
+            
+                
+                
+                    
+                    
+                        gesteinSammeln();
 fahre();
-while(huegelVorhanden("rechts"))
+
+
+
+
+
+                while(huegelVorhanden("rechts"))
 {
     gesteinSammeln();
     if(!huegelVorhanden("vorne"))
+                
+                
+                
+                        {
+
+
+
+
+
+
+        fahre();
+    }     else 
+
+
     {
         fahre();
     }
 }
-drehe("rechts");
+
+
+
+
+
+
+
+
+                        drehe("rechts");
+
+do
+
+
+
+
+{
+                    insideDoWhile();
+    insideDoWhile();
+    
+    
+    insideDoWhile();
+
+
+
+    insideDoWhile();
+}while(               !huegelVorhanden(    "vorne"     )      )       ;

@@ -5,6 +5,7 @@ from typing import List, Tuple
 from draw.Iinstruction import *
 
 COMMENT_REGEX = r"""^//|^#|^COMMENT|^--"""
+WHILE_TAG = "solange " #german for 'while'. Change this depending on your language
 
 class JavaSyntaxError(Exception):
     pass
@@ -52,7 +53,7 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
                 return outer_scope, i
             
             if line.startswith("while("):
-                logging.debug("Found while instruction in line: %i", i+1)
+                logging.debug("Found while construct in line: %i", i+1)
 
                 bracket_idx = line.rindex(')') # throws if while contruct is illformed
 
@@ -60,10 +61,10 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
                 brace_offset = get_scope_start_offset(src, i)
                 child_instructions, i = get_instructions_in_scope(src, i+brace_offset)
 
-                outer_scope.append(while_instruction_front(('while ' + instruction_txt), child_instructions))
+                outer_scope.append(while_instruction_front((WHILE_TAG + instruction_txt), child_instructions))
             
             elif line.startswith("if("):
-                logging.debug("Found if instruction in line: %i", i+1)
+                logging.debug("Found if construct in line: %i", i+1)
 
                 bracket_idx = line.rindex(')') # throws if the contruct is illformed
 
@@ -73,16 +74,14 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
 
                 false_instructions = None
                 if src[i].__contains__("else"): #if there is an else statement, check it
+                    logging.debug("found else construct in line: %i", i+1)
+                    brace_offset = get_scope_start_offset(src, i)
                     false_instructions, i = get_instructions_in_scope(src, i+2)
                 
                 outer_scope.append(if_instruction(instruction_txt, true_instructions, false_instructions))
 
-            elif line.startswith("do{"):
-                #construct:
-                #do{
-                #...
-                #}while(...);
-                logging.debug("Found start of do-while instruction in line: %i", i)
+            elif line.startswith("do"):
+                logging.debug("Found start of do-while construct in line: %i", i+1)
 
                 brace_offset = get_scope_start_offset(src, i)
                 child_instructions, i = get_instructions_in_scope(src, i+brace_offset)
@@ -91,7 +90,7 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
                 bracket_idx = end_line.rindex(");")
                 instruction_txt = end_line[7: bracket_idx]
 
-                outer_scope.append(while_instruction_back(('do while' + instruction_txt), child_instructions))
+                outer_scope.append(while_instruction_back((WHILE_TAG + instruction_txt), child_instructions))
             
             else:
                 logging.debug("Found generic instruction in line: %i", i+1)
