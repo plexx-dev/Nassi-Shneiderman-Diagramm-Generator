@@ -1,12 +1,11 @@
 __pycache__/
 res/output/
-<<<<<<< HEAD
 res/input/*
 .vscode/*
 *.json
-=======
-res/input/
->>>>>>> 351dc2e6d0158a1b81601f48503f761ea4995e58
 *.pyc
 *.png
 debug.py
+build/
+run.spec
+dist/
