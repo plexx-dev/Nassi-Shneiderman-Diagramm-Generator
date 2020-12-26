@@ -25,30 +25,30 @@ do{
     niet22();
 }while(bool23);
 
-// drehe("links");
-// while(huegelVorhanden("rechts"))
-// {
-//     gesteinSammeln();
-//     fahre();
-// }
-// drehe("rechts");
-// gesteinSammeln();
+drehe("links");
+while(huegelVorhanden("rechts"))
+{
+    gesteinSammeln();
+    fahre();
+}
+drehe("rechts");
+gesteinSammeln();
 
-// fahre();
-// while(huegelVorhanden("rechts"))
-// {
-//     gesteinSammeln();
-//     fahre();
-// }
-// drehe("rechts");
-// gesteinSammeln();
-// fahre();
-// while(huegelVorhanden("rechts"))
-// {
-//     gesteinSammeln();
-//     if(!huegelVorhanden("vorne"))
-//     {
-//         fahre();
-//     }
-// }
-// drehe("rechts");
+fahre();
+while(huegelVorhanden("rechts"))
+{
+    gesteinSammeln();
+    fahre();
+}
+drehe("rechts");
+gesteinSammeln();
+fahre();
+while(huegelVorhanden("rechts"))
+{
+    gesteinSammeln();
+    if(!huegelVorhanden("vorne"))
+    {
+        fahre();
+    }
+}
+drehe("rechts");
