@@ -1,7 +1,6 @@
 __pycache__/
 res/output/
 res/input/
-*.json
 *.pyc
 *.png
 debug.py
