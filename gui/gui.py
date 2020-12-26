@@ -1,4 +1,5 @@
 from gui.utils import nassi, output
+from interpreter.interpret_source import JavaSyntaxError
 import PySimpleGUI as sg
 import os.path
 import random
@@ -131,11 +132,14 @@ class gui:
                             window['-OUTPUT FILE LIST-'].update(fnames)
                             sg.popup_notify('Succsessful created!',
                                             title='Created')
-
+                        
+                        except JavaSyntaxError:
+                            logging.error(('||SyntaxError in Java File||Failed to create Image with values = ' + str(values)))
+                            sg.popup_error(('Failed to create an image: SyntaxError in your Javacode'))
                         except:
                             logging.error(
                                 ('Failed to create Image with values = ' + str(values)))
-                            pass
+                            sg.popup_error(('Failed to create an image: '))                
 
                     elif values['-JAVA FOLDER-']:
                         logging.error('No Output')
