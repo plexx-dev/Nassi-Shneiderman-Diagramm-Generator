@@ -90,11 +90,13 @@ class gui:
                     ('You donated $' + str(random.randint(500, 100000000)) + '.'), title='Thanks')
 
             if event == '-OUTPUT FOLDER-':
-                logging.info(('event = ' + str(event) + ' value = ' + str(values['-OUTPUT FOLDER-'])))
+                logging.info(('event = ' + str(event) +
+                              ' value = ' + str(values['-OUTPUT FOLDER-'])))
                 fnames = output(values)
                 window['-OUTPUT FILE LIST-'].update(fnames)
             elif event == '-OUTPUT FILE LIST-':
-                logging.info(('event = ' + str(event) + ' value = ' + str(values['-OUTPUT FILE LIST-'])))
+                logging.info(('event = ' + str(event) +
+                              ' value = ' + str(values['-OUTPUT FILE LIST-'])))
                 try:
                     filename = os.path.join(
                         values["-OUTPUT FOLDER-"], values["-OUTPUT FILE LIST-"][0]
@@ -104,15 +106,18 @@ class gui:
                 except:
                     pass
             if event == '-JAVA FOLDER-':
-                logging.info(('event = ' + str(event) + ' value = ' + str(values['-JAVA FOLDER-'])))
+                logging.info(('event = ' + str(event) +
+                              ' value = ' + str(values['-JAVA FOLDER-'])))
                 folder = values['-JAVA FOLDER-']
                 window['-JAVA FOLDER-'].update(values['-JAVA FILE-'])
 
             elif event == '-CREATE-':
-                logging.info(('event = ' + str(event) + 'values = ' + str(values)))
+                logging.info(('event = ' + str(event) +
+                              'values = ' + str(values)))
                 try:
                     if values['-JAVA FOLDER-'] and values['-OUTPUT FOLDER-']:
-                        logging.info(('Try create Image with values = ' + str(values)))
+                        logging.info(
+                            ('Try create Image with values = ' + str(values)))
                         try:
                             file_path = os.path.join(
                                 values["-JAVA FOLDER-"],
@@ -126,17 +131,18 @@ class gui:
                                             title='Created')
 
                         except:
-                            logging.error(('Failed to create Image with values = ' + str(values)))
+                            logging.error(
+                                ('Failed to create Image with values = ' + str(values)))
                             pass
 
                     elif values['-JAVA FOLDER-']:
                         logging.error('No Output')
                         sg.popup_annoying('No Output', title='Error',
-                                        auto_close_duration=5, auto_close=True)
+                                          auto_close_duration=5, auto_close=True)
                     elif values['-OUTPUT FOLDER-']:
                         logging.error('No Input')
                         sg.popup_annoying('No Input', title='Error',
-                                        auto_close_duration=5, auto_close=True)
+                                          auto_close_duration=5, auto_close=True)
                     else:
                         logging.error('Unexpected Case!')
                         sg.popup_annoying('Unexpected Case!', title='Error')
