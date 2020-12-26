@@ -5,7 +5,7 @@ datei_endung = ".png"
 
 img = None
 output_img = None
-font = ImageFont.truetype("res/fonts/SpaceGrotesk-Light.ttf", 12)
+font = ImageFont.truetype("res/fonts/NotoSans-Regular.ttf", 12)
 
 
 def NSD_init(x: float, y: float):

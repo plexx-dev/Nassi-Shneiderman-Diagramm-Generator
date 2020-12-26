@@ -60,7 +60,7 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
                 brace_offset = get_scope_start_offset(src, i)
                 child_instructions, i = get_instructions_in_scope(src, i+brace_offset)
 
-                outer_scope.append(while_instruction_front(instruction_txt, child_instructions))
+                outer_scope.append(while_instruction_front(('while ' + instruction_txt), child_instructions))
             
             elif line.startswith("if("):
                 logging.debug("Found if instruction in line: %i", i+1)
@@ -91,7 +91,7 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
                 bracket_idx = end_line.rindex(");")
                 instruction_txt = end_line[7: bracket_idx]
 
-                outer_scope.append(while_instruction_back(instruction_txt, child_instructions))
+                outer_scope.append(while_instruction_back(('do while' + instruction_txt), child_instructions))
             
             else:
                 logging.debug("Found generic instruction in line: %i", i+1)
