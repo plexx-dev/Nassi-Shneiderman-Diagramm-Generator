@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from gui.gui import Gui
 import sys
 
