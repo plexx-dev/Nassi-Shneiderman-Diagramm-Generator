@@ -22,7 +22,7 @@ class Gui:
     def init_gui(self, theme: str):
         self.get_debug_mode(self.debug_mode)
 
-        font_filepath = None
+        
 
         sg.theme(theme)
         logging.debug(('Theme = ' + theme))
@@ -93,6 +93,8 @@ class Gui:
         return window
 
     def show_gui(self, window: sg.Window):
+
+        font_filepath = None
 
         while True:
             event, values = window.read()
