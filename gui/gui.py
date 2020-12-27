@@ -1,7 +1,6 @@
 from gui.utils import nassi, output
 from interpreter.interpret_source import JavaSyntaxError, ScopeNotFoundException
 
-from _thread import start_new_thread as thread
 import PySimpleGUI as sg
 import os.path
 import random
