@@ -24,7 +24,3 @@ def output(values):
         and f.lower().endswith(('.png', '.gif'))
     ]
     return fnames
-
-if __name__ == "__main__":
-    """Debugging"""
-    nassi("res/input/input.java", "res/output")

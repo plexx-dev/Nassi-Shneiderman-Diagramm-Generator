@@ -133,20 +133,3 @@ class while_instruction_back(while_instruction_front):
         children_x, children_y, children_sz_x = cti.draw_while_loop_back(self.instruction_text, x, y, x_sz, self.getblksize())
         self.draw_children(children_x, children_y, children_sz_x)
         return x, y + self.getblksize()
-    
-
-if __name__ == "__main__":
-    """Debugging"""
-    test = if_instruction("shouldNiet()", [
-        generic_instruction("Niet()"),
-        generic_instruction("Niet()"),
-        generic_instruction("Niet()"),
-        generic_instruction("Niet()"),
-    ], [
-        generic_instruction("hiet()"),
-        generic_instruction("hiet()"),
-        if_instruction("shouldNiet()", [ generic_instruction("hiet()") ], [generic_instruction("hiet()")]),
-    ])
-    cti.NSD_init(500, 500)
-    test.to_image(0, 0, 500)
-    cti.NSD_save("Iinstruction")
