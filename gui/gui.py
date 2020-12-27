@@ -69,7 +69,7 @@ class Gui:
 
         buttons_column = [
             [sg.Button(button_text='Create Image', key='-CREATE-')],
-
+            [sg.Button(button_text='Credits', key='-CREDITS-')],
             # * fun feature
             [sg.Button(button_text='Donate', key='-DONATE-')],
         ]
@@ -95,6 +95,7 @@ class Gui:
     def show_gui(self, window: sg.Window):
 
         font_filepath = None
+        output_name = 'unnamed'
 
         sg.popup('The Interpreter is WIP and cannot interpret classes or function definitions as those do not exist in Nass-Shneidermann Diagrams. A fix is in the making.',
                 auto_close=True, auto_close_duration=5)
@@ -104,6 +105,9 @@ class Gui:
             if event == 'Exit' or event == sg.WIN_CLOSED:
                 logging.debug(('Exit GUI'))
                 break
+            
+            if event == '-CREDITS-':
+                sg.popup('This is made by Plexx, Weckyy and Oleting. Used PySimpleGUI and Pillow', title='Credits')
 
             if event == '-DONATE-':
                 logging.debug(('event = ' + str(event)))
@@ -144,14 +148,15 @@ class Gui:
                                 values["-JAVA FOLDER-"],
                             )
                             output_path = values['-OUTPUT FOLDER-']
-                            nassi(file_path, output_path, gui=self,
+                            nassi(filepath=file_path, output_path=output_path, outputname=output_name, gui=self,
                                   font_filepath=font_filepath)
 
                             fnames = output(values)
-                            window['-OUTPUT FILE LIST-'].update(fnames)
-
                             sg.popup_annoying('Successful created!', title='Created',
                                               auto_close_duration=2, auto_close=True, text_color='green')
+                            window['-OUTPUT FILE LIST-'].update(fnames)
+
+                            
 
                         except JavaSyntaxError as JsE:
                             logging.error(
@@ -165,7 +170,7 @@ class Gui:
                             logging.error(
                                 ('||FileNotFoundError|| Failed to create Image with values = ' + str(values)))
                             sg.popup_error(
-                                (str(FnFe) + 'File ' + str(file_path) + ' or ' + str(output_path) + ' is not reachable.'))
+                                (str(FnFe) + 'File ' + str(file_path) + ' or ' + str(output_path) + ' or ' + str(font_filepath) + ' is not reachable.'))
                         except:
                             logging.error(
                                 ('Failed to create Image with values = ' + str(values)))
