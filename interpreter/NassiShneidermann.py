@@ -29,7 +29,7 @@ class NassiShneidermanDiagram:
             h += inst.getblksize()
         return int(h)
 
-    def convert_to_image(self, filepath, filename: str, x_size: int=200):
+    def convert_to_image(self, filepath: str, filename: str, x_size: int=200):
         image_y_sz = self._get_image_height()
         logging.info(f"Saving NSD to {filename}.png...")
         with NSD_writer(filepath, filename, x_size, image_y_sz):

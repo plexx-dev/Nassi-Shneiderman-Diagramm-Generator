@@ -3,7 +3,7 @@ from os import remove
 import re
 from typing import Callable, List, Tuple
 
-from errors.custom import InterpreterError, JavaSyntaxError, ScopeNotFoundException
+from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
 
 COMMENT_REGEX = r"""^//|^#|^COMMENT|^--"""
@@ -163,5 +163,5 @@ def load_instructions(filepath: str) -> List[Iinstruction]:
     src = load_src(filepath)
     instructions, i = get_instructions_in_scope(src)
     if i != len(src):
-        raise InterpreterError("Unknown error during source interpretation! Unsupported language constructs or ill-formed source?")
+        raise InterpreterException("Unknown error during source interpretation! Unsupported language constructs or ill-formed source?")
     return instructions
