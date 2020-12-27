@@ -53,7 +53,7 @@ class Gui:
             ],
             [
                 sg.Text('Output name'),
-                sg.In(size=(25, 1)),
+                sg.In(size=(25, 1), enable_events=True),
             ],
 
         ]
@@ -109,6 +109,7 @@ class Gui:
                  auto_close=True, auto_close_duration=5)
 
         while True:
+            logging.info('test')
             event, values = window.read()
             if event == 'Exit' or event == sg.WIN_CLOSED:
                 logging.debug(('Exit GUI'))
@@ -159,7 +160,7 @@ class Gui:
 
                             output_path = values['-OUTPUT FOLDER-']
 
-                            if file_there((output_path + '/' + output_name)) is False:
+                            if file_there((output_path + '/' + output_name)) is True:
                                 proceed = sg.popup_yes_no(
                                     'File already exist! Continue?', title='File alreday exist!')
                                 print(proceed)
@@ -172,12 +173,21 @@ class Gui:
                                                       auto_close_duration=2, auto_close=True, text_color='green')
                                     window['-OUTPUT FILE LIST-'].update(fnames)
                                 elif proceed == 'No':
+                                    logging.error('test')
                                     pass
                                 else:
                                     logging.warning(
                                         'You did not made a decision! Try again!')
                                     sg.popup_annoying('You did not made a decision! Try again!', title='FAIL',
                                                       auto_close_duration=2, auto_close=True, text_color='orange')
+                            else:
+                                nassi(filepath=file_path, output_path=output_path, outputname=output_name, gui=self,
+                                          font_filepath=font_filepath)
+
+                                fnames = output(values)
+                                sg.popup_annoying('Successful created!', title='Created',
+                                                    auto_close_duration=2, auto_close=True, text_color='green')
+                                window['-OUTPUT FILE LIST-'].update(fnames)
 
                         except JavaSyntaxError as JsE:
                             logging.error(

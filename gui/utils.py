@@ -35,8 +35,8 @@ def output(values):
 def file_there(file):
     try:
         open((file + '.png'))
-        return False
-    except FileNotFoundError:
         return True
-    except:
+    except FileNotFoundError:
         return False
+    except:
+        raise
