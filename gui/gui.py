@@ -1,9 +1,12 @@
 from gui.utils import nassi, output
 from interpreter.interpret_source import JavaSyntaxError, ScopeNotFoundException
+
+from _thread import start_new_thread as thread
 import PySimpleGUI as sg
 import os.path
 import random
 import logging
+import time
 
 
 class Gui:
@@ -21,8 +24,6 @@ class Gui:
 
     def init_gui(self, theme: str):
         self.get_debug_mode(self.debug_mode)
-
-        
 
         sg.theme(theme)
         logging.debug(('Theme = ' + theme))
@@ -63,7 +64,7 @@ class Gui:
                 sg.Text('TTF File'),
                 sg.In(size=(25, 1), enable_events=True, key="-TTF FOLDER-"),
                 sg.FileBrowse(file_types=(('TTF-File', '*.ttf'), ('ALL Files',
-                                                                    '*.*')), key='-TTF FILE-'),  # ('ALL Files','*.*')
+                                                                  '*.*')), key='-TTF FILE-'),  # ('ALL Files','*.*')
             ],
         ]
 
@@ -76,7 +77,7 @@ class Gui:
         logging.debug('set buttons_column GUI')
 
         layout = [
-            [   
+            [
                 sg.Column(font_Input),
                 sg.Column(java_file_list_column),
                 sg.VSeparator(),
@@ -95,6 +96,8 @@ class Gui:
     def show_gui(self, window: sg.Window):
 
         font_filepath = None
+        
+        sg.popup('The Interpreter is WIP and cannot interpret classes or function definitions as those do not exist in Nass-Shneidermann Diagrams. A fix is in the making.', auto_close=True, auto_close_duration=5)
 
         while True:
             event, values = window.read()
@@ -141,12 +144,13 @@ class Gui:
                                 values["-JAVA FOLDER-"],
                             )
                             output_path = values['-OUTPUT FOLDER-']
-                            nassi(file_path, output_path, gui=self, font_filepath=str(font_filepath))
+                            nassi(file_path, output_path, gui=self,
+                                  font_filepath=str(font_filepath))
 
                             fnames = output(values)
                             window['-OUTPUT FILE LIST-'].update(fnames)
-                            sg.popup_notify('Succsessful created!',
-                                            title='Created')
+
+                            sg.popup_annoying('Successful created!', title='Created', auto_close_duration=2, auto_close=True, text_color='green')
 
                         except JavaSyntaxError as JsE:
                             logging.error(
@@ -183,7 +187,7 @@ class Gui:
 
             if event == '-TTF FOLDER-':
                 logging.debug(('event = ' + str(event) +
-                            ' value = ' + str(values['-TTF FOLDER-'])))
+                               ' value = ' + str(values['-TTF FOLDER-'])))
                 folder = values['-TTF FOLDER-']
                 window['-TTF FOLDER-'].update(values['-TTF FILE-'])
                 font_filepath = values['-TTF FILE-']
