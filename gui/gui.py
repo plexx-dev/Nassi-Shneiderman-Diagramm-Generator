@@ -4,6 +4,7 @@ from interpreter.interpret_source import JavaSyntaxError, ScopeNotFoundException
 import PySimpleGUI as sg
 import os.path
 import random
+import secrets
 import logging
 import time
 
@@ -40,6 +41,11 @@ class Gui:
                 sg.FolderBrowse(),
             ],
             [
+                sg.Text('Output name'),
+                sg.In(size=(25, 1), enable_events=True, key='-OUTPUT NAME-'),
+                sg.Button('Confirm', key='-SET OUTPUT NAME-'),
+            ],
+            [
                 sg.HSeparator(),
             ],
             [
@@ -50,11 +56,6 @@ class Gui:
                 sg.In(size=(25, 1), enable_events=True, key="-TTF FOLDER-"),
                 sg.FileBrowse(file_types=(('TTF-File', '*.ttf'), ('ALL Files',
                                                                   '*.*')), key='-TTF FILE-'),  
-            ],
-            [
-                sg.Text('Output name'),
-                sg.In(size=(25, 1), enable_events=True, key='-OUTPUT NAME-'),
-                sg.Button('Done', key='-SET OUTPUT NAME-'),
             ],
 
         ]
@@ -71,7 +72,7 @@ class Gui:
         ]
 
         diagramm_viewer_column = [
-            [sg.Text("Choose your code for preview. ", size=(100, 10))],
+            [sg.Text("Choose your code for preview. ", auto_size_text=True)],
             [sg.Text(key="-TOUT-", auto_size_text=True)],
             [sg.Image(key='-IMAGE-')],
         ]
@@ -103,7 +104,7 @@ class Gui:
     def show_gui(self, window: sg.Window):
 
         font_filepath = None
-        output_name = 'unnamed'
+        output_name = None
 
         sg.popup('The Interpreter is WIP and cannot interpret classes or function definitions as those do not exist in Nass-Shneidermann Diagrams. A fix is in the making.',
                  auto_close=True, auto_close_duration=5)
@@ -130,13 +131,16 @@ class Gui:
                             )
 
                             output_path = values['-OUTPUT FOLDER-']
-
+                            if output_name is None:
+                                        sg.popup_auto_close('You dont set a name for the image, it will be named random.')
+                                        output_name = secrets.token_hex(16)
                             if file_there((output_path + '/' + output_name)) is True:
                                 proceed = sg.popup_yes_no(
                                     'File already exist! Continue?', title='File alreday exist!')
                                 if proceed == 'Yes':
                                     nassi(filepath=file_path, output_path=output_path, outputname=output_name, gui=self,
                                           font_filepath=font_filepath)
+                                    
 
                                     fnames = output(values)
                                     sg.popup_annoying('Successful created!', title='Created',
@@ -149,7 +153,7 @@ class Gui:
                                         'You did not made a decision! Try again!')
                                     sg.popup_annoying('You did not made a decision! Try again!', title='FAIL',
                                                       auto_close_duration=2, auto_close=True, text_color='orange')
-                            else:
+                            else:                             
                                 nassi(filepath=file_path, output_path=output_path, outputname=output_name, gui=self,
                                           font_filepath=font_filepath)
 
