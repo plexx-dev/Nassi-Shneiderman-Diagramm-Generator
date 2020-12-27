@@ -27,47 +27,55 @@ class Gui:
         sg.theme(theme)
         logging.debug(('Theme = ' + theme))
 
-        java_file_list_column = [
+        input_column = [
             [
                 sg.Text('Java File'),
                 sg.In(size=(25, 1), enable_events=True, key="-JAVA FOLDER-"),
                 sg.FileBrowse(file_types=(('Java-File', '*.java'), ('ALL Files',
                                                                     '*.*')), key='-JAVA FILE-'),  # ('ALL Files','*.*')
             ],
-        ]
-        logging.debug('set java_file_list_column GUI')
-
-        file_list_column = [
             [
                 sg.Text('Output Folder'),
                 sg.In(size=(25, 1), enable_events=True, key="-OUTPUT FOLDER-"),
                 sg.FolderBrowse(),
             ],
             [
+                sg.HSeparator(),
+            ],
+            [
+                sg.Text('Optional choose custom font'),
+            ],
+            [
+                sg.Text('TTF  File'),
+                sg.In(size=(25, 1), enable_events=True, key="-TTF FOLDER-"),
+                sg.FileBrowse(file_types=(('TTF-File', '*.ttf'), ('ALL Files',
+                                                                  '*.*')), key='-TTF FILE-'),  # ('ALL Files','*.*')
+            ],
+            [
+                sg.Text('Output name'),
+                sg.In
+            ],
+
+        ]
+
+        file_list_column = [
+            [
+                sg.Text('Output folder')
+            ],
+            [ 
                 sg.Listbox(
                     values=[], enable_events=True, size=(40, 20), key="-OUTPUT FILE LIST-"
                 )
             ],
         ]
-        logging.debug('set file_list_column GUI')
 
         diagramm_viewer_column = [
-            [sg.Text("Choose your Code for preview. ", size=(100, 10))],
+            [sg.Text("Choose your code for preview. ", size=(100, 10))],
             [sg.Text(key="-TOUT-", auto_size_text=True)],
             [sg.Image(key='-IMAGE-')],
         ]
-        logging.debug('set diagramm_viewer_column GUI')
 
-        font_Input = [
-            [
-                sg.Text('TTF File'),
-                sg.In(size=(25, 1), enable_events=True, key="-TTF FOLDER-"),
-                sg.FileBrowse(file_types=(('TTF-File', '*.ttf'), ('ALL Files',
-                                                                  '*.*')), key='-TTF FILE-'),  # ('ALL Files','*.*')
-            ],
-        ]
-
-        buttons_column = [
+        execute_column = [
             [sg.Button(button_text='Create Image', key='-CREATE-')],
             [sg.Button(button_text='Credits', key='-CREDITS-')],
             # * fun feature
@@ -77,13 +85,13 @@ class Gui:
 
         layout = [
             [
-                sg.Column(font_Input),
-                sg.Column(java_file_list_column),
+                sg.Column(input_column),
+                sg.VSeparator(),
+                sg.Column(execute_column),
                 sg.VSeparator(),
                 sg.Column(file_list_column),
                 sg.VSeparator(),
-                sg.Column(buttons_column),
-                sg.VSeparator(),
+
                 sg.Column(diagramm_viewer_column),
             ]
         ]
@@ -98,16 +106,17 @@ class Gui:
         output_name = 'unnamed'
 
         sg.popup('The Interpreter is WIP and cannot interpret classes or function definitions as those do not exist in Nass-Shneidermann Diagrams. A fix is in the making.',
-                auto_close=True, auto_close_duration=5)
+                 auto_close=True, auto_close_duration=5)
 
         while True:
             event, values = window.read()
             if event == 'Exit' or event == sg.WIN_CLOSED:
                 logging.debug(('Exit GUI'))
                 break
-            
+
             if event == '-CREDITS-':
-                sg.popup('This is made by Plexx, Weckyy and Oleting. Used PySimpleGUI and Pillow', title='Credits')
+                sg.popup(
+                    'This is made by Plexx, Weckyy and Oleting. Used PySimpleGUI and Pillow', title='Credits')
 
             if event == '-DONATE-':
                 logging.debug(('event = ' + str(event)))
@@ -148,27 +157,27 @@ class Gui:
                                 values["-JAVA FOLDER-"],
                             )
 
-                            
-
                             output_path = values['-OUTPUT FOLDER-']
-                            
+
                             if file_there((output_path + '/' + output_name)) is False:
-                                proceed = sg.popup_yes_no('File already exist! Continue?', title='File alreday exist!')
+                                proceed = sg.popup_yes_no(
+                                    'File already exist! Continue?', title='File alreday exist!')
                                 print(proceed)
                                 if proceed == 'Yes':
                                     nassi(filepath=file_path, output_path=output_path, outputname=output_name, gui=self,
-                                                        font_filepath=font_filepath)
+                                          font_filepath=font_filepath)
 
                                     fnames = output(values)
                                     sg.popup_annoying('Successful created!', title='Created',
-                                                    auto_close_duration=2, auto_close=True, text_color='green')
+                                                      auto_close_duration=2, auto_close=True, text_color='green')
                                     window['-OUTPUT FILE LIST-'].update(fnames)
                                 elif proceed == 'No':
                                     pass
                                 else:
-                                    logging.warning('You did not made a decision! Try again!')
+                                    logging.warning(
+                                        'You did not made a decision! Try again!')
                                     sg.popup_annoying('You did not made a decision! Try again!', title='FAIL',
-                                                    auto_close_duration=2, auto_close=True, text_color='orange')
+                                                      auto_close_duration=2, auto_close=True, text_color='orange')
 
                         except JavaSyntaxError as JsE:
                             logging.error(
