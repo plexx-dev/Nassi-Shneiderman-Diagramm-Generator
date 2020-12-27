@@ -2,10 +2,8 @@ import logging
 from os import remove
 import re
 from typing import List, Tuple
-from multiprocessing import cpu_count
-from multiprocessing.pool import Pool
 
-from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
+from errors.custom import JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
 
 COMMENT_PATTERN = re.compile(r"""^//|^/\*\*|^\*|^--""")
@@ -88,6 +86,7 @@ def get_scope_exit_offset(src: List[str], start_idx: int) -> int:
         elif "}" in line:
             return i-start_idx
         i+=1
+    raise ScopeNotFoundException("Unable to find scope end. Is the program ill-formed?")
 
 def handle_while(line: str, src: List[str], i: int) -> Tuple[Iinstruction, int]:
     bracket_idx = line.rindex(')') # throws if while contruct is illformed
@@ -207,8 +206,7 @@ def scope_handler (int_info: Tuple[List[str], Tuple[int, int]]) -> List[Iinstruc
     return get_instructions_in_scope(int_info[0][int_info[1][0]: int_info[1][1]])[0]
 
 def get_instructions_in_scopes(src: List[str], scope_spans: List[Tuple[int, int]]):
-    p = Pool(processes=cpu_count())
-    instructions = list(map(scope_handler, [(src, scope_span) for scope_span in scope_spans]))#p.map(scope_handler, [(src, scope_span) for scope_span in scope_spans])
+    instructions = list(map(scope_handler, [(src, scope_span) for scope_span in scope_spans]))
     return instructions
 
 
