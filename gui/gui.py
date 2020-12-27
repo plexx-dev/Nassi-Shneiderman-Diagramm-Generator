@@ -163,8 +163,13 @@ class Gui:
                                     sg.popup_annoying('Successful created!', title='Created',
                                                     auto_close_duration=2, auto_close=True, text_color='green')
                                     window['-OUTPUT FILE LIST-'].update(fnames)
-                                else:
+                                elif proceed == 'No':
                                     pass
+                                else:
+                                    logging.warning('You did not made a decision! Try again!')
+                                    sg.popup_annoying('You did not made a decision! Try again!', title='FAIL',
+                                                    auto_close_duration=2, auto_close=True, text_color='orange')
+
                         except JavaSyntaxError as JsE:
                             logging.error(
                                 ('||SyntaxError in Java File|| Failed to create Image with values = ' + str(values)))
