@@ -1,11 +1,13 @@
 from typing import Iterable
 from PIL import Image, ImageDraw, ImageFont
+import os
 
 datei_endung = ".png"
 
 img = None
 output_img = None
-font = ImageFont.truetype("res/fonts/NotoSans-Regular.ttf", 12)
+_bkp_font = ImageFont.truetype("res/fonts/NotoSans-Regular.ttf", 12) #in case set_font does funky stuff, backup the original font
+font = _bkp_font
 
 
 def NSD_init(x: float, y: float):
@@ -14,6 +16,16 @@ def NSD_init(x: float, y: float):
     #img = Image.open(input_dir + file_name + datei_endung)
     img = Image.new("RGB", (x, y), "white")
     output_img = ImageDraw.Draw(img)
+
+def set_font(font_filepath: str):
+    if not os.path.exists(font_filepath):
+        raise FileNotFoundError("")
+    try:
+        font = ImageFont.truetype(font_filepath)
+    except:
+        font = _bkp_font
+        raise
+
 
 def get_text_size(text: str):
     if not font:

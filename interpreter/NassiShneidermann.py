@@ -4,6 +4,7 @@ import logging
 from draw.Iinstruction import Iinstruction
 from interpreter import interpret_source as itp
 from draw.code_to_image_wrapper import NSD_writer
+import draw.code_to_image as cti
 
 
 class NassiShneidermanDiagram:
@@ -18,18 +19,18 @@ class NassiShneidermanDiagram:
             logLevel = logging.DEBUG
         
         logging.basicConfig(level=logLevel)
-    
-    def add_instruction(self, instruction: Iinstruction):
-        self.instructions.append(instruction)
 
-    def get_image_height(self) -> int:
+    def set_font(self, font_filepath: str):
+        cti.set_font(font_filepath)
+
+    def _get_image_height(self) -> int:
         h = 0
         for inst in self.instructions:
             h += inst.getblksize()
         return int(h)
 
     def convert_to_image(self, filename: str, x_size: int=200):
-        image_y_sz = self.get_image_height()
+        image_y_sz = self._get_image_height()
         logging.info(f"Saving NSD to {filename}.png...")
         with NSD_writer(filename, x_size, image_y_sz):
             x, y = 0, 0
@@ -39,12 +40,7 @@ class NassiShneidermanDiagram:
             logging.info("Done!")
 
     def load_from_file(self, filepath:str):
-        instructions = itp.load_instructions(filepath)
-        self.add_instructions_from_scope(instructions)
-
-    def add_instructions_from_scope(self, scope: List[Iinstruction]):
-        for inst in scope:
-            self.add_instruction(inst)
+        self.instructions = itp.load_instructions(filepath)
 
 
     
