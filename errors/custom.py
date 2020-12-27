@@ -1,4 +1,4 @@
-class InterpreterError(Exception):
+class InterpreterException(Exception):
     pass
 
 class JavaSyntaxError(Exception):
