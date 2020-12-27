@@ -3,7 +3,6 @@ import os
 from interpreter.NassiShneidermann import NassiShneidermanDiagram
 from draw.Iinstruction import *
 
-
 def nassi(filepath:str, output_path: str, gui, font_filepath: str=None):
     NSD = NassiShneidermanDiagram(gui.debug_mode)
     if font_filepath:

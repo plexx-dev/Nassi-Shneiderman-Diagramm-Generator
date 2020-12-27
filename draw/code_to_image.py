@@ -12,16 +12,17 @@ font = _bkp_font
 
 def NSD_init(x: float, y: float):
     #get input_img
-    global img, output_img, font
+    global img, output_img
     #img = Image.open(input_dir + file_name + datei_endung)
     img = Image.new("RGB", (x, y), "white")
     output_img = ImageDraw.Draw(img)
 
 def set_font(font_filepath: str):
     if not os.path.exists(font_filepath):
-        raise FileNotFoundError("")
+        raise FileNotFoundError("TTF file was not found!")
+    global font
     try:
-        font = ImageFont.truetype(font_filepath)
+        font = ImageFont.truetype(font_filepath, 12)
     except:
         font = _bkp_font
         raise
@@ -49,9 +50,6 @@ def draw_generic_instruction(instruction: str, x, y, xsize, ysize) -> Iterable[f
     output_img.multiline_text((x + xsize * .5, y + ysize * .5), instruction, font=font, anchor="mm", align="right", fill=(0))
 
     return x, y + ysize
-
-
-
 
 def draw_if_statement(condition: str, x: int, y: int, xsize: int, ysize: int):
     """Draw an if statement into the NSD"""
