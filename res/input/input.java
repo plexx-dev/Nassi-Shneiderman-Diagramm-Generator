@@ -72,3 +72,12 @@ do
 while(do_while_condition3)
 
 //since the interpreter ignores all empty lines and spaces, any changes in tabs *should* not have any effect
+
+void function1() {
+
+}
+
+boolean function2()
+{
+    
+}

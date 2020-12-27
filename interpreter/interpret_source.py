@@ -8,11 +8,14 @@ from draw.Iinstruction import *
 
 COMMENT_REGEX = r"""^//|^#|^COMMENT|^--"""
 REMOVE_KEYWORDS = [' ', "public", "private", "void", ';']
+FUNCTION_IDENTIFIERS = ["void", "boolean", "int"] #possible return types of functions
 
 WHILE_TAG = "solange " #german for 'while'. Change this depending on your language
 
 REPLACE = dict((re.escape(k), '') for k in REMOVE_KEYWORDS)
 remove_pattern = re.compile("|".join(REPLACE.keys()))
+
+function_pattern = re.compile(r"""(?=.*).*\(\)""".join(FUNCTION_IDENTIFIERS))
 
 logging.warn("""The Interpreter is WIP and cannot interpret classes or function definitions
 as those do not exist in Nass-Shneidermann Diagrams. A fix is in the making
@@ -158,6 +161,22 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
         i += 1
     
     return outer_scope, i
+
+def get_function_scopes(src: List[str]) -> List[Tuple[int, int]]:
+    i = 0
+    print(function_pattern)
+    while i < len(src):
+        line = src[i]
+        try:
+
+            if function_pattern.match(line):
+                print(line)
+
+        except:
+            raise
+        i += 1
+
+    return [(0, 0)]
 
 def load_instructions(filepath: str) -> List[Iinstruction]:
     src = load_src(filepath)
