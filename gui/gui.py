@@ -53,7 +53,7 @@ class Gui:
             ],
             [
                 sg.Text('Output name'),
-                sg.In
+                sg.In(size=(25, 1)),
             ],
 
         ]
