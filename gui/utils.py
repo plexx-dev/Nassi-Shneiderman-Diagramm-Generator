@@ -4,9 +4,14 @@ import os
 from interpreter.NassiShneidermann import NassiShneidermanDiagram
 from draw.Iinstruction import *
 
-def nassi(filepath:str, output_path: str, gui, font_filepath: str=None):
+def nassi(filepath:str, output_path: str, gui, font_filepath=None):
     NSD = NassiShneidermanDiagram(gui.debug_mode)
-    if font_filepath is not None and font_filepath != "":
+    #if font_filepath is None:
+    #    pass
+    #else:
+    #if font_filepath is not None or font_filepath != "":
+    if font_filepath != None:
+        print(font_filepath)
         NSD.set_font(font_filepath)
     NSD.load_from_file(filepath)
     NSD.convert_to_image(output_path, 500)

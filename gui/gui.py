@@ -145,7 +145,7 @@ class Gui:
                             )
                             output_path = values['-OUTPUT FOLDER-']
                             nassi(file_path, output_path, gui=self,
-                                  font_filepath=str(font_filepath))
+                                  font_filepath=font_filepath)
 
                             fnames = output(values)
                             window['-OUTPUT FILE LIST-'].update(fnames)
