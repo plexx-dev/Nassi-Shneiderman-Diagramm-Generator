@@ -116,6 +116,6 @@ def draw_while_loop_back(condition: str, x: int, y: int, xsize: int, ysize: int)
     #the x, y offset then the x,y draw size (the canvas)
     return x + xsize * .1, y, xsize * .9
 
-def NSD_save(filepath: str, filename: str):
+def NSD_save(filepath: str):
     """Save the created file"""
-    img.save(filepath + '/' + filename + datei_endung ,"PNG")
+    img.save(filepath + datei_endung ,"PNG")
