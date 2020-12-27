@@ -40,9 +40,8 @@ class NassiShneidermanDiagram:
         cti.NSD_save(filename)
 
     def load_from_file(self, filepath:str):
-        src_code = itp.load_src(filepath)
-        global_scope = itp.get_instructions_in_scope(src_code)[0]
-        self.add_instructions_from_scope(global_scope)
+        instructions = itp.load_instructions(filepath)
+        self.add_instructions_from_scope(instructions)
 
     def add_instructions_from_scope(self, scope: List[Iinstruction]):
         for inst in scope:
