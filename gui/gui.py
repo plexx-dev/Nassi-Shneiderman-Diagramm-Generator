@@ -22,6 +22,8 @@ class Gui:
     def init_gui(self, theme: str):
         self.get_debug_mode(self.debug_mode)
 
+        font_filepath = None
+
         sg.theme(theme)
         logging.debug(('Theme = ' + theme))
 
@@ -56,11 +58,16 @@ class Gui:
         ]
         logging.debug('set diagramm_viewer_column GUI')
 
-        buttons_column = [
+        font_Input = [
             [
-                sg.Text('Output Folder'),
-                sg.In(size=(1, 1), enable_events=True, key="-FONT-"),
-                sg.FileBrowse(file_types=(('Tif', '*.tif'), ('All Files', '*.*')), key='-NEW FONT-')],
+                sg.Text('TTF File'),
+                sg.In(size=(25, 1), enable_events=True, key="-TTF FOLDER-"),
+                sg.FileBrowse(file_types=(('TTF-File', '*.ttf'), ('ALL Files',
+                                                                    '*.*')), key='-TTF FILE-'),  # ('ALL Files','*.*')
+            ],
+        ]
+
+        buttons_column = [
             [sg.Button(button_text='Create Image', key='-CREATE-')],
 
             # * fun feature
@@ -69,7 +76,8 @@ class Gui:
         logging.debug('set buttons_column GUI')
 
         layout = [
-            [
+            [   
+                sg.Column(font_Input),
                 sg.Column(java_file_list_column),
                 sg.VSeparator(),
                 sg.Column(file_list_column),
@@ -131,7 +139,10 @@ class Gui:
                                 values["-JAVA FOLDER-"],
                             )
                             output_path = values['-OUTPUT FOLDER-']
-                            nassi(file_path, output_path, gui=self)
+                            if font_filepath is not None:
+                                nassi(file_path, output_path, gui=self, font_filepath=font_filepath)
+                            else:
+                                nassi(file_path, output_path, gui=self)
 
                             fnames = output(values)
                             window['-OUTPUT FILE LIST-'].update(fnames)
@@ -171,7 +182,11 @@ class Gui:
                 except:
                     pass
 
-                if event == '-NEW FONT-':
-                    print(values['-NEW FONT-'])
+            if event == '-TTF FOLDER-':
+                logging.info(('event = ' + str(event) +
+                            ' value = ' + str(values['-TTF FOLDER-'])))
+                folder = values['-TTF FOLDER-']
+                window['-TTF FOLDER-'].update(values['-TTF FILE-'])
+                font_filepath = values['-TTF FILE-']
 
         window.close()
