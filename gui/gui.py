@@ -32,7 +32,7 @@ class Gui:
                 sg.Text('Java File'),
                 sg.In(size=(25, 1), enable_events=True, key="-JAVA FOLDER-"),
                 sg.FileBrowse(file_types=(('Java-File', '*.java'), ('ALL Files',
-                                                                    '*.*')), key='-JAVA FILE-'),  # ('ALL Files','*.*')
+                                                                    '*.*')), key='-JAVA FILE-'), 
             ],
             [
                 sg.Text('Output Folder'),
@@ -43,13 +43,13 @@ class Gui:
                 sg.HSeparator(),
             ],
             [
-                sg.Text('Optional choose custom font'),
+                sg.Text('Optional choose custom font and name.'),
             ],
             [
                 sg.Text('TTF  File'),
                 sg.In(size=(25, 1), enable_events=True, key="-TTF FOLDER-"),
                 sg.FileBrowse(file_types=(('TTF-File', '*.ttf'), ('ALL Files',
-                                                                  '*.*')), key='-TTF FILE-'),  # ('ALL Files','*.*')
+                                                                  '*.*')), key='-TTF FILE-'),  
             ],
             [
                 sg.Text('Output name'),
