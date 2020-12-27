@@ -1,21 +1,28 @@
 import logging
 from os import remove
 import re
-from typing import Callable, List, Tuple
+from typing import List, Tuple
+from multiprocessing import cpu_count
+from multiprocessing.pool import Pool
 
 from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
 
-COMMENT_REGEX = r"""^//|^#|^COMMENT|^--"""
-REMOVE_KEYWORDS = [' ', "public", "private", "void", ';']
-FUNCTION_IDENTIFIERS = ["void", "boolean", "int"] #possible return types of functions
+COMMENT_PATTERN = re.compile(r"""^//|^/\*\*|^\*|^--""")
+REMOVE_KEYWORDS = [' ', "public", "private", ';']
+FUNCTION_IDENTIFIERS = ["void", "boolean", "int", "float"]
 
 WHILE_TAG = "solange " #german for 'while'. Change this depending on your language
 
 REPLACE = dict((re.escape(k), '') for k in REMOVE_KEYWORDS)
 remove_pattern = re.compile("|".join(REPLACE.keys()))
 
-function_pattern = re.compile(r"""(?=.*).*\(\)""".join(FUNCTION_IDENTIFIERS))
+function_regex = "^("
+for kw in FUNCTION_IDENTIFIERS:
+    function_regex += fr"""{kw}|"""
+function_regex = function_regex[0:-1]+ r""").*([(].*[)].*)"""
+
+function_pattern = re.compile(function_regex)
 
 logging.warn("""The Interpreter is WIP and cannot interpret classes or function definitions
 as those do not exist in Nass-Shneidermann Diagrams. A fix is in the making
@@ -31,7 +38,7 @@ def load_src(filepath: str) -> List[str]:
         with open(filepath, encoding="utf-8") as file:
             for _line in file:
                 line = replace_all_tags(_line.strip())
-                if line and not re.match(COMMENT_REGEX, line):
+                if line and not COMMENT_PATTERN.match(line):
                     lines.append(line)
                 if line.__contains__('{'):
                     brace_open_count += 1
@@ -70,6 +77,17 @@ def get_scope_start_offset(src: List[str], i: int) -> int:
     elif check_src(src, i+1, "{"):
         return 2
     raise ScopeNotFoundException("Unable to find scope start. Is the program ill-formed?")
+
+def get_scope_exit_offset(src: List[str], start_idx: int) -> int:
+    i = start_idx
+    while i < len(src):
+        line = src[i]
+
+        if "{" in line:
+            i+= get_scope_exit_offset(src, i+1)
+        elif "}" in line:
+            return i-start_idx
+        i+=1
 
 def handle_while(line: str, src: List[str], i: int) -> Tuple[Iinstruction, int]:
     bracket_idx = line.rindex(')') # throws if while contruct is illformed
@@ -162,25 +180,40 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
     
     return outer_scope, i
 
-def get_function_scopes(src: List[str]) -> List[Tuple[int, int]]:
+def get_function_scope_spans(src: List[str]) -> List[Tuple[int, int]]:
+    spans = []
     i = 0
-    print(function_pattern)
     while i < len(src):
         line = src[i]
         try:
 
-            if function_pattern.match(line):
-                print(line)
+            if match:= function_pattern.match(line):
+                groups = match.groups()
+                function_name = line.removeprefix(groups[0]).removesuffix(groups[1])
+                brace_offset = get_scope_start_offset(src, i)
+                scope_offset = get_scope_exit_offset(src, i+brace_offset)
+                span = (i+brace_offset, i+brace_offset+scope_offset)
+                i += scope_offset + brace_offset
+                spans.append(span)
 
-        except:
+        except Exception as e:
+            logging.error("encountered error in line %i : %s", i, str(e))
             raise
         i += 1
 
-    return [(0, 0)]
+    return spans
 
-def load_instructions(filepath: str) -> List[Iinstruction]:
+def scope_handler (int_info: Tuple[List[str], Tuple[int, int]]) -> List[Iinstruction]:
+    return get_instructions_in_scope(int_info[0][int_info[1][0]: int_info[1][1]])[0]
+
+def get_instructions_in_scopes(src: List[str], scope_spans: List[Tuple[int, int]]):
+    p = Pool(processes=cpu_count())
+    instructions = list(map(scope_handler, [(src, scope_span) for scope_span in scope_spans]))#p.map(scope_handler, [(src, scope_span) for scope_span in scope_spans])
+    return instructions
+
+
+def load_instructions(filepath: str) -> List[List[Iinstruction]]:
     src = load_src(filepath)
-    instructions, i = get_instructions_in_scope(src)
-    if i != len(src):
-        raise InterpreterException("Unknown error during source interpretation! Unsupported language constructs or ill-formed source?")
+    scope_spans = get_function_scope_spans(src)
+    instructions = get_instructions_in_scopes(src, scope_spans)
     return instructions

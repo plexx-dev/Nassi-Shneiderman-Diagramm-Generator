@@ -1,7 +1,7 @@
 __pycache__/
 res/output/
-res/input/*
-.vscode/*
+res/input/
+.vscode/
 *.json
 *.pyc
 *.png
@@ -9,4 +9,3 @@ debug.py
 build/
 run.spec
 dist/
-.vscode/launch.json

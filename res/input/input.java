@@ -1,83 +1,85 @@
-beforeIf();
-if(if_condition1) {
-    true_case;
-    true_case;
-}
-afterIf();
-beforeIf();
-if(if_condition2)
+public void act()
 {
-    true_case;
-    true_case;
-}
-afterIf();
-beforeIf();
-if(if_else_condition1) {
-    true_case;
-    true_case;
-} else {
-    false_case;
-    false_case;
-}
-afterIf();
-beforeIf();
-if(if_else_condition2) {
-    true_case;
-    true_case;
-}
-else {
-    false_case;
-    false_case;
-}
-afterIf();
-beforeIf();
-if(if_else_condition3) {
-    true_case;
-    true_case;
-}
-else
-{
-    false_case;
-    false_case;
-}
-afterIf();
-beforeWhile();
-while(while_condition1) {
-    insideWhile;
-    insideWhile;
-}
-beforeWhile();
-while(while_condition2)
-{
-    insideWhile;
-    insideWhile;
-}
-beforeDoWhile();
-do{
-    insideDoWhile;
-    insideDoWhile;
-}while(do_while_condition1);
-beforeDoWhile();
-do
-{
-    insideDoWhile;
-    insideDoWhile;
-}while(do_while_condition2);
-beforeDoWhile();
-do
-{
-    insideDoWhile;
-    insideDoWhile;
-}
-while(do_while_condition3)
-
-//since the interpreter ignores all empty lines and spaces, any changes in tabs *should* not have any effect
-
-void function1() {
-
+    S66Nr3(7);
 }
 
-boolean function2()
+private void fahreUmHuegel(String richtung)
 {
-    
+    String pri;
+    String sec;
+    if(richtung.equals("Hoch")) {
+        pri = "links";
+        sec = "rechts";
+    } else {
+        if (richtung.equals("Runter")){
+            pri = "rechts";
+            sec = "links";
+        } else {
+            nachricht("JUNGE DU SPAST!");
+            return;
+        }
+    } 
+    drehe(pri);
+    fahre();
+    drehe(sec);
+    fahre();
+    fahre();
+    drehe(sec);
+    fahre();
+    drehe(pri);
+}
+
+private void fahreBisHuegel()
+{
+    while(!huegelVorhanden("vorne"))
+    {
+        fahre();
+    }
+}
+
+private void fahreZeileDreheHoch()
+{
+    fahreBisHuegel();
+    fahreUmHuegel("Hoch");
+    fahreBisHuegel();
+    drehe("um");
+
+    fahreBisHuegel();
+    fahreUmHuegel("Runter");
+    fahreBisHuegel();
+    drehe("rechts");
+    fahre();
+    drehe("rechts");
+}
+
+private void fahreZeileDreheRunter(boolean geheInNächsteZeile)
+{
+    fahreBisHuegel();
+    fahreUmHuegel("Runter");
+    fahreBisHuegel();
+    drehe("um");
+
+    fahreBisHuegel();
+    fahreUmHuegel("Hoch");
+    fahreBisHuegel();
+    if(geheInNächsteZeile) {
+        drehe("rechts");
+        fahre();
+        drehe("rechts");
+    } else {
+        drehe("um");
+    }
+}
+
+private void S66Nr3(int anzahlZeilen)
+{
+    if(anzahlZeilen < 3) {
+        nachricht("Ich muss mindestens drei Zeilen fahren! :(");
+        return;
+    }
+    fahreZeileDreheHoch();
+    for(int i = 1; i < anzahlZeilen-1; i++) {
+        fahreZeileDreheRunter(true);
+    }
+    fahreZeileDreheRunter(false);
 }
