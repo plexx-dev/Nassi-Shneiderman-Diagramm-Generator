@@ -9,3 +9,4 @@ debug.py
 build/
 run.spec
 dist/
+.vscode/launch.json

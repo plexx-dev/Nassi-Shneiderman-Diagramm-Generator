@@ -57,7 +57,12 @@ class Gui:
         logging.debug('set diagramm_viewer_column GUI')
 
         buttons_column = [
+            [
+                sg.Text('Output Folder'),
+                sg.In(size=(1, 1), enable_events=True, key="-FONT-"),
+                sg.FileBrowse(file_types=(('Tif', '*.tif'), ('All Files', '*.*')), key='-NEW FONT-')],
             [sg.Button(button_text='Create Image', key='-CREATE-')],
+
             # * fun feature
             [sg.Button(button_text='Donate', key='-DONATE-')],
         ]
@@ -114,7 +119,7 @@ class Gui:
                 folder = values['-JAVA FOLDER-']
                 window['-JAVA FOLDER-'].update(values['-JAVA FILE-'])
 
-            elif event == '-CREATE-':
+            if event == '-CREATE-':
                 logging.debug(('event = ' + str(event) +
                                'values = ' + str(values)))
                 try:
@@ -165,5 +170,8 @@ class Gui:
                         sg.popup_annoying('Unexpected Case!', title='Error')
                 except:
                     pass
+
+                if event == '-NEW FONT-':
+                    print(values['-NEW FONT-'])
 
         window.close()
