@@ -54,7 +54,7 @@ class Gui:
 
         diagramm_viewer_column = [
             [sg.Text("Choose your Code for preview. ", size=(100, 10))],
-            [sg.Text(size=(40, 1), key="-TOUT-")],
+            [sg.Text(key="-TOUT-", auto_size_text=True)],
             [sg.Image(key='-IMAGE-')],
         ]
         logging.debug('set diagramm_viewer_column GUI')
@@ -96,8 +96,9 @@ class Gui:
     def show_gui(self, window: sg.Window):
 
         font_filepath = None
-        
-        sg.popup('The Interpreter is WIP and cannot interpret classes or function definitions as those do not exist in Nass-Shneidermann Diagrams. A fix is in the making.', auto_close=True, auto_close_duration=5)
+
+        sg.popup('The Interpreter is WIP and cannot interpret classes or function definitions as those do not exist in Nass-Shneidermann Diagrams. A fix is in the making.',
+                auto_close=True, auto_close_duration=5)
 
         while True:
             event, values = window.read()
@@ -150,7 +151,8 @@ class Gui:
                             fnames = output(values)
                             window['-OUTPUT FILE LIST-'].update(fnames)
 
-                            sg.popup_annoying('Successful created!', title='Created', auto_close_duration=2, auto_close=True, text_color='green')
+                            sg.popup_annoying('Successful created!', title='Created',
+                                              auto_close_duration=2, auto_close=True, text_color='green')
 
                         except JavaSyntaxError as JsE:
                             logging.error(
