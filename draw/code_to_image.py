@@ -121,12 +121,3 @@ def draw_while_loop_back(condition: str, x: int, y: int, xsize: int, ysize: int)
 def NSD_save(filename: str):
     """Save the created file"""
     img.save(filename + datei_endung ,"PNG")
-
-#x_offset , y_offset, x_size, y_size = draw_while_loop("lol", 0, 0, 100, 200)
-if __name__ == "__main__":
-    """Debugging :^)"""
-    NSD_init(300, 500)
-    #draw_if_statement("wenn das dann mach das", 0, 0, 100, 200)
-    #print(x,y,xsize,ysize)
-    #draw_generic_instruction(r"""Wolfgang.fuck("Nina")""", x, y, xsize, ysize)
-    NSD_save("testink")

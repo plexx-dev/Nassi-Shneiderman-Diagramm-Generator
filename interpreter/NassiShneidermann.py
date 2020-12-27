@@ -41,12 +41,3 @@ class NassiShneidermanDiagram:
 
     def load_from_file(self, filepath:str):
         self.instructions = itp.load_instructions(filepath)
-
-
-    
-if __name__ == "__main__":
-    NSD = NassiShneidermanDiagram(True)
-
-    NSD.load_from_file("res/input/input.java")
-
-    NSD.convert_to_image("Nina", 500)
