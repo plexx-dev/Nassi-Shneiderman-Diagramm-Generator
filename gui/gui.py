@@ -185,7 +185,7 @@ class Gui:
                     pass
 
             if event == '-TTF FOLDER-':
-                logging.info(('event = ' + str(event) +
+                logging.debug(('event = ' + str(event) +
                             ' value = ' + str(values['-TTF FOLDER-'])))
                 folder = values['-TTF FOLDER-']
                 window['-TTF FOLDER-'].update(values['-TTF FILE-'])
