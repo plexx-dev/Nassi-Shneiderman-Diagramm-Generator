@@ -1,5 +1,5 @@
 from gui.utils import nassi, output, file_there
-from interpreter.interpret_source import JavaSyntaxError, ScopeNotFoundException
+from interpreter.interpret_source import JavaSyntaxError, ScopeNotFoundException, InterpreterException
 
 import PySimpleGUI as sg
 import os.path
@@ -175,6 +175,9 @@ class Gui:
                                 ('||FileNotFoundError|| Failed to create Image with values = ' + str(values)))
                             sg.popup_error(
                                 (str(FnFe) + 'File ' + str(file_path) + ' or ' + str(output_path) + ' or ' + str(font_filepath) + ' is not reachable.'))
+                        except InterpreterException:
+                            logging.error(
+                                ('||InterpreterException|| Failed to create Image with values = ' + str(values)))
                         except:
                             logging.error(
                                 ('Failed to create Image with values = ' + str(values)))
