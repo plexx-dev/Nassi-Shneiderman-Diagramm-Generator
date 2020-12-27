@@ -143,8 +143,7 @@ class Gui:
                                                       auto_close_duration=2, auto_close=True, text_color='green')
                                     window['-OUTPUT FILE LIST-'].update(fnames)
                                 elif proceed == 'No':
-                                    logging.error('test')
-                                    pass
+                                    logging.warning('There will be no image created.')
                                 else:
                                     logging.warning(
                                         'You did not made a decision! Try again!')
