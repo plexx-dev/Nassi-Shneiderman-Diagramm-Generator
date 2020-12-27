@@ -114,7 +114,7 @@ def handle_do_while(line: str, src: List[str], i: int) -> Tuple[Iinstruction, in
         bracket_index = end_line.rindex(')') #throws if contruct id ill-formed
         instruction_txt = end_line[7:bracket_index]
     elif check_line_start(src, i+1, "while("):
-        i += 1 #make sure we return the correct value for i
+        i += 1
         end_line = src[i]
         bracket_index = end_line.rindex(')')
         instruction_txt = end_line[6:bracket_index]
@@ -167,5 +167,5 @@ def load_instructions(filepath: str) -> List[Iinstruction]:
     src = load_src(filepath)
     instructions, i = get_instructions_in_scope(src)
     if i != len(src):
-        raise InterpreterError("Unknown error during source interpretation! Unsupported language constructs or ill-formed?")
+        raise InterpreterError("Unknown error during source interpretation! Unsupported language constructs or ill-formed source?")
     return instructions

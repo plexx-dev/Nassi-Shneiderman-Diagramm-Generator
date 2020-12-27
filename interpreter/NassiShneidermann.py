@@ -3,7 +3,7 @@ import logging
 
 from draw.Iinstruction import Iinstruction
 from interpreter import interpret_source as itp
-from draw import code_to_image as cti
+from draw.code_to_image_wrapper import NSD_writer
 
 
 class NassiShneidermanDiagram:
@@ -29,15 +29,14 @@ class NassiShneidermanDiagram:
         return int(h)
 
     def convert_to_image(self, filename: str, x_size: int=200):
-        logging.info(f"Saving NSD to {filename}.png")
         image_y_sz = self.get_image_height()
-        cti.NSD_init(x_size, image_y_sz)
-        x, y = 0, 0
+        logging.info(f"Saving NSD to {filename}.png...")
+        with NSD_writer(filename, x_size, image_y_sz):
+            x, y = 0, 0
 
-        for instruction in self.instructions:
-            x, y = instruction.to_image(x, y, x_size)
-        
-        cti.NSD_save(filename)
+            for instruction in self.instructions:
+                x, y = instruction.to_image(x, y, x_size)
+            logging.info("Done!")
 
     def load_from_file(self, filepath:str):
         instructions = itp.load_instructions(filepath)
