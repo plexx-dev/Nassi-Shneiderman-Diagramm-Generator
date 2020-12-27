@@ -22,6 +22,10 @@ WHILE_TAG = "solange " #german for 'while'. Change this depending on your langua
 REPLACE = dict((re.escape(k), '') for k in REMOVE_KEYWORDS)
 remove_pattern = re.compile("|".join(REPLACE.keys()))
 
+logging.warn("""The Interpreter is WIP and cannot interpret classes or function definitions
+as those do not exist in Nass-Shneidermann Diagrams. A fix is in the making
+""")
+
 def replace_all_tags(org: str):
     return remove_pattern.sub(lambda m: REPLACE[re.escape(m.group(0))], org)
 
