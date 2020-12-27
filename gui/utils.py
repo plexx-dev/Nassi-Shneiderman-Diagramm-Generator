@@ -12,7 +12,7 @@ def nassi(filepath: str, output_path: str, outputname: str, gui, font_filepath: 
     if font_filepath != None:
         NSD.set_font(font_filepath)
     NSD.load_from_file(filepath)
-    NSD.convert_to_image(output_path, outputname, 500)
+    NSD.convert_to_image((output_path + '/' + outputname), 500)
 
 
 def output(values):

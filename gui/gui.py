@@ -32,7 +32,7 @@ class Gui:
                 sg.Text('Java File'),
                 sg.In(size=(25, 1), enable_events=True, key="-JAVA FOLDER-"),
                 sg.FileBrowse(file_types=(('Java-File', '*.java'), ('ALL Files',
-                                                                    '*.*')), key='-JAVA FILE-'),  # ('ALL Files','*.*')
+                                                                    '*.*')), key='-JAVA FILE-'), 
             ],
             [
                 sg.Text('Output Folder'),
@@ -43,17 +43,18 @@ class Gui:
                 sg.HSeparator(),
             ],
             [
-                sg.Text('Optional choose custom font'),
+                sg.Text('Optional choose custom font and name.'),
             ],
             [
                 sg.Text('TTF  File'),
                 sg.In(size=(25, 1), enable_events=True, key="-TTF FOLDER-"),
                 sg.FileBrowse(file_types=(('TTF-File', '*.ttf'), ('ALL Files',
-                                                                  '*.*')), key='-TTF FILE-'),  # ('ALL Files','*.*')
+                                                                  '*.*')), key='-TTF FILE-'),  
             ],
             [
                 sg.Text('Output name'),
-                sg.In(size=(25, 1), enable_events=True),
+                sg.In(size=(25, 1), enable_events=True, key='-OUTPUT NAME-'),
+                sg.Button('Done', key='-SET OUTPUT NAME-'),
             ],
 
         ]
@@ -91,7 +92,6 @@ class Gui:
                 sg.VSeparator(),
                 sg.Column(file_list_column),
                 sg.VSeparator(),
-
                 sg.Column(diagramm_viewer_column),
             ]
         ]
@@ -111,41 +111,12 @@ class Gui:
         while True:
             logging.info('test')
             event, values = window.read()
+
             if event == 'Exit' or event == sg.WIN_CLOSED:
                 logging.debug(('Exit GUI'))
                 break
-
-            if event == '-CREDITS-':
-                sg.popup(
-                    'This is made by Plexx, Weckyy and Oleting. Used PySimpleGUI and Pillow', title='Credits')
-
-            if event == '-DONATE-':
-                logging.debug(('event = ' + str(event)))
-                sg.popup_notify(
-                    ('You donated $' + str(random.randint(500, 100000000)) + '.'), title='Thanks')
-
-            if event == '-OUTPUT FOLDER-':
-                logging.debug(('event = ' + str(event) +
-                               ' value = ' + str(values['-OUTPUT FOLDER-'])))
-                fnames = output(values)
-                window['-OUTPUT FILE LIST-'].update(fnames)
-            elif event == '-OUTPUT FILE LIST-':
-                logging.debug(('event = ' + str(event) +
-                               ' value = ' + str(values['-OUTPUT FILE LIST-'])))
-                try:
-                    filename = os.path.join(
-                        values["-OUTPUT FOLDER-"], values["-OUTPUT FILE LIST-"][0]
-                    )
-                    window["-TOUT-"].update(filename)
-                    window["-IMAGE-"].update(filename=filename)
-                except:
-                    pass
-            if event == '-JAVA FOLDER-':
-                logging.debug(('event = ' + str(event) +
-                               ' value = ' + str(values['-JAVA FOLDER-'])))
-                folder = values['-JAVA FOLDER-']
-                window['-JAVA FOLDER-'].update(values['-JAVA FILE-'])
-
+            
+            # execute Column
             if event == '-CREATE-':
                 logging.debug(('event = ' + str(event) +
                                'values = ' + str(values)))
@@ -163,7 +134,6 @@ class Gui:
                             if file_there((output_path + '/' + output_name)) is True:
                                 proceed = sg.popup_yes_no(
                                     'File already exist! Continue?', title='File alreday exist!')
-                                print(proceed)
                                 if proceed == 'Yes':
                                     nassi(filepath=file_path, output_path=output_path, outputname=output_name, gui=self,
                                           font_filepath=font_filepath)
@@ -173,8 +143,7 @@ class Gui:
                                                       auto_close_duration=2, auto_close=True, text_color='green')
                                     window['-OUTPUT FILE LIST-'].update(fnames)
                                 elif proceed == 'No':
-                                    logging.error('test')
-                                    pass
+                                    logging.warning('There will be no image created.')
                                 else:
                                     logging.warning(
                                         'You did not made a decision! Try again!')
@@ -221,6 +190,45 @@ class Gui:
                         sg.popup_annoying('Unexpected Case!', title='Error')
                 except:
                     pass
+
+            if event == '-CREDITS-':
+                sg.popup(
+                    'This is made by Plexx, Weckyy and Oleting. Used PySimpleGUI and Pillow', title='Credits')
+
+            if event == '-DONATE-':
+                logging.debug(('event = ' + str(event)))
+                sg.popup_notify(
+                    ('You donated $' + str(random.randint(500, 100000000)) + '.'), title='Thanks')
+            
+            # needed Input
+
+            if event == '-OUTPUT FOLDER-':
+                logging.debug(('event = ' + str(event) +
+                               ' value = ' + str(values['-OUTPUT FOLDER-'])))
+                fnames = output(values)
+                window['-OUTPUT FILE LIST-'].update(fnames)
+            elif event == '-OUTPUT FILE LIST-':
+                logging.debug(('event = ' + str(event) +
+                               ' value = ' + str(values['-OUTPUT FILE LIST-'])))
+                try:
+                    filename = os.path.join(
+                        values["-OUTPUT FOLDER-"], values["-OUTPUT FILE LIST-"][0]
+                    )
+                    window["-TOUT-"].update(filename)
+                    window["-IMAGE-"].update(filename=filename)
+                except:
+                    pass
+            
+            if event == '-JAVA FOLDER-':
+                logging.debug(('event = ' + str(event) +
+                               ' value = ' + str(values['-JAVA FOLDER-'])))
+                folder = values['-JAVA FOLDER-']
+                window['-JAVA FOLDER-'].update(values['-JAVA FILE-'])
+
+            # optional Input
+
+            if event == '-SET OUTPUT NAME-':
+                output_name = values['-OUTPUT NAME-']
 
             if event == '-TTF FOLDER-':
                 logging.debug(('event = ' + str(event) +
