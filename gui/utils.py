@@ -4,16 +4,18 @@ import os
 from interpreter.NassiShneidermann import NassiShneidermanDiagram
 from draw.Iinstruction import *
 
-def nassi(filepath:str, output_path: str, outputname, gui, font_filepath=None):
+
+def nassi(filepath: str, output_path: str, outputname, gui, font_filepath=None):
     NSD = NassiShneidermanDiagram(gui.debug_mode)
-    #if font_filepath is None:
+    # if font_filepath is None:
     #    pass
-    #else:
-    #if font_filepath is not None or font_filepath != "":
+    # else:
+    # if font_filepath is not None or font_filepath != "":
     if font_filepath != None:
         NSD.set_font(str(font_filepath))
     NSD.load_from_file(filepath)
     NSD.convert_to_image(output_path, outputname, 500)
+
 
 def output(values):
     output_path = values['-OUTPUT FOLDER-']
@@ -28,3 +30,13 @@ def output(values):
         and f.lower().endswith(('.png', '.gif'))
     ]
     return fnames
+
+
+def file_there(file):
+    try:
+        open((file + '.png'))
+        return False
+    except FileNotFoundError:
+        return True
+    except:
+        return False

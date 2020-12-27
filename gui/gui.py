@@ -1,4 +1,4 @@
-from gui.utils import nassi, output
+from gui.utils import nassi, output, file_there
 from interpreter.interpret_source import JavaSyntaxError, ScopeNotFoundException
 
 import PySimpleGUI as sg
@@ -147,17 +147,24 @@ class Gui:
                             file_path = os.path.join(
                                 values["-JAVA FOLDER-"],
                             )
-                            output_path = values['-OUTPUT FOLDER-']
-                            nassi(filepath=file_path, output_path=output_path, outputname=output_name, gui=self,
-                                  font_filepath=font_filepath)
-
-                            fnames = output(values)
-                            sg.popup_annoying('Successful created!', title='Created',
-                                              auto_close_duration=2, auto_close=True, text_color='green')
-                            window['-OUTPUT FILE LIST-'].update(fnames)
 
                             
 
+                            output_path = values['-OUTPUT FOLDER-']
+                            
+                            if file_there((output_path + '/' + output_name)) is False:
+                                proceed = sg.popup_yes_no('File already exist! Continue?', title='File alreday exist!')
+                                print(proceed)
+                                if proceed == 'Yes':
+                                    nassi(filepath=file_path, output_path=output_path, outputname=output_name, gui=self,
+                                                        font_filepath=font_filepath)
+
+                                    fnames = output(values)
+                                    sg.popup_annoying('Successful created!', title='Created',
+                                                    auto_close_duration=2, auto_close=True, text_color='green')
+                                    window['-OUTPUT FILE LIST-'].update(fnames)
+                                else:
+                                    pass
                         except JavaSyntaxError as JsE:
                             logging.error(
                                 ('||SyntaxError in Java File|| Failed to create Image with values = ' + str(values)))

@@ -3,16 +3,8 @@ from os import remove
 import re
 from typing import Callable, List, Tuple
 
+from errors.custom import InterpreterError, JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
-
-class InterpreterError(Exception):
-    pass
-
-class JavaSyntaxError(Exception):
-    pass
-
-class ScopeNotFoundException(Exception):
-    pass
 
 COMMENT_REGEX = r"""^//|^#|^COMMENT|^--"""
 REMOVE_KEYWORDS = [' ', "public", "private", "void", ';']
