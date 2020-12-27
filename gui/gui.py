@@ -53,7 +53,8 @@ class Gui:
             ],
             [
                 sg.Text('Output name'),
-                sg.In(size=(25, 1), enable_events=True),
+                sg.In(size=(25, 1), enable_events=True, key='-OUTPUT NAME-'),
+                sg.Button('Done', key='-SET OUTPUT NAME-'),
             ],
 
         ]
@@ -114,6 +115,10 @@ class Gui:
             if event == 'Exit' or event == sg.WIN_CLOSED:
                 logging.debug(('Exit GUI'))
                 break
+            
+
+            if event == '-SET OUTPUT NAME-':
+                output_name = values['-OUTPUT NAME-']
 
             if event == '-CREDITS-':
                 sg.popup(
