@@ -1,6 +1,7 @@
 from gui.utils import nassi, output, file_there
 from interpreter.interpret_source import JavaSyntaxError, ScopeNotFoundException, InterpreterException
 
+from enum import IntEnum
 import PySimpleGUI as sg
 import os.path
 import random
@@ -102,22 +103,22 @@ class Gui:
 
         text_column = [
             [
-                sg.Text()
+                sg.Text('What should the program do if a file already exists?')
             ]
         ]
 
         choices = [
             [
-                sg.Button(button_text='Skip'),
-                sg.Button(button_text='Overwrite'),
-                sg.Button(),
+                sg.Button(button_text='skip', key='-SKIP-'),
+                sg.Button(button_text='overwrite', key='-OVERWRITE-'),
+                sg.Button(button_text='create expicit name', key='-EXPICIT-'),
             ]
         ]
 
         layout_popup = [
             [
                 sg.Column(text_column),
-
+                sg.Column(choices),
             ]
         ]
 
@@ -130,6 +131,11 @@ class Gui:
 
     def show_gui(self, window: sg.Window, popup_3_choice: sg.Window):
         
+        class Overwrite_behaviour(IntEnum):
+            SKIP = 0
+            OVERWWRITE = 1
+            RANDOM_NAME = 2
+
         font_filepath = None
         output_name = None
 
@@ -146,7 +152,15 @@ class Gui:
             
             # execute Column
             if event == '-CREATE-':
-                popup_3_choice.read()
+                event_popup, values_popup = popup_3_choice.read()
+                while event_popup != '-OVERWRITE-' or event_popup != '-EXPICIT-' or event_popup != '-SKIP-':
+                    if event_popup is '-OVERWRITE-':
+                        exists_choice = Overwrite_behaviour(1)
+                    if event_popup is '-EXPICIT-':
+                        exists_choice = Overwrite_behaviour(2)
+                    if event_popup is '-SKIP-':
+                        exists_choice = Overwrite_behaviour(0)
+                    break
                 logging.debug(('event = ' + str(event) +
                                'values = ' + str(values)))
                 try:
@@ -161,18 +175,15 @@ class Gui:
                             if output_name is None:
                                         sg.popup_auto_close('You didn\'t set a name for the image, it will be named randomly.')
                                         output_name = secrets.token_hex(16)
-                            if file_there((output_path + '/')) is True:
-                                proceed = sg.popup_yes_no(
-                                    '''What should the program do if a file already exists?
-                                        ''')
-                                popup_3_choice.read()
-                                nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
-                                          font_filepath=font_filepath)
+                            #if file_there((output_path + '/')) is True:
+                                
+                            nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
+                                          font_filepath=font_filepath, behaviour=exists_choice)
 
-                                fnames = output(values)
-                                sg.popup_annoying('Successfully created!', title='Created',
+                            fnames = output(values)
+                            sg.popup_annoying('Successfully created!', title='Created',
                                                     auto_close_duration=2, auto_close=True, text_color='green')
-                                window['-OUTPUT FILE LIST-'].update(fnames)
+                            window['-OUTPUT FILE LIST-'].update(fnames)
 
                         except JavaSyntaxError as JsE:
                             logging.error(
