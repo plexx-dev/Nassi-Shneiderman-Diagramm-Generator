@@ -10,14 +10,11 @@ import logging
 import time
 
 #new popup
-
-       
-
 class layout_popup: 
     def __init__(self):
         text_column = [
             [
-                sg.Text('What should the program do if a file already exists?')
+                sg.Text('What should the program do if a file already exist?')
             ]
         ]
 
@@ -141,6 +138,7 @@ class Gui:
 
         font_filepath = None
         output_name = None
+        exists_choice = None
 
         sg.popup('The Interpreter is WIP and cannot interpret classes or function definitions as those do not exist in Nass-Shneidermann Diagrams. A fix is in the making.',
                  auto_close=True, auto_close_duration=5)
@@ -167,19 +165,17 @@ class Gui:
                         event_popup, values_popup = popup_3_choice.read()
                         
                         while event_popup != '-OVERWRITE-' or event_popup != '-EXPICIT-' or event_popup != '-SKIP-':
-                            if event_popup is '-OVERWRITE-':
+                            if event_popup == '-OVERWRITE-':
                                 exists_choice = Overwrite_behaviour(1)
                                 break
-                            if event_popup is '-EXPICIT-':
+                            if event_popup == '-EXPICIT-':
                                 exists_choice = Overwrite_behaviour(2)
                                 break
-                            if event_popup is '-SKIP-':
+                            if event_popup == '-SKIP-':
                                 exists_choice = Overwrite_behaviour(0)
                                 break
                             if event == sg.WIN_CLOSED or event == 'Quit':
                                 break
-                            
-                            print(exists_choice)
                         popup_3_choice.close()
                         try:
                             file_path = os.path.join(
@@ -281,4 +277,5 @@ class Gui:
                 font_filepath = values['-TTF FILE-']
 
         window.close()
-        popup_3_choice.close()
+        if exists_choice:
+            popup_3_choice.close()
