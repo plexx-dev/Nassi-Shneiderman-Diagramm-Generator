@@ -9,8 +9,10 @@ import secrets
 import logging
 import time
 
-#new popup
-class layout_popup: 
+# new popup
+
+
+class layout_popup:
     def __init__(self):
         text_column = [
             [
@@ -26,11 +28,12 @@ class layout_popup:
             ]
         ]
         self.layout = [
-                [
-                    sg.Column(text_column),
-                    sg.Column(choices),
-                ]
+            [
+                sg.Column(text_column),
+                sg.Column(choices),
+            ]
         ]
+
 
 class Gui:
 
@@ -51,12 +54,22 @@ class Gui:
         sg.theme(theme)
         logging.debug(('Theme = ' + theme))
 
+       
+                    
+
+        toolbar = [
+            [
+                #sg.ButtonMenu('', menu_def),
+                sg.Button('TEST')
+            ]
+        ]
+
         input_column = [
             [
                 sg.Text('Java File'),
                 sg.In(size=(25, 1), enable_events=True, key="-JAVA FOLDER-"),
                 sg.FileBrowse(file_types=(('Java-File', '*.java'), ('ALL Files',
-                                                                    '*.*')), key='-JAVA FILE-'), 
+                                                                    '*.*')), key='-JAVA FILE-'),
             ],
             [
                 sg.Text('Output Folder'),
@@ -78,16 +91,18 @@ class Gui:
                 sg.Text('TTF  File'),
                 sg.In(size=(25, 1), enable_events=True, key="-TTF FOLDER-"),
                 sg.FileBrowse(file_types=(('TTF-File', '*.ttf'), ('ALL Files',
-                                                                  '*.*')), key='-TTF FILE-'),  
+                                                                  '*.*')), key='-TTF FILE-'),
             ],
 
         ]
 
         file_list_column = [
             [
-                sg.Text('Output folder')
+                sg.Text('Output folder'),
+
+                sg.Button(button_text='Refresh', key='-REFRESH-')
             ],
-            [ 
+            [
                 sg.Listbox(
                     values=[], enable_events=True, size=(40, 20), key="-OUTPUT FILE LIST-"
                 )
@@ -120,17 +135,26 @@ class Gui:
             ]
         ]
 
-
+        layout_with_toolbar = [
+            [
+                sg.Column(toolbar)
+            ],
+            [
+                sg.HSeparator(),
+            ], 
+            [
+                sg.Column(layout)
+            ]
+        ]
 
         logging.debug('init layout GUI')
 
-        window = sg.Window('Nassi Viewer', layout, resizable=True)
-
+        window = sg.Window('Nassi Viewer', layout_with_toolbar, resizable=True)
 
         return window
 
     def show_gui(self, window: sg.Window):
-        
+
         class Overwrite_behaviour(IntEnum):
             SKIP = 0
             OVERWWRITE = 1
@@ -150,7 +174,7 @@ class Gui:
             if event == 'Exit' or event == sg.WIN_CLOSED:
                 logging.debug(('Exit GUI'))
                 break
-            
+
             # execute Column
             if event == '-CREATE-':
                 logging.debug(('event = ' + str(event) +
@@ -159,11 +183,12 @@ class Gui:
                     if values['-JAVA FOLDER-'] and values['-OUTPUT FOLDER-']:
                         logging.debug(
                             ('Try create Image with values = ' + str(values)))
-                        
+
                         layout_p = layout_popup()
-                        popup_3_choice = sg.Window(title='',no_titlebar=True, layout=layout_p.layout, resizable=False)
+                        popup_3_choice = sg.Window(
+                            title='', no_titlebar=True, layout=layout_p.layout, resizable=False)
                         event_popup, values_popup = popup_3_choice.read()
-                        
+
                         while event_popup != '-OVERWRITE-' or event_popup != '-EXPICIT-' or event_popup != '-SKIP-':
                             if event_popup == '-OVERWRITE-':
                                 exists_choice = Overwrite_behaviour(1)
@@ -183,15 +208,16 @@ class Gui:
                             )
                             output_path = values['-OUTPUT FOLDER-']
                             if output_name is None:
-                                        sg.popup_auto_close('You didn\'t set a name for the image, it will be named randomly.')
-                                        output_name = secrets.token_hex(16)
-                                
+                                sg.popup_auto_close(
+                                    'You didn\'t set a name for the image, it will be named randomly.')
+                                output_name = secrets.token_hex(16)
+
                             nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
-                                          font_filepath=font_filepath, behaviour=exists_choice)
+                                  font_filepath=font_filepath, behaviour=exists_choice)
 
                             fnames = output(values)
                             sg.popup_annoying('Successfully created!', title='Created',
-                                                    auto_close_duration=2, auto_close=True, text_color='green')
+                                              auto_close_duration=2, auto_close=True, text_color='green')
                             window['-OUTPUT FILE LIST-'].update(fnames)
 
                         except JavaSyntaxError as JsE:
@@ -238,7 +264,7 @@ class Gui:
                 logging.debug(('event = ' + str(event)))
                 sg.popup_notify(
                     ('You donated $' + str(random.randint(500, 100000000)) + '.'), title='Thanks')
-            
+
             # needed Input
 
             if event == '-OUTPUT FOLDER-':
@@ -255,9 +281,12 @@ class Gui:
                     )
                     window["-TOUT-"].update(filename)
                     window["-IMAGE-"].update(filename=filename)
+                except FileNotFoundError:
+                    sg.popup_error('FileNotFoundError',
+                                   title='FileNotFoundError',)
                 except:
                     pass
-            
+
             if event == '-JAVA FOLDER-':
                 logging.debug(('event = ' + str(event) +
                                ' value = ' + str(values['-JAVA FOLDER-'])))
@@ -275,6 +304,12 @@ class Gui:
                 folder = values['-TTF FOLDER-']
                 window['-TTF FOLDER-'].update(values['-TTF FILE-'])
                 font_filepath = values['-TTF FILE-']
+
+            # output view
+
+            if event == '-REFRESH-':
+                fnames = output(values)
+                window['-OUTPUT FILE LIST-'].update(fnames)
 
         window.close()
         if exists_choice:
