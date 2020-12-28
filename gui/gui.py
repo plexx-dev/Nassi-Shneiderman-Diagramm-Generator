@@ -49,7 +49,7 @@ class Gui:
                 sg.HSeparator(),
             ],
             [
-                sg.Text('Optional choose custom font and name.'),
+                sg.Text('Optional: choose custom font and name.'),
             ],
             [
                 sg.Text('TTF  File'),
@@ -132,33 +132,33 @@ class Gui:
 
                             output_path = values['-OUTPUT FOLDER-']
                             if output_name is None:
-                                        sg.popup_auto_close('You dont set a name for the image, it will be named random.')
+                                        sg.popup_auto_close('You didn\'t set a name for the image, it will be named randomly.')
                                         output_name = secrets.token_hex(16)
                             if file_there((output_path + '/' + output_name)) is True:
                                 proceed = sg.popup_yes_no(
-                                    'File already exist! Continue?', title='File alreday exist!')
+                                    'File already exists! Continue?', title='File alreday exists!')
                                 if proceed == 'Yes':
                                     nassi(filepath=file_path, output_path=output_path, outputname=output_name, gui=self,
                                           font_filepath=font_filepath)
                                     
 
                                     fnames = output(values)
-                                    sg.popup_annoying('Successful created!', title='Created',
+                                    sg.popup_annoying('Successfully created!', title='Created',
                                                       auto_close_duration=2, auto_close=True, text_color='green')
                                     window['-OUTPUT FILE LIST-'].update(fnames)
                                 elif proceed == 'No':
-                                    logging.warning('There will be no image created.')
+                                    logging.warning('Cancelled. No image created')
                                 else:
                                     logging.warning(
-                                        'You did not made a decision! Try again!')
-                                    sg.popup_annoying('You did not made a decision! Try again!', title='FAIL',
+                                        'You did not make a decision! Try again!')
+                                    sg.popup_annoying('You did not make a decision! Try again!', title='FAIL',
                                                       auto_close_duration=2, auto_close=True, text_color='orange')
                             else:                             
                                 nassi(filepath=file_path, output_path=output_path, outputname=output_name, gui=self,
                                           font_filepath=font_filepath)
 
                                 fnames = output(values)
-                                sg.popup_annoying('Successful created!', title='Created',
+                                sg.popup_annoying('Successfully created!', title='Created',
                                                     auto_close_duration=2, auto_close=True, text_color='green')
                                 window['-OUTPUT FILE LIST-'].update(fnames)
 
@@ -200,7 +200,7 @@ class Gui:
 
             if event == '-CREDITS-':
                 sg.popup(
-                    'This is made by Plexx, Weckyy and Oleting. Used PySimpleGUI and Pillow', title='Credits')
+                    'This was made by Plexx, Weckyy702 and Oleting. Libraries used are PySimpleGUI and Pillow', title='Credits')
 
             if event == '-DONATE-':
                 logging.debug(('event = ' + str(event)))

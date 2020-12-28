@@ -3,7 +3,7 @@ from os import remove
 import re
 from typing import List, Tuple
 
-from errors.custom import JavaSyntaxError, ScopeNotFoundException
+from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
 
 COMMENT_PATTERN = re.compile(r"""^//|^/\*\*|^\*|^--""")
@@ -20,7 +20,7 @@ remove_pattern = re.compile("|".join(REPLACE.keys()))
 variable_regex = "^("
 for kw in FUNCTION_IDENTIFIERS:
     variable_regex += fr"""{kw}|"""
-variable_pattern = re.compile(variable_regex[0:-1]+"$(.*)")
+variable_pattern = re.compile(variable_regex[0:-1]+")$(.*)")
 
 function_regex = "^("
 for kw in FUNCTION_IDENTIFIERS:
