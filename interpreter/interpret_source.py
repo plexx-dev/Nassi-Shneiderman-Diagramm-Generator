@@ -1,6 +1,7 @@
 import logging
 from os import remove
 import re
+from re import split
 from typing import List, Tuple
 
 from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
@@ -10,6 +11,16 @@ logging.warning("""As the Interpreter is still WIP, some Java language features 
     *else if statements
     *for loops
 Please remove these features from the source code as they will result in incorrect behaviour""")
+
+class Function_scope(Iterable):
+    def __init__(self, child_instructions: List[Iinstruction], name: str, return_type: str, args: List[str]) -> None:
+        self.contents = child_instructions
+        self.name = name
+        self.return_type = return_type
+        self.args = args
+
+    def __iter__(self):
+        return self.contents.__iter__()
 
 COMMENT_PATTERN = re.compile(r"""^//|^/\*\*|^\*|^--""")
 REMOVE_KEYWORDS = [' ', "public", "private", ';']
@@ -83,20 +94,6 @@ def get_scope_start_offset(src: List[str], i: int) -> int:
     elif check_src(src, i+1, "{"):
         return 2
     raise ScopeNotFoundException("Unable to find scope start. Is the program ill-formed?")
-
-def get_scope_exit_offset(src: List[str], start_idx: int) -> int:
-    i = start_idx
-    while i < len(src):
-        line = src[i]
-
-        if '{' in line:
-            i += get_scope_exit_offset(src, i+1)
-            line = src[i+1]
-        if '}' in line:
-            return i - start_idx
-        i += 1
-
-    raise ScopeNotFoundException("Unable to find scope end. Is the program ill-formed?")
 
 def handle_while(line: str, src: List[str], i: int) -> Tuple[Iinstruction, int]:
     bracket_idx = line.rindex(')') # throws if while contruct is illformed
@@ -189,63 +186,23 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
     
     return outer_scope, i
 
-def get_function_scope_spans(src: List[str]) -> List[Tuple[int, int, str]]:
-    spans = []
+def get_function_scopes(src: List[str]) -> List[Function_scope]:
+    functions = []
     i = 0
     while i < len(src):
         line = src[i]
-        try:
+        if match:=function_pattern.match(line):
+            groups = match.groups()
+            function_return_type = groups[0]
+            function_args = groups[1]
+            function_name = line.removeprefix(function_return_type).removesuffix(function_args) #remove return type and argument list to get the function name
 
-            if match:= function_pattern.match(line):
-                groups = match.groups()
-                function_name = line.removeprefix(groups[0]).removesuffix(groups[1])
-                function_return_type = groups[0]
-                function_args = groups[1][1:-1]
-                brace_offset = get_scope_start_offset(src, i)
-                scope_offset = get_scope_exit_offset(src, i+brace_offset)
+            brace_offset = get_scope_start_offset(src, i)
+            child_instructions, i = get_instructions_in_scope(src, i+brace_offset)
+            functions.append(Function_scope(child_instructions, function_name, function_return_type, function_args.split(',')))
+        i+=1
+    return functions
 
-                span = (i+brace_offset, i+brace_offset+scope_offset, function_name)
-
-                i += scope_offset + brace_offset
-                spans.append(span)
-
-        except Exception as e:
-            logging.error("encountered error in line %i : %s", i, str(e))
-            raise
-        i += 1
-
-    return spans
-
-def scope_handler(inst_info: Tuple[List[str], List[int]]) -> List[Iinstruction]:
-    src = inst_info[0]
-    scope_start = inst_info[1][0]
-    scope_end = inst_info[1][1]
-    return get_instructions_in_scope(src[scope_start: scope_end])[0]
-
-def named_scope_handler(inst_info: Tuple[List[str], Tuple[int, int, str]]) -> Tuple[str, List[Iinstruction]]:
-    src = inst_info[0]
-    scope_start = inst_info[1][0]
-    scope_end = inst_info[1][1]
-    function_name = inst_info[1][2]
-    function_instructions, _ = get_instructions_in_scope(src[scope_start: scope_end])
-    return (function_name, function_instructions)
-
-def get_instructions_in_scopes(src: List[str], scope_spans: List[Tuple[int, int, str]]) -> List[List[Iinstruction]]:
-    instructions = list(map(scope_handler, [(src, span[0:2]) for span in scope_spans]))
-    return instructions
-
-def get_instructions_in_named_scopes(src: List[str], scope_spans: List[Tuple[int, int, str]]) -> List[Tuple[str, List[Iinstruction]]]:
-    instructions = list(map(named_scope_handler, [(src, span) for span in scope_spans]))
-    return instructions
-
-def load_instructions(filepath: str) -> List[List[Iinstruction]]:
+def load_scoped_instructions(filepath: str) -> List[Function_scope]:
     src = load_src(filepath)
-    scope_spans = get_function_scope_spans(src)
-    instructions = get_instructions_in_scopes(src, scope_spans)
-    return instructions
-
-def load_scoped_instructions(filepath: str) -> List[Tuple[str, List[Iinstruction]]]:
-    src = load_src(filepath)
-    scope_spans = get_function_scope_spans(src)
-    instructions = get_instructions_in_named_scopes(src, scope_spans)
-    return instructions
+    return get_function_scopes(src)
