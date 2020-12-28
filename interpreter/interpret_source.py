@@ -2,7 +2,7 @@ import logging
 from os import remove
 import re
 from re import split
-from typing import List, Tuple
+from typing import List, Match, Tuple
 
 from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
@@ -23,7 +23,7 @@ class Function_scope(Iterable):
         return self.contents.__iter__()
 
 COMMENT_PATTERN = re.compile(r"""^//|^/\*\*|^\*|^--""")
-REMOVE_KEYWORDS = [' ', "public", "private", ';']
+REMOVE_KEYWORDS = [' ', "public", "private", "final"]
 VARIABLE_TAGS = ["byte", "short", "int", "long", "float", "double", "boolean", "char", "String"]
 FUNCTION_IDENTIFIERS = ["void"]
 FUNCTION_IDENTIFIERS.extend(VARIABLE_TAGS)
@@ -36,7 +36,7 @@ remove_pattern = re.compile("|".join(REPLACE.keys()))
 variable_regex = "^("
 for kw in FUNCTION_IDENTIFIERS:
     variable_regex += fr"""{kw}|"""
-variable_pattern = re.compile(variable_regex[0:-1]+")$(.*)")
+variable_pattern = re.compile(variable_regex[0:-1]+")(.*)")
 
 function_regex = "^("
 for kw in FUNCTION_IDENTIFIERS:
@@ -95,6 +95,7 @@ def get_scope_start_offset(src: List[str], i: int) -> int:
         return 2
     raise ScopeNotFoundException("Unable to find scope start. Is the program ill-formed?")
 
+
 def handle_while(line: str, src: List[str], i: int) -> Tuple[Iinstruction, int]:
     bracket_idx = line.rindex(')') # throws if while contruct is illformed
 
@@ -146,6 +147,12 @@ def handle_do_while(line: str, src: List[str], i: int) -> Tuple[Iinstruction, in
 
     return while_instruction_back(instruction_txt, child_instructions), i
 
+def handle_variable(line:str, src: List[str], i: int) -> Tuple[Iinstruction, int]:
+    groups = variable_pattern.match(line).groups()
+    var_type = groups[0]
+    var_name = groups[1]
+    return generic_instruction(f"{var_type} {var_name}"), i
+
 def handle_instruction(line: str, src: List[str], i: int) -> Tuple[Iinstruction, int]:
     if line.startswith("while("):
         logging.debug("Found while construct in line: %i", i+1)
@@ -158,6 +165,10 @@ def handle_instruction(line: str, src: List[str], i: int) -> Tuple[Iinstruction,
     elif line.startswith("do"):
         logging.debug("Found do-while construct in line: %i", i+1)
         return handle_do_while(line, src, i)
+
+    # elif variable_pattern.match(line):
+    #     logging.debug("Found variable in line %i", i+1)
+    #     return handle_variable(line, src, i)
     
     else:
         logging.debug("found generic instruction in line %i", i+1)
@@ -186,16 +197,21 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
     
     return outer_scope, i
 
+def get_function_info(match: Match[str], line: str) -> Tuple[str, str, str]:
+    groups = match.groups()
+    ftype = groups[0]
+    fargs = groups[1]
+    fname = line.removeprefix(ftype).removesuffix(fargs) #remove return type and argument list to get the function name
+    return ftype, fname, fargs
+
 def get_function_scopes(src: List[str]) -> List[Function_scope]:
     functions = []
+
     i = 0
     while i < len(src):
         line = src[i]
         if match:=function_pattern.match(line):
-            groups = match.groups()
-            function_return_type = groups[0]
-            function_args = groups[1]
-            function_name = line.removeprefix(function_return_type).removesuffix(function_args) #remove return type and argument list to get the function name
+            function_return_type, function_name, function_args = get_function_info(match, line)
 
             brace_offset = get_scope_start_offset(src, i)
             child_instructions, i = get_instructions_in_scope(src, i+brace_offset)
