@@ -14,8 +14,8 @@ class Gui:
 
     def __init__(self, theme: str, debug_mode: bool):
         self.debug_mode = debug_mode
-        window, popup_3_choice = self.init_gui(theme=theme)
-        self.show_gui(window=window, popup_3_choice=popup_3_choice)
+        window, popup_3_layout = self.init_gui(theme=theme)
+        self.show_gui(window=window, layout_popup=popup_3_layout)
 
     def get_debug_mode(self, mode: bool):
         loging_level = logging.INFO
@@ -115,21 +115,23 @@ class Gui:
             ]
         ]
 
-        layout_popup = [
-            [
-                sg.Column(text_column),
-                sg.Column(choices),
-            ]
-        ]
+        class layout_popup: 
+            def __init__(self):
+                self.layout = [
+                        [
+                            sg.Column(text_column),
+                            sg.Column(choices),
+                        ]
+                ]
 
         logging.debug('init layout GUI')
 
         window = sg.Window('Nassi Viewer', layout, resizable=True)
 
-        popup_3_choice = sg.Window(title='',no_titlebar=True, layout=layout_popup, resizable=False)
-        return window, popup_3_choice
 
-    def show_gui(self, window: sg.Window, popup_3_choice: sg.Window):
+        return window, layout_popup
+
+    def show_gui(self, window: sg.Window, layout_popup):
         
         class Overwrite_behaviour(IntEnum):
             SKIP = 0
@@ -152,21 +154,32 @@ class Gui:
             
             # execute Column
             if event == '-CREATE-':
-                event_popup, values_popup = popup_3_choice.read()
-                while event_popup != '-OVERWRITE-' or event_popup != '-EXPICIT-' or event_popup != '-SKIP-':
-                    if event_popup is '-OVERWRITE-':
-                        exists_choice = Overwrite_behaviour(1)
-                    if event_popup is '-EXPICIT-':
-                        exists_choice = Overwrite_behaviour(2)
-                    if event_popup is '-SKIP-':
-                        exists_choice = Overwrite_behaviour(0)
-                    break
                 logging.debug(('event = ' + str(event) +
                                'values = ' + str(values)))
                 try:
                     if values['-JAVA FOLDER-'] and values['-OUTPUT FOLDER-']:
                         logging.debug(
                             ('Try create Image with values = ' + str(values)))
+                        
+                        layout_p = layout_popup()
+                        popup_3_choice = sg.Window(title='',no_titlebar=True, layout=layout_p.layout, resizable=False)
+                        event_popup, values_popup = popup_3_choice.read()
+                        
+                        while event_popup != '-OVERWRITE-' or event_popup != '-EXPICIT-' or event_popup != '-SKIP-':
+                            if event_popup is '-OVERWRITE-':
+                                exists_choice = Overwrite_behaviour(1)
+                                break
+                            if event_popup is '-EXPICIT-':
+                                exists_choice = Overwrite_behaviour(2)
+                                break
+                            if event_popup is '-SKIP-':
+                                exists_choice = Overwrite_behaviour(0)
+                                break
+                            if event == sg.WIN_CLOSED or event == 'Quit':
+                                break
+                            
+                            print(exists_choice)
+                        popup_3_choice.close()
                         try:
                             file_path = os.path.join(
                                 values["-JAVA FOLDER-"],
@@ -268,3 +281,4 @@ class Gui:
                 font_filepath = values['-TTF FILE-']
 
         window.close()
+        popup_3_choice.close()
