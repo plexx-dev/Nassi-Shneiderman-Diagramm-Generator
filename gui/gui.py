@@ -1,4 +1,4 @@
-from gui.utils import nassi, output, file_there
+from gui.utils import nassi, output
 from interpreter.interpret_source import JavaSyntaxError, ScopeNotFoundException, InterpreterException
 
 from enum import IntEnum
@@ -189,7 +189,6 @@ class Gui:
                             if output_name is None:
                                         sg.popup_auto_close('You didn\'t set a name for the image, it will be named randomly.')
                                         output_name = secrets.token_hex(16)
-                            #if file_there((output_path + '/')) is True:
                                 
                             nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
                                           font_filepath=font_filepath, behaviour=exists_choice)

@@ -28,7 +28,3 @@ def output(values):
         and f.lower().endswith(('.png', '.gif'))
     ]
     return fnames
-
-
-def file_there(file):
-    return os.path.exists(str(file))

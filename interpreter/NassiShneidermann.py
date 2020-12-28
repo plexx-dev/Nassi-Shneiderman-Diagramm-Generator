@@ -48,7 +48,7 @@ class NassiShneidermanDiagram:
                 x, y = instruction.to_image(x, y, 1000)
 
     def check_conflicts(self, filepath:str, behavoiur: Overwrite_behaviour):
-        if os.path.exists(filepath+".png"):
+        if os.path.exists(filepath + ".png"):
             if behavoiur == OB.SKIP:
                 return None
             elif behavoiur == OB.OVERWWRITE:
