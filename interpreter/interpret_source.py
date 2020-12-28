@@ -6,6 +6,11 @@ from typing import List, Tuple
 from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
 
+logging.warning("""As the Interpreter is still WIP, some Java language features are not supported. These include:
+    *else if statements
+    *for loops
+Please remove these features from the source code as they will result in incorrect behaviour""")
+
 COMMENT_PATTERN = re.compile(r"""^//|^/\*\*|^\*|^--""")
 REMOVE_KEYWORDS = [' ', "public", "private", ';']
 VARIABLE_TAGS = ["byte", "short", "int", "long", "float", "double", "boolean", "char", "String"]
@@ -29,10 +34,6 @@ function_regex = function_regex[0:-1]+ r""").*([(].*[)].*)"""
 
 function_pattern = re.compile(function_regex)
 
-logging.warn("""The Interpreter is WIP and cannot interpret classes or function definitions
-as those do not exist in Nass-Shneidermann Diagrams. A fix is in the making
-""")
-
 def replace_all_tags(org: str):
     return remove_pattern.sub(lambda m: REPLACE[re.escape(m.group(0))], org)
 
@@ -45,9 +46,9 @@ def load_src(filepath: str) -> List[str]:
                 line = replace_all_tags(_line.strip())
                 if line and not COMMENT_PATTERN.match(line):
                     lines.append(line)
-                if line.__contains__('{'):
+                if '{' in line:
                     brace_open_count += 1
-                if line.__contains__('}'):
+                if '}' in line:
                     brace_closed_count += 1
     except:
         raise FileNotFoundError(f"File {filepath} was not found!")
@@ -60,7 +61,7 @@ def load_src(filepath: str) -> List[str]:
 def check_src(src: List[str], line_index: int, tag: str) -> bool:
     if line_index >= len(src):
         return False
-    return src[line_index].__contains__(tag)
+    return tag in src[line_index]
 
 def check_line_start(src: List[str], line_index: int, tag: str) -> bool:
     if line_index >= len(src):
@@ -88,11 +89,13 @@ def get_scope_exit_offset(src: List[str], start_idx: int) -> int:
     while i < len(src):
         line = src[i]
 
-        if "{" in line:
-            i+= get_scope_exit_offset(src, i+1)
-        elif "}" in line:
-            return i-start_idx
-        i+=1
+        if '{' in line:
+            i += get_scope_exit_offset(src, i+1)
+            line = src[i+1]
+        if '}' in line:
+            return i - start_idx
+        i += 1
+
     raise ScopeNotFoundException("Unable to find scope end. Is the program ill-formed?")
 
 def handle_while(line: str, src: List[str], i: int) -> Tuple[Iinstruction, int]:
@@ -170,7 +173,7 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
 
         line = src[i]
         try:
-            if check_src(src, i, "}"): #We exited this scope, return it
+            if check_src(src, i, '}'): #We exited this scope, return it
                 break
 
             instruction, i = handle_instruction(line, src, i)
@@ -186,7 +189,7 @@ def get_instructions_in_scope(src: List[str], start_idx: int = 0) -> Tuple[List[
     
     return outer_scope, i
 
-def get_function_scope_spans(src: List[str]) -> List[Tuple[int, int]]:
+def get_function_scope_spans(src: List[str]) -> List[Tuple[int, int, str]]:
     spans = []
     i = 0
     while i < len(src):
@@ -196,9 +199,13 @@ def get_function_scope_spans(src: List[str]) -> List[Tuple[int, int]]:
             if match:= function_pattern.match(line):
                 groups = match.groups()
                 function_name = line.removeprefix(groups[0]).removesuffix(groups[1])
+                function_return_type = groups[0]
+                function_args = groups[1][1:-1]
                 brace_offset = get_scope_start_offset(src, i)
                 scope_offset = get_scope_exit_offset(src, i+brace_offset)
-                span = (i+brace_offset, i+brace_offset+scope_offset)
+
+                span = (i+brace_offset, i+brace_offset+scope_offset, function_name)
+
                 i += scope_offset + brace_offset
                 spans.append(span)
 
@@ -209,16 +216,36 @@ def get_function_scope_spans(src: List[str]) -> List[Tuple[int, int]]:
 
     return spans
 
-def scope_handler (int_info: Tuple[List[str], Tuple[int, int]]) -> List[Iinstruction]:
-    return get_instructions_in_scope(int_info[0][int_info[1][0]: int_info[1][1]])[0]
+def scope_handler(inst_info: Tuple[List[str], List[int]]) -> List[Iinstruction]:
+    src = inst_info[0]
+    scope_start = inst_info[1][0]
+    scope_end = inst_info[1][1]
+    return get_instructions_in_scope(src[scope_start: scope_end])[0]
 
-def get_instructions_in_scopes(src: List[str], scope_spans: List[Tuple[int, int]]):
-    instructions = list(map(scope_handler, [(src, scope_span) for scope_span in scope_spans]))
+def named_scope_handler(inst_info: Tuple[List[str], Tuple[int, int, str]]) -> Tuple[str, List[Iinstruction]]:
+    src = inst_info[0]
+    scope_start = inst_info[1][0]
+    scope_end = inst_info[1][1]
+    function_name = inst_info[1][2]
+    function_instructions, _ = get_instructions_in_scope(src[scope_start: scope_end])
+    return (function_name, function_instructions)
+
+def get_instructions_in_scopes(src: List[str], scope_spans: List[Tuple[int, int, str]]) -> List[List[Iinstruction]]:
+    instructions = list(map(scope_handler, [(src, span[0:2]) for span in scope_spans]))
     return instructions
 
+def get_instructions_in_named_scopes(src: List[str], scope_spans: List[Tuple[int, int, str]]) -> List[Tuple[str, List[Iinstruction]]]:
+    instructions = list(map(named_scope_handler, [(src, span) for span in scope_spans]))
+    return instructions
 
 def load_instructions(filepath: str) -> List[List[Iinstruction]]:
     src = load_src(filepath)
     scope_spans = get_function_scope_spans(src)
     instructions = get_instructions_in_scopes(src, scope_spans)
+    return instructions
+
+def load_scoped_instructions(filepath: str) -> List[Tuple[str, List[Iinstruction]]]:
+    src = load_src(filepath)
+    scope_spans = get_function_scope_spans(src)
+    instructions = get_instructions_in_named_scopes(src, scope_spans)
     return instructions

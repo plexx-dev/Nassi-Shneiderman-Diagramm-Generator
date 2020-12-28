@@ -2,8 +2,6 @@ from typing import Iterable, List
 from abc import abstractmethod
 from draw import code_to_image as cti
 
-
-
 class Iinstruction:
     """Base class for all instructions"""
 
@@ -18,6 +16,10 @@ class Iinstruction:
     def getblksize(self) -> float:
         return self._getblksize()
 
+    @abstractmethod
+    def __str__(self) -> str:
+        pass
+
     def _getblksize(self) -> float:
         return cti.get_text_size(self.instruction_text)[1]
 
@@ -31,7 +33,8 @@ class generic_instruction(Iinstruction):
     def to_image(self, x:int, y:int, x_sz: int) -> Iterable[float]:
         return cti.draw_generic_instruction(self.instruction_text, x, y, x_sz, self.getblksize())
 
-
+    def __str__(self) -> str:
+        return self.instruction_text
 
 class if_instruction(Iinstruction):
     """Conditional structure
@@ -79,6 +82,18 @@ class if_instruction(Iinstruction):
             for instruction in self.false_case:
                 x, y = instruction.to_image(x, y, x_sz)
 
+    def __str__(self) -> str:
+        res = f"if({self.instruction_text}) {'{'}\n"
+        for inst in self.true_case:
+            res += '\t'+str(inst)+";\n"
+        res += "}"
+        if self.false_case:
+            res += " else {"
+            for inst in self.true_case:
+                res += '\t'+str(inst)+";\n"
+            res += "}"
+        return res
+
 #TODO
 # class switch_instruction(Iinstruction):
 #     """Switch structure"""
@@ -124,6 +139,13 @@ class while_instruction_front(Iinstruction):
             x, y = inst.to_image(x, y, x_sz)
         return self.get_children_size()
 
+    def __str__(self) -> str:
+        res = "while(" + self.instruction_text + "){\n"
+        for inst in self.child_instructions:
+            res += '\t'+str(inst)+";\n"
+        res += '}'
+        return res
+
 
 class while_instruction_back(while_instruction_front):
     def __init__(self, condition: str, instructions: List[Iinstruction]) -> None:
@@ -133,3 +155,10 @@ class while_instruction_back(while_instruction_front):
         children_x, children_y, children_sz_x = cti.draw_while_loop_back(self.instruction_text, x, y, x_sz, self.getblksize())
         self.draw_children(children_x, children_y, children_sz_x)
         return x, y + self.getblksize()
+
+    def __str__(self) -> str:
+        res = "do{\n"
+        for inst in self.child_instructions:
+            res += '\t' +str(inst) + ";\n"
+        res += f"{'}'}while({self.instruction_text});"
+        return res
