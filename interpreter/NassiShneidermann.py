@@ -1,3 +1,4 @@
+from interpreter.interpret_source import Function_scope
 from typing import List
 import logging
 from enum import IntEnum
@@ -19,7 +20,7 @@ OB = Overwrite_behaviour
 class NassiShneidermanDiagram:
 
     def __init__(self, do_debug: bool):
-        self.scopes: List[List[Iinstruction]] = []
+        self.function_scopes: List[Function_scope] = []
         self.init_logging(do_debug)
 
     def init_logging(self, debug: bool):
@@ -34,7 +35,7 @@ class NassiShneidermanDiagram:
 
     def _get_image_height(self, scope_index: int) -> int:
         h = 0
-        for inst in self.scopes[scope_index]:
+        for inst in self.function_scopes[scope_index]:
             h += inst.getblksize()
         return int(h)
 
@@ -60,7 +61,7 @@ class NassiShneidermanDiagram:
         return filepath
 
     def convert_to_image(self, output_path: str, filename: str, on_conflict: Overwrite_behaviour=OB.SKIP, x_size: int=200):
-        for i in range(len(self.scopes)):
+        for i in range(len(self.function_scopes)):
             filepath = f"{output_path}/{filename}#{i}"
             filepath = self.check_conflicts(filepath, on_conflict)
             if filepath is not None:
@@ -69,11 +70,11 @@ class NassiShneidermanDiagram:
 
                 image_y_sz = self._get_image_height(i)
                 with NSD_writer(filepath, x_size, image_y_sz):
-                    scope = self.scopes[i]
+                    scope = self.function_scopes[i].contents
                     x, y = 0, 0
                     for instruction in scope:
                         x, y = instruction.to_image(x, y, x_size)
                     logging.info("Done!")
 
     def load_from_file(self, filepath:str):
-        self.scopes = itp.load_instructions(filepath)
+        self.function_scopes = itp.load_scoped_instructions(filepath)
