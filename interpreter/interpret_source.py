@@ -8,12 +8,19 @@ from draw.Iinstruction import *
 
 COMMENT_PATTERN = re.compile(r"""^//|^/\*\*|^\*|^--""")
 REMOVE_KEYWORDS = [' ', "public", "private", ';']
-FUNCTION_IDENTIFIERS = ["void", "boolean", "int", "float"]
+VARIABLE_TAGS = ["byte", "short", "int", "long", "float", "double", "boolean", "char", "String"]
+FUNCTION_IDENTIFIERS = ["void"]
+FUNCTION_IDENTIFIERS.extend(VARIABLE_TAGS)
 
 WHILE_TAG = "solange " #german for 'while'. Change this depending on your language
 
 REPLACE = dict((re.escape(k), '') for k in REMOVE_KEYWORDS)
 remove_pattern = re.compile("|".join(REPLACE.keys()))
+
+variable_regex = "^("
+for kw in FUNCTION_IDENTIFIERS:
+    variable_regex += fr"""{kw}|"""
+variable_pattern = re.compile(variable_regex[0:-1]+"$(.*)")
 
 function_regex = "^("
 for kw in FUNCTION_IDENTIFIERS:
