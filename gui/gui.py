@@ -1,5 +1,5 @@
 from gui.utils import nassi, output
-from interpreter.interpret_source import JavaSyntaxError, ScopeNotFoundException, InterpreterException
+from errors.custom import JavaSyntaxError, ScopeNotFoundException, InterpreterException, NoPathError
 
 from enum import IntEnum
 import PySimpleGUI as sg
@@ -59,8 +59,12 @@ class Gui:
 
         toolbar = [
             [
+                sg.Button(button_text='Create Image', key='-CREATE-'),
+                sg.Button(button_text='Credits', key='-CREDITS-'),
+                # * fun feature
+                sg.Button(button_text='Donate', key='-DONATE-'),
                 #sg.ButtonMenu('', menu_def),
-                sg.Button('TEST')
+                
             ]
         ]
 
@@ -104,7 +108,7 @@ class Gui:
             ],
             [
                 sg.Listbox(
-                    values=[], enable_events=True, size=(40, 20), key="-OUTPUT FILE LIST-"
+                    values=[], enable_events=True, size=(40, 20), key="-OUTPUT FILE LIST-",
                 )
             ],
         ]
@@ -127,9 +131,10 @@ class Gui:
             [
                 sg.Column(input_column),
                 sg.VSeparator(),
-                sg.Column(execute_column),
+                #sg.Column(execute_column),
                 sg.VSeparator(),
                 sg.Column(file_list_column),
+                sg.VSeparator(),
                 sg.VSeparator(),
                 sg.Column(diagramm_viewer_column),
             ]
@@ -149,7 +154,7 @@ class Gui:
 
         logging.debug('init layout GUI')
 
-        window = sg.Window('Nassi Viewer', layout_with_toolbar, resizable=True)
+        window = sg.Window('Nassi Viewer', layout_with_toolbar, resizable=False)
 
         return window
 
@@ -308,8 +313,14 @@ class Gui:
             # output view
 
             if event == '-REFRESH-':
-                fnames = output(values)
-                window['-OUTPUT FILE LIST-'].update(fnames)
+                try:
+                    fnames = output(values)
+                    window['-OUTPUT FILE LIST-'].update(fnames)
+                except NoPathError:
+                    pass
+                    sg.popup_error('You dont set an output path. Try again.')
+                except:
+                    pass
 
         window.close()
         if exists_choice:

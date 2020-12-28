@@ -1,7 +1,7 @@
 import os
 from typing import Optional
 
-
+from errors.custom import NoPathError
 from interpreter.NassiShneidermann import NassiShneidermanDiagram, Overwrite_behaviour, OB
 from draw.Iinstruction import *
 
@@ -17,6 +17,8 @@ def nassi(input_path: str, output_path: str, outputname: str, gui, behaviour: Ov
 
 def output(values):
     output_path = values['-OUTPUT FOLDER-']
+    if output_path == '':
+        raise NoPathError
     try:
         file_list = os.listdir(output_path)
     except:

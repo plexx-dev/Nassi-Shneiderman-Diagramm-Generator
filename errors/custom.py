@@ -6,3 +6,6 @@ class JavaSyntaxError(Exception):
 
 class ScopeNotFoundException(Exception):
     pass
+
+class NoPathError(Exception):
+    pass
