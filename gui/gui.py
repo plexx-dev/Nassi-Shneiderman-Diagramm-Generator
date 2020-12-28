@@ -9,13 +9,38 @@ import secrets
 import logging
 import time
 
+#new popup
+
+       
+
+class layout_popup: 
+    def __init__(self):
+        text_column = [
+            [
+                sg.Text('What should the program do if a file already exists?')
+            ]
+        ]
+
+        choices = [
+            [
+                sg.Button(button_text='skip', key='-SKIP-'),
+                sg.Button(button_text='overwrite', key='-OVERWRITE-'),
+                sg.Button(button_text='create expicit name', key='-EXPICIT-'),
+            ]
+        ]
+        self.layout = [
+                [
+                    sg.Column(text_column),
+                    sg.Column(choices),
+                ]
+        ]
 
 class Gui:
 
     def __init__(self, theme: str, debug_mode: bool):
         self.debug_mode = debug_mode
-        window, popup_3_layout = self.init_gui(theme=theme)
-        self.show_gui(window=window, layout_popup=popup_3_layout)
+        window = self.init_gui(theme=theme)
+        self.show_gui(window=window)
 
     def get_debug_mode(self, mode: bool):
         loging_level = logging.INFO
@@ -99,40 +124,15 @@ class Gui:
         ]
 
 
-        #new popup
-
-       
-
-        class layout_popup: 
-            def __init__(self):
-                text_column = [
-                    [
-                        sg.Text('What should the program do if a file already exists?')
-                    ]
-                ]
-
-                choices = [
-                    [
-                        sg.Button(button_text='skip', key='-SKIP-'),
-                        sg.Button(button_text='overwrite', key='-OVERWRITE-'),
-                        sg.Button(button_text='create expicit name', key='-EXPICIT-'),
-                    ]
-                ]
-                self.layout = [
-                        [
-                            sg.Column(text_column),
-                            sg.Column(choices),
-                        ]
-                ]
 
         logging.debug('init layout GUI')
 
         window = sg.Window('Nassi Viewer', layout, resizable=True)
 
 
-        return window, layout_popup
+        return window
 
-    def show_gui(self, window: sg.Window, layout_popup):
+    def show_gui(self, window: sg.Window):
         
         class Overwrite_behaviour(IntEnum):
             SKIP = 0
