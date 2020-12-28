@@ -49,7 +49,7 @@ class Gui:
                 sg.HSeparator(),
             ],
             [
-                sg.Text('Optional: choose custom font and name.'),
+                sg.Text('Optional: choose custom font.'),
             ],
             [
                 sg.Text('TTF  File'),
@@ -137,24 +137,8 @@ class Gui:
                             if file_there((output_path + '/' + output_name)) is True:
                                 proceed = sg.popup_yes_no(
                                     'File already exists! Continue?', title='File alreday exists!')
-                                if proceed == 'Yes':
-                                    nassi(filepath=file_path, output_path=output_path, outputname=output_name, gui=self,
-                                          font_filepath=font_filepath)
-                                    
-
-                                    fnames = output(values)
-                                    sg.popup_annoying('Successfully created!', title='Created',
-                                                      auto_close_duration=2, auto_close=True, text_color='green')
-                                    window['-OUTPUT FILE LIST-'].update(fnames)
-                                elif proceed == 'No':
-                                    logging.warning('Cancelled. No image created')
-                                else:
-                                    logging.warning(
-                                        'You did not make a decision! Try again!')
-                                    sg.popup_annoying('You did not make a decision! Try again!', title='FAIL',
-                                                      auto_close_duration=2, auto_close=True, text_color='orange')
-                            else:                             
-                                nassi(filepath=file_path, output_path=output_path, outputname=output_name, gui=self,
+                                                         
+                                nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
                                           font_filepath=font_filepath)
 
                                 fnames = output(values)
