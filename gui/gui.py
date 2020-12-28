@@ -13,8 +13,8 @@ class Gui:
 
     def __init__(self, theme: str, debug_mode: bool):
         self.debug_mode = debug_mode
-        window = self.init_gui(theme=theme)
-        self.show_gui(window=window)
+        window, popup_3_choice = self.init_gui(theme=theme)
+        self.show_gui(window=window, popup_3_choice=popup_3_choice)
 
     def get_debug_mode(self, mode: bool):
         loging_level = logging.INFO
@@ -96,13 +96,40 @@ class Gui:
                 sg.Column(diagramm_viewer_column),
             ]
         ]
+
+
+        #new popup
+
+        text_column = [
+            [
+                sg.Text()
+            ]
+        ]
+
+        choices = [
+            [
+                sg.Button(button_text='Skip'),
+                sg.Button(button_text='Overwrite'),
+                sg.Button(),
+            ]
+        ]
+
+        layout_popup = [
+            [
+                sg.Column(text_column),
+
+            ]
+        ]
+
         logging.debug('init layout GUI')
 
         window = sg.Window('Nassi Viewer', layout, resizable=True)
-        return window
 
-    def show_gui(self, window: sg.Window):
+        popup_3_choice = sg.Window(title='',no_titlebar=True, layout=layout_popup, resizable=False)
+        return window, popup_3_choice
 
+    def show_gui(self, window: sg.Window, popup_3_choice: sg.Window):
+        
         font_filepath = None
         output_name = None
 
@@ -119,6 +146,7 @@ class Gui:
             
             # execute Column
             if event == '-CREATE-':
+                popup_3_choice.read()
                 logging.debug(('event = ' + str(event) +
                                'values = ' + str(values)))
                 try:
@@ -129,15 +157,15 @@ class Gui:
                             file_path = os.path.join(
                                 values["-JAVA FOLDER-"],
                             )
-
                             output_path = values['-OUTPUT FOLDER-']
                             if output_name is None:
                                         sg.popup_auto_close('You didn\'t set a name for the image, it will be named randomly.')
                                         output_name = secrets.token_hex(16)
-                            if file_there((output_path + '/' + output_name)) is True:
+                            if file_there((output_path + '/')) is True:
                                 proceed = sg.popup_yes_no(
-                                    'File already exists! Continue?', title='File alreday exists!')
-                                                         
+                                    '''What should the program do if a file already exists?
+                                        ''')
+                                popup_3_choice.read()
                                 nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
                                           font_filepath=font_filepath)
 
