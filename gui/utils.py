@@ -33,10 +33,4 @@ def output(values):
 
 
 def file_there(file):
-    try:
-        open((file + '.png'))
-        return True
-    except FileNotFoundError:
-        return False
-    except:
-        raise
+    return os.path.exists(str(file))
