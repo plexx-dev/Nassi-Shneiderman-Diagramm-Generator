@@ -1,20 +1,18 @@
-import logging
 import os
 from typing import Optional
 
 
-from interpreter.NassiShneidermann import NassiShneidermanDiagram
+from interpreter.NassiShneidermann import NassiShneidermanDiagram, Overwrite_behaviour, OB
 from draw.Iinstruction import *
 
-
-def nassi(input_path: str, output_path: str, outputname: str, gui, font_filepath: Optional[str]=None):
+def nassi(input_path: str, output_path: str, outputname: str, gui, behaviour: Overwrite_behaviour, font_filepath: Optional[str]=None):
     NSD = NassiShneidermanDiagram(gui.debug_mode)
     
     if font_filepath != None:
         NSD.set_font(font_filepath)
     
     NSD.load_from_file(input_path)
-    NSD.convert_to_image(output_path, outputname, x_size=750)
+    NSD.convert_to_image(output_path, outputname, on_conflict=behaviour, x_size=750)
 
 
 def output(values):
