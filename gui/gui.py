@@ -164,7 +164,7 @@ class Gui:
         output_name = None
         exists_choice = None
 
-        sg.popup('The whole program is WIP. A fix is in the making.',
+        sg.popup('The whole program is WIP.',
                  auto_close=True, auto_close_duration=5)
 
         while True:
