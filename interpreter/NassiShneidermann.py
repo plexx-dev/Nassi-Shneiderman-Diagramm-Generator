@@ -39,14 +39,14 @@ class NassiShneidermanDiagram:
             h += inst.getblksize()
         return int(h)
 
-    def _save_scope(self, scope_name: str, scope_instructions: List[Iinstruction]):
+    def _save_scope(self, scope_index: int, output_path: str, x_size: int):
         """DEBUGING ONLY"""
-        image_y_sz = 1000
-        x, y, = 0, 0
-        with NSD_writer(f"./{scope_name}", 1000, image_y_sz):
+        scope = self.function_scopes[scope_index]
+        image_y_sz = self._get_image_height(scope_index)
+        with NSD_writer(output_path, x_size, image_y_sz):
             x, y = 0, 0
-            for instruction in scope_instructions:
-                x, y = instruction.to_image(x, y, 1000)
+            for instruction in scope.contents:
+                x, y = instruction.to_image(x, y, x_size)
 
     def check_conflicts(self, filepath:str, behavoiur: Overwrite_behaviour):
         if os.path.exists(filepath + ".png"):
@@ -67,16 +67,11 @@ class NassiShneidermanDiagram:
             if filepath is not None:
                 logging.info(f"Saving NSD to {filepath}...")
 
-                image_y_sz = self._get_image_height(i)
                 try:
-                    with NSD_writer(filepath, x_size, image_y_sz):
-                        scope = self.function_scopes[i].contents
-                        x, y = 0, 0
-                        for instruction in scope:
-                            x, y = instruction.to_image(x, y, x_size)
-                        logging.info("Done!")
+                    self._save_scope(i, filepath, x_size)
                 except Exception as e:
                     logging.error(f"Failed to save image {filepath} with error '{e}'")
+                    raise e
                 except:
                     logging.error(f"Failed to save image {filepath}. Unknown error")
                     raise
