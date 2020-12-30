@@ -8,23 +8,23 @@ import logging
 
 def nassi(input_path: str, output_path: str, outputname: str, gui, behaviour: Overwrite_behaviour, font_filepath: Optional[str]=None):
     NSD = NassiShneidermanDiagram(gui.debug_mode)
-    directory = output_path + '/' + outputname
+    output_directory = output_path + '/' + outputname
     
     if font_filepath != None:
         NSD.set_font(font_filepath)
 
     try:
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+        if not os.path.exists(output_directory):
+            os.makedirs(output_directory)
     except OSError:
-        logging.error('Error: Creating directory. ' +  directory)
+        logging.error('Error: Creating directory. ' +  output_directory)
     except:
         raise
     
     NSD.load_from_file(input_path)
-    NSD.convert_to_image(directory, on_conflict=behaviour, x_size=750)
+    NSD.convert_to_image(output_directory, on_conflict=behaviour, x_size=750)
 
-    return directory
+    return output_directory
 
 
 def output(folder):
