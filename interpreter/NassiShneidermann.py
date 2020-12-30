@@ -71,6 +71,7 @@ class NassiShneidermanDiagram:
                     self._save_scope(i, filepath, x_size)
                 except Exception as e:
                     logging.error(f"Failed to save image {filepath} with error '{e}'")
+                    raise e
                 except:
                     logging.error(f"Failed to save image {filepath}. Unknown error")
                     raise
