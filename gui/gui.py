@@ -228,7 +228,7 @@ class Gui:
                             nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
                                   font_filepath=font_filepath, behaviour=exists_choice, types=types, remove_tages=modifier, comments=comments)
 
-                            fnames = output(values)
+                            fnames = output(values['-OUTPUT FOLDER-'])
                             sg.popup_annoying('Successfully created!', title='Created',
                                               auto_close_duration=2, auto_close=True, text_color='green')
                             window['-OUTPUT FILE LIST-'].update(fnames)
@@ -257,11 +257,9 @@ class Gui:
                             raise
 
                     elif values['-JAVA FOLDER-']:
-                        logging.error('No Output')
                         sg.popup_annoying('No Output', title='Error',
                                           auto_close_duration=5, auto_close=True)
                     elif values['-OUTPUT FOLDER-']:
-                        logging.error('No Input')
                         sg.popup_annoying('No Input', title='Error',
                                           auto_close_duration=5, auto_close=True)
                     else:
@@ -272,7 +270,7 @@ class Gui:
 
             if event == '-CREDITS-':
                 sg.popup(
-                    'This was made by Plexx, Weckyy702 and Oleting. Libraries used are PySimpleGUI and Pillow', title='Credits')
+                    'This was made by plexx(Image generation), Weckyy702(Interpreter) and oleting(Frontend). Used Python 3.9.1, Libraries PySimpleGUI and Pillow.', title='Credits')
 
             if event == '-DONATE-':
                 logging.debug(('event = ' + str(event)))
@@ -285,7 +283,7 @@ class Gui:
             if event == '-OUTPUT FOLDER-':
                 logging.debug(('event = ' + str(event) +
                                ' value = ' + str(values['-OUTPUT FOLDER-'])))
-                fnames = output(values)
+                fnames = output(values['-OUTPUT FOLDER-'])
                 window['-OUTPUT FILE LIST-'].update(fnames)
             elif event == '-OUTPUT FILE LIST-':
                 logging.debug(('event = ' + str(event) +
@@ -331,7 +329,7 @@ class Gui:
                     raw_types = raw_types.replace(' ', '')
                     types = raw_types.split(',')
                 except:
-                    sg.popup_error('You do not hit "Enter"')
+                    sg.popup('You do not hit "Enter"')
                 
             if event == '-MODIFIER-':
                 raw_modifier = sg.popup_get_text('Enter customn modifier (public, private, ...): ', default_text=modifier)
@@ -339,7 +337,7 @@ class Gui:
                     raw_modifier = raw_modifier.replace(' ', '')
                     modifier = raw_modifier.split(',')
                 except:
-                    sg.popup_error('You do not hit "Enter"')
+                    sg.popup('You do not hit "Enter"')
 
             if event == '-COMMENTS-':
                 raw_comments = sg.popup_get_text('Enter customn comments (//, #, ...): ', default_text=comments)
@@ -347,16 +345,16 @@ class Gui:
                     raw_comments = raw_comments.replace(' ', '')
                     comments = raw_comments.split(',')
                 except:
-                    sg.popup_error('You do not hit "Enter"')
+                    sg.popup('You do not hit "Enter"')
             # output view
 
             if event == '-REFRESH-':
                 try:
-                    fnames = output(values)
+                    fnames = output(values['-OUTPUT FOLDER-'])
                     window['-OUTPUT FILE LIST-'].update(fnames)
                 except NoPathError:
                     pass
-                    sg.popup_error('You dont set an output path. Try again.')
+                    sg.popup('You dont set an output path. Try again.')
                 except:
                     pass
 

@@ -28,8 +28,7 @@ def nassi(input_path: str, output_path: str, outputname: str, types, remove_tags
 
 
 
-def output(values):
-    output_path = values['-OUTPUT FOLDER-']
+def output(output_path):
     if output_path == '':
         raise NoPathError
     try:
