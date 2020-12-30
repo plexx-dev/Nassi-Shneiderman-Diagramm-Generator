@@ -63,8 +63,6 @@ class Gui:
                 sg.Button(button_text='Credits', key='-CREDITS-'),
                 # * fun feature
                 sg.Button(button_text='Donate', key='-DONATE-'),
-                #sg.ButtonMenu('', menu_def),
-                
             ]
         ]
 
@@ -83,7 +81,7 @@ class Gui:
             [
                 sg.Text('Output name'),
                 sg.In(size=(25, 1), enable_events=True, key='-OUTPUT NAME-'),
-                sg.Button('Confirm', key='-SET OUTPUT NAME-'),
+                #sg.Button('Confirm', key='-SET OUTPUT NAME-'),
             ],
             [
                 sg.HSeparator(),
@@ -96,6 +94,18 @@ class Gui:
                 sg.In(size=(25, 1), enable_events=True, key="-TTF FOLDER-"),
                 sg.FileBrowse(file_types=(('TTF-File', '*.ttf'), ('ALL Files',
                                                                   '*.*')), key='-TTF FILE-'),
+            ],
+            [
+                sg.Button(button_text='Add costum types', key='-TYPES-')
+            ],
+            [
+                # modifier
+                sg.Button(button_text='Add costum modifier', key='-MODIFIER-')
+                # comments
+            ],
+            [
+                sg.Button(button_text='Add costum comments', key='-COMMENTS-')
+                # comments
             ],
 
         ]
@@ -163,6 +173,9 @@ class Gui:
         font_filepath = None
         output_name = None
         exists_choice = None
+        types = None
+        comments = None
+        modifier = None
 
         sg.popup('The whole program is WIP.',
                  auto_close=True, auto_close_duration=5)
@@ -175,7 +188,7 @@ class Gui:
                 logging.debug(('Exit GUI'))
                 break
 
-            # execute Column
+            # toolbar
             if event == '-CREATE-':
                 logging.debug(('event = ' + str(event) +
                                'values = ' + str(values)))
@@ -213,7 +226,7 @@ class Gui:
                                 output_name = secrets.token_hex(16)
 
                             nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
-                                  font_filepath=font_filepath, behaviour=exists_choice)
+                                  font_filepath=font_filepath, behaviour=exists_choice, types=types, remove_tages=modifier, comments=comments)
 
                             fnames = output(values)
                             sg.popup_annoying('Successfully created!', title='Created',
@@ -266,6 +279,7 @@ class Gui:
                 sg.popup_notify(
                     ('You donated $' + str(random.randint(500, 100000000)) + '.'), title='Thanks')
 
+
             # needed Input
 
             if event == '-OUTPUT FOLDER-':
@@ -300,7 +314,7 @@ class Gui:
 
             # optional Input
 
-            if event == '-SET OUTPUT NAME-':
+            if event == '-OUTPUT NAME-':
                 output_name = values['-OUTPUT NAME-']
 
             if event == '-TTF FOLDER-':
@@ -310,6 +324,30 @@ class Gui:
                 window['-TTF FOLDER-'].update(values['-TTF FILE-'])
                 font_filepath = values['-TTF FILE-']
 
+            if event == '-TYPES-':
+                # 
+                raw_types = sg.popup_get_text('Enter customn keywords (int, double, ...): ', default_text=types)
+                try:
+                    raw_types = raw_types.replace(' ', '')
+                    types = raw_types.split(',')
+                except:
+                    sg.popup_error('You do not hit "Enter"')
+                
+            if event == '-MODIFIER-':
+                raw_modifier = sg.popup_get_text('Enter customn modifier (public, private, ...): ', default_text=modifier)
+                try:
+                    raw_modifier = raw_modifier.replace(' ', '')
+                    modifier = raw_modifier.split(',')
+                except:
+                    sg.popup_error('You do not hit "Enter"')
+
+            if event == '-COMMENTS-':
+                raw_comments = sg.popup_get_text('Enter customn comments (//, #, ...): ', default_text=comments)
+                try:
+                    raw_comments = raw_comments.replace(' ', '')
+                    comments = raw_comments.split(',')
+                except:
+                    sg.popup_error('You do not hit "Enter"')
             # output view
 
             if event == '-REFRESH-':

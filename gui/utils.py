@@ -5,8 +5,8 @@ from typing import Optional
 import os
 import logging
 
-
-def nassi(input_path: str, output_path: str, outputname: str, gui, behaviour: Overwrite_behaviour, font_filepath: Optional[str]=None):
+#types=types, remove_tages=modifier, comments=comments
+def nassi(input_path: str, output_path: str, outputname: str, types, remove_tags, comments, gui, behaviour: Overwrite_behaviour, font_filepath: Optional[str]=None):
     NSD = NassiShneidermanDiagram(gui.debug_mode)
     output_directory = output_path + '/' + outputname
     
@@ -21,7 +21,7 @@ def nassi(input_path: str, output_path: str, outputname: str, gui, behaviour: Ov
     except:
         raise
     
-    NSD.load_from_file(input_path)
+    NSD.load_from_file(input_path, types, remove_tags, comments)
     NSD.convert_to_image(output_directory, on_conflict=behaviour, x_size=750)
 
     return output_directory
