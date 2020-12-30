@@ -6,7 +6,7 @@ import os.path
 import secrets
 
 from draw.Iinstruction import Iinstruction
-from interpreter import interpret_source as itp
+from interpreter.interpret_source import JavaInterpreter
 from draw.code_to_image_wrapper import NSD_writer
 import draw.code_to_image as cti
 
@@ -70,4 +70,5 @@ class NassiShneidermanDiagram:
                     raise
 
     def load_from_file(self, filepath:str):
-        self.function_scopes = itp.load_scoped_instructions(filepath)
+        itp = JavaInterpreter(filepath)
+        self.function_scopes = itp.load_instruction_scopes()

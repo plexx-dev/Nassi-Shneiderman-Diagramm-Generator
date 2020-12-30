@@ -1,8 +1,11 @@
-//except for this line, this is what interpret_source.load_src returns
 importgreenfoot.*;//(World,Actor,GreenfootImage,GreenfootandMouseInfo)
 classRoverextendsActor
 {
 Displayanzeige;
+/**
+*thisfunctionistobeimplementedbytheuser
+*dependingontheneededactions
+*/
 voidact()
 {
 S66Nr3(7);
@@ -81,6 +84,11 @@ fahreZeileDreheRunter(true);
 }
 fahreZeileDreheRunter(false);
 }
+/**
+*DerRoverbewegtsicheinFeldinFahrtrichtungweiter.
+*SolltesichinFahrtrichtungeinObjektderKlasseHuegelbefindenoderersichanderGrenzederWeltbefinden,
+*dannerscheinteineentsprechendeMeldungaufdemDisplay.
+*/
 voidfahre()
 {
 intposX=getX();
@@ -103,6 +111,10 @@ if(posX==getX()&&posY==getY()&&!huegelVorhanden("vorne"))
 nachricht("Ichkannmichnichtbewegen");
 }
 }
+/**
+*DerRoverdrehtsichum90GradindieRichtung,diemitrichtung(ï¿œlinksï¿œoderï¿œrechtsï¿œ)ï¿œbergebenwurde.
+*SollteeinandererText(String)als"rechts"oder"links"ï¿œbergebenwerden,dannerscheinteineentsprechendeMeldungaufdemDisplay.
+*/
 voiddrehe(Stringrichtung)
 {
 if(richtung.equals("rechts")){
@@ -115,6 +127,10 @@ setRotation(getRotation()+180);
 nachricht("KeinenKorrekteRichtunggegeben!");
 }
 }
+/**
+*DerRovergibtdurcheinenWahrheitswert(trueoderfalse)zurï¿œck,obsichaufseinerPositioneinObjektderKlasseGesteinbefindet.
+*EineentsprechendeMeldungerscheintauchaufdemDisplay.
+*/
 booleangesteinVorhanden()
 {
 if(getOneIntersectingObject(Gestein.class)!=null)
@@ -124,6 +140,11 @@ returntrue;
 }
 returnfalse;
 }
+/**
+*DerRoverï¿œberprï¿œft,obsichinrichtung("rechts","links",oder"vorne")einObjektderKlasseHuegelbefindet.
+*DasErgebniswirdaufdemDisplayangezeigt.
+*SollteeinandererText(String)als"rechts","links"oder"vorne"ï¿œbergebenwerden,dannerscheinteineentsprechendeMeldungaufdemDisplay.
+*/
 booleanhuegelVorhanden(Stringrichtung)
 {
 introt=getRotation();
@@ -161,6 +182,10 @@ nachricht("Befehlnichtkorrekt!");
 }
 returnfalse;
 }
+/**
+*DerRoverermitteltdenWassergehaltdesGesteinsaufseinerPositionundgibtdiesenaufdemDisplayaus.
+*SolltekeinObjektderKlasseGesteinvorhandensein,dannerscheinteineentsprechendeMeldungaufdemDisplay.
+*/
 voidanalysiereGestein()
 {
 if(gesteinVorhanden())
@@ -174,10 +199,17 @@ else
 nachricht("HieristkeinGestein");
 }
 }
+/**
+*DerRovererzeugteinObjektderKlasseï¿œMarkierungï¿œaufseinerPosition.
+*/
 voidsetzeMarke()
 {
 getWorld().addObject(newMarke(),getX(),getY());
 }
+/**
+**DerRovergibtdurcheinenWahrheitswert(trueoderfalse)zurï¿œck,obsichaufseinerPositioneinObjektderMarkebefindet.
+*EineentsprechendeMeldungerscheintauchaufdemDisplay.
+*/
 booleanmarkeVorhanden()
 {
 if(getOneIntersectingObject(Marke.class)!=null)
@@ -206,7 +238,7 @@ voiddisplayAusschalten()
 {
 getWorld().removeObject(anzeige);
 }
-protectedvoidaddedToWorld(Worldworld)
+voidaddedToWorld(Worldworld)
 {
 setImage("images/rover.png");
 world=getWorld();
