@@ -164,7 +164,7 @@ class Gui:
         output_name = None
         exists_choice = None
 
-        sg.popup('The Interpreter is WIP and cannot interpret classes or function definitions as those do not exist in Nass-Shneidermann Diagrams. A fix is in the making.',
+        sg.popup('The whole program is WIP. A fix is in the making.',
                  auto_close=True, auto_close_duration=5)
 
         while True:
@@ -239,7 +239,7 @@ class Gui:
                         except Exception as e:
                             logging.error(
                                 ('Failed to create Image with values = ' + str(values)))
-                            sg.popup_error(('Failed to create an image. ' + str(e)))
+                            sg.popup_error(('Failed to create an image of one funktion correctly. ' + str(e)) + 'There may be some images created. ')
                         except:    
                             raise
 
