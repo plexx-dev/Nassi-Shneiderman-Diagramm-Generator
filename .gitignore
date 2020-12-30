@@ -1,5 +1,6 @@
 __pycache__/
 res/output/
+res/input/
 .vscode/
 *.json
 *.pyc
