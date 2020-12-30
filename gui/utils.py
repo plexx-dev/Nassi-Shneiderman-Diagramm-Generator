@@ -1,22 +1,38 @@
-import os
-from typing import Optional
-
 from errors.custom import NoPathError
 from interpreter.NassiShneidermann import NassiShneidermanDiagram, Overwrite_behaviour, OB
-from draw.Iinstruction import *
+
+from typing import Optional
+import os
+import logging
+
 
 def nassi(input_path: str, output_path: str, outputname: str, gui, behaviour: Overwrite_behaviour, font_filepath: Optional[str]=None):
     NSD = NassiShneidermanDiagram(gui.debug_mode)
+    directory = output_path + '/' + outputname
     
     if font_filepath != None:
         NSD.set_font(font_filepath)
+
+    try:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+    except OSError:
+        logging.error('Error: Creating directory. ' +  directory)
+    except:
+        raise
     
     NSD.load_from_file(input_path)
-    NSD.convert_to_image(output_path, outputname, on_conflict=behaviour, x_size=750)
+    NSD.convert_to_image(directory, on_conflict=behaviour, x_size=750)
+
+    return directory
 
 
-def output(values):
-    output_path = values['-OUTPUT FOLDER-']
+def output(folder):
+    if folder:
+        output_path = folder
+    else:
+        raise
+
     if output_path == '':
         raise NoPathError
     try:
