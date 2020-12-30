@@ -241,10 +241,11 @@ class Gui:
                         except InterpreterException:
                             logging.error(
                                 ('||InterpreterException|| Failed to create Image with values = ' + str(values)))
-                        except:
+                        except Exception as e:
                             logging.error(
                                 ('Failed to create Image with values = ' + str(values)))
-                            sg.popup_error(('Failed to create an image. '))
+                            sg.popup_error(('Failed to create an image. ' + str(e)))
+                        except:    
                             raise
 
                     elif values['-JAVA FOLDER-']:
@@ -289,7 +290,11 @@ class Gui:
                 except FileNotFoundError:
                     sg.popup_error('FileNotFoundError',
                                    title='FileNotFoundError',)
+                except Exception as e:
+                    sg.popup_cancel(str(e), title='Error')
+                    logging.error('Try to open a .png. {e}')
                 except:
+                    logging.error('Try to open a .png. Unknown error.')
                     pass
 
             if event == '-JAVA FOLDER-':
