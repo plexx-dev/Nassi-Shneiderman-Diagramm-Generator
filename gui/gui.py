@@ -1,7 +1,7 @@
 from gui.utils import nassi, output
 from errors.custom import JavaSyntaxError, ScopeNotFoundException, InterpreterException, NoPathError
+from interpreter.NassiShneidermann import OB
 
-from enum import IntEnum
 import PySimpleGUI as sg
 import os.path
 import random
@@ -160,11 +160,6 @@ class Gui:
 
     def show_gui(self, window: sg.Window):
 
-        class Overwrite_behaviour(IntEnum):
-            SKIP = 0
-            OVERWWRITE = 1
-            RANDOM_NAME = 2
-
         font_filepath = None
         output_name = None
         exists_choice = None
@@ -196,13 +191,13 @@ class Gui:
 
                         while event_popup != '-OVERWRITE-' or event_popup != '-EXPICIT-' or event_popup != '-SKIP-':
                             if event_popup == '-OVERWRITE-':
-                                exists_choice = Overwrite_behaviour(1)
+                                exists_choice = OB.OVERWWRITE
                                 break
                             if event_popup == '-EXPICIT-':
-                                exists_choice = Overwrite_behaviour(2)
+                                exists_choice = OB.RANDOM_NAME
                                 break
                             if event_popup == '-SKIP-':
-                                exists_choice = Overwrite_behaviour(0)
+                                exists_choice = OB.SKIP
                                 break
                             if event == sg.WIN_CLOSED or event == 'Quit':
                                 break
