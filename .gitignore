@@ -9,3 +9,4 @@ build/
 run.spec
 dist/
 .vscode/launch.json
+res/input/input_large.java
