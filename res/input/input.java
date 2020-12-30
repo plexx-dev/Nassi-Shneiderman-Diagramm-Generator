@@ -274,7 +274,6 @@ public class Rover extends Actor
 
     protected void addedToWorld(World world)
     {
-
         setImage("images/rover.png");
         world = getWorld();
         anzeige = new Display();
@@ -285,7 +284,6 @@ public class Rover extends Actor
             setLocation(getX(),1);
         }
         anzeige.anzeigen("Ich bin bereit");
-
     }
 
     class Display extends Actor

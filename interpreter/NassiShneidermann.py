@@ -66,15 +66,20 @@ class NassiShneidermanDiagram:
             filepath = self.check_conflicts(filepath, on_conflict)
             if filepath is not None:
                 logging.info(f"Saving NSD to {filepath}...")
-                print(f"Saving... to {filepath}")
 
                 image_y_sz = self._get_image_height(i)
-                with NSD_writer(filepath, x_size, image_y_sz):
-                    scope = self.function_scopes[i].contents
-                    x, y = 0, 0
-                    for instruction in scope:
-                        x, y = instruction.to_image(x, y, x_size)
-                    logging.info("Done!")
+                try:
+                    with NSD_writer(filepath, x_size, image_y_sz):
+                        scope = self.function_scopes[i].contents
+                        x, y = 0, 0
+                        for instruction in scope:
+                            x, y = instruction.to_image(x, y, x_size)
+                        logging.info("Done!")
+                except Exception as e:
+                    logging.error(f"Failed to save image {filepath} with error '{e}'")
+                except:
+                    logging.error(f"Failed to save image {filepath}. Unknown error")
+                    raise
 
     def load_from_file(self, filepath:str):
         self.function_scopes = itp.load_scoped_instructions(filepath)

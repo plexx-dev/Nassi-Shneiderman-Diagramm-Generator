@@ -7,7 +7,7 @@ from typing import List, Match, Tuple
 from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
 
-logging.warning("""As the Interpreter is still WIP, some Java language features are not supported. These include:
+logging.warning("""Because the Interpreter is still WIP, some Java language features are not supported. These include:
     *else if statements
     *for loops
 Please remove these features from the source code as they will result in incorrect behaviour""")
@@ -23,7 +23,7 @@ class Function_scope(Iterable):
         return self.contents.__iter__()
 
 COMMENT_PATTERN = re.compile(r"""^//|^/\*\*|^\*|^--""")
-REMOVE_KEYWORDS = [' ', "public", "private", "final"]
+REMOVE_KEYWORDS = [' ', ';', "public", "private", "final", "protected"]
 VARIABLE_TAGS = ["byte", "short", "int", "long", "float", "double", "boolean", "char", "String"]
 FUNCTION_IDENTIFIERS = ["void"]
 FUNCTION_IDENTIFIERS.extend(VARIABLE_TAGS)
@@ -34,14 +34,15 @@ REPLACE = dict((re.escape(k), '') for k in REMOVE_KEYWORDS)
 remove_pattern = re.compile("|".join(REPLACE.keys()))
 
 variable_regex = "^("
-for kw in FUNCTION_IDENTIFIERS:
+for kw in VARIABLE_TAGS:
     variable_regex += fr"""{kw}|"""
-variable_pattern = re.compile(variable_regex[0:-1]+")(.*)")
+variable_pattern = re.compile(variable_regex[0:-1]+")(.*=|.*;)(.*)")
+print(variable_pattern)
 
 function_regex = "^("
 for kw in FUNCTION_IDENTIFIERS:
     function_regex += fr"""{kw}|"""
-function_regex = function_regex[0:-1]+ r""").*([(].*[)].*)"""
+function_regex = function_regex[0:-1]+ ").*([(].*[)].*)"
 
 function_pattern = re.compile(function_regex)
 
@@ -150,8 +151,12 @@ def handle_do_while(line: str, src: List[str], i: int) -> Tuple[Iinstruction, in
 def handle_variable(line:str, src: List[str], i: int) -> Tuple[Iinstruction, int]:
     groups = variable_pattern.match(line).groups()
     var_type = groups[0]
-    var_name = groups[1]
-    return generic_instruction(f"{var_type} {var_name}"), i
+    var_name = groups[1][:-1]
+    var_value = groups[2]
+    if var_value == "":
+        return generic_instruction(f"declare variable '{var_name}' of type {var_type}"), i
+    return generic_instruction(f"declare variable '{var_name}' of type {var_type} with value {var_value}"), i
+
 
 def handle_instruction(line: str, src: List[str], i: int) -> Tuple[Iinstruction, int]:
     if line.startswith("while("):
@@ -166,9 +171,9 @@ def handle_instruction(line: str, src: List[str], i: int) -> Tuple[Iinstruction,
         logging.debug("Found do-while construct in line: %i", i+1)
         return handle_do_while(line, src, i)
 
-    # elif variable_pattern.match(line):
-    #     logging.debug("Found variable in line %i", i+1)
-    #     return handle_variable(line, src, i)
+    elif variable_pattern.match(line):
+        logging.debug("Found variable in line %i", i+1)
+        return handle_variable(line, src, i)
     
     else:
         logging.debug("found generic instruction in line %i", i+1)
