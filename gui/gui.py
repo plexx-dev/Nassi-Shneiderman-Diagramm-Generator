@@ -83,6 +83,7 @@ class Gui:
             [
                 sg.Text('Output name'),
                 sg.In(size=(25, 1), enable_events=True, key='-OUTPUT NAME-'),
+                sg.Button('Confirm', key='-SET OUTPUT NAME-'),
             ],
             [
                 sg.HSeparator(),
@@ -211,10 +212,10 @@ class Gui:
                                     'You didn\'t set a name for the image, it will be named randomly.')
                                 output_name = secrets.token_hex(16)
 
-                            folder = nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
+                            nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
                                   font_filepath=font_filepath, behaviour=exists_choice)
 
-                            fnames = output(folder=folder)
+                            fnames = output(values)
                             sg.popup_annoying('Successfully created!', title='Created',
                                               auto_close_duration=2, auto_close=True, text_color='green')
                             window['-OUTPUT FILE LIST-'].update(fnames)
@@ -270,7 +271,7 @@ class Gui:
             if event == '-OUTPUT FOLDER-':
                 logging.debug(('event = ' + str(event) +
                                ' value = ' + str(values['-OUTPUT FOLDER-'])))
-                fnames = output(values['-OUTPUT FOLDER-'])
+                fnames = output(values)
                 window['-OUTPUT FILE LIST-'].update(fnames)
             elif event == '-OUTPUT FILE LIST-':
                 logging.debug(('event = ' + str(event) +
@@ -299,7 +300,7 @@ class Gui:
 
             # optional Input
 
-            if event == '-OUTPUT NAME-':
+            if event == '-SET OUTPUT NAME-':
                 output_name = values['-OUTPUT NAME-']
 
             if event == '-TTF FOLDER-':
@@ -313,7 +314,7 @@ class Gui:
 
             if event == '-REFRESH-':
                 try:
-                    fnames = output(values['-OUTPUT FOLDER-'])
+                    fnames = output(values)
                     window['-OUTPUT FILE LIST-'].update(fnames)
                 except NoPathError:
                     pass

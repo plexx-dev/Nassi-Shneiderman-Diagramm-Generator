@@ -1,10 +1,9 @@
+import os
+from typing import Optional
+
 from errors.custom import NoPathError
 from interpreter.NassiShneidermann import NassiShneidermanDiagram, Overwrite_behaviour, OB
-
-from typing import Optional
-import os
-import logging
-
+from draw.Iinstruction import *
 
 def nassi(input_path: str, output_path: str, outputname: str, gui, behaviour: Overwrite_behaviour, font_filepath: Optional[str]=None):
     NSD = NassiShneidermanDiagram(gui.debug_mode)
@@ -27,12 +26,9 @@ def nassi(input_path: str, output_path: str, outputname: str, gui, behaviour: Ov
     return output_directory
 
 
-def output(folder):
-    if folder:
-        output_path = folder
-    else:
-        raise
 
+def output(values):
+    output_path = values['-OUTPUT FOLDER-']
     if output_path == '':
         raise NoPathError
     try:

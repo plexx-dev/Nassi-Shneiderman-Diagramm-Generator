@@ -1,5 +1,7 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
+//Comment that the interpreter may never know of
+
 public class Rover extends Actor
 {
     private Display anzeige;

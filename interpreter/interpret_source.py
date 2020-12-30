@@ -19,10 +19,16 @@ class Function_scope(Iterable):
         self.return_type = return_type
         self.args = args
 
+    def get_height(self) -> int:
+        h = 0.0
+        for inst in self.contents:
+            h += inst.getblksize()
+        return int(h)
+
     def __iter__(self):
         return self.contents.__iter__()
 
-COMMENT_PATTERN = re.compile(r"""^//|^/\*\*|^\*|^--""")
+COMMENT_PATTERN = re.compile(r"""^(//|--|#).*""")
 REMOVE_KEYWORDS = [' ', ';', "public", "private", "final", "protected"]
 VARIABLE_TAGS = ["byte", "short", "int", "long", "float", "double", "boolean", "char", "String"]
 FUNCTION_IDENTIFIERS = ["void"]
@@ -31,13 +37,12 @@ FUNCTION_IDENTIFIERS.extend(VARIABLE_TAGS)
 WHILE_TAG = "solange " #german for 'while'. Change this depending on your language
 
 REPLACE = dict((re.escape(k), '') for k in REMOVE_KEYWORDS)
-remove_pattern = re.compile("|".join(REPLACE.keys()))
+remove_pattern = re.compile("|".join(REPLACE.keys()), flags=re.MULTILINE)
 
 variable_regex = "^("
 for kw in VARIABLE_TAGS:
     variable_regex += fr"""{kw}|"""
-variable_pattern = re.compile(variable_regex[0:-1]+")(.*=|.*;)(.*)")
-print(variable_pattern)
+variable_pattern = re.compile(variable_regex[0:-1]+")(.*)=?(.*)", flags=re.MULTILINE)
 
 function_regex = "^("
 for kw in FUNCTION_IDENTIFIERS:
@@ -173,6 +178,7 @@ def handle_instruction(line: str, src: List[str], i: int) -> Tuple[Iinstruction,
 
     elif variable_pattern.match(line):
         logging.debug("Found variable in line %i", i+1)
+        print("found variable in line ", i+1)
         return handle_variable(line, src, i)
     
     else:
@@ -223,6 +229,13 @@ def get_function_scopes(src: List[str]) -> List[Function_scope]:
             functions.append(Function_scope(child_instructions, function_name, function_return_type, function_args.split(',')))
         i+=1
     return functions
+
+def remove_keywords(src: str) -> str:
+    without_comments = ""
+    for line in src.splitlines(True):
+        if line != "\n" and not COMMENT_PATTERN.match(line):
+            without_comments += line
+    return remove_pattern.sub('', without_comments)
 
 def load_scoped_instructions(filepath: str) -> List[Function_scope]:
     src = load_src(filepath)
