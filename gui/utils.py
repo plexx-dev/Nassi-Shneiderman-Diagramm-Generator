@@ -1,9 +1,10 @@
-import os
-from typing import Optional
-
 from errors.custom import NoPathError
 from interpreter.NassiShneidermann import NassiShneidermanDiagram, Overwrite_behaviour, OB
-from draw.Iinstruction import *
+
+from typing import Optional
+import os
+import logging
+
 
 def nassi(input_path: str, output_path: str, outputname: str, gui, behaviour: Overwrite_behaviour, font_filepath: Optional[str]=None):
     NSD = NassiShneidermanDiagram(gui.debug_mode)
