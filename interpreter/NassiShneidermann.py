@@ -33,16 +33,9 @@ class NassiShneidermanDiagram:
     def set_font(self, font_filepath: str):
         cti.set_font(font_filepath)
 
-    def _get_image_height(self, scope_index: int) -> int:
-        h = 0
-        for inst in self.function_scopes[scope_index]:
-            h += inst.getblksize()
-        return int(h)
-
-    def _save_scope(self, scope_index: int, output_path: str, x_size: int):
+    def _save_scope(self, scope: Function_scope, output_path: str, x_size: int):
         """DEBUGING ONLY"""
-        scope = self.function_scopes[scope_index]
-        image_y_sz = self._get_image_height(scope_index)
+        image_y_sz = scope.get_height()
         with NSD_writer(output_path, x_size, image_y_sz):
             x, y = 0, 0
             for instruction in scope.contents:
@@ -60,15 +53,15 @@ class NassiShneidermanDiagram:
                 return filepath
         return filepath
 
-    def convert_to_image(self, output_path: str, filename: str, on_conflict: Overwrite_behaviour=OB.SKIP, x_size: int=200):
-        for i in range(len(self.function_scopes)):
-            filepath = f"{output_path}/{filename}#{i}"
+    def convert_to_image(self, output_path: str, on_conflict: Overwrite_behaviour=OB.SKIP, x_size: int=200):
+        for scope in self.function_scopes:
+            filepath = f"{output_path}/{scope.name}"
             filepath = self.check_conflicts(filepath, on_conflict)
             if filepath is not None:
-                logging.info(f"Saving NSD to {filepath}...")
+                logging.info(f"Saving NSD to {filepath}.png...")
 
                 try:
-                    self._save_scope(i, filepath, x_size)
+                    self._save_scope(scope, filepath, x_size)
                 except Exception as e:
                     logging.error(f"Failed to save image {filepath} with error '{e}'")
                     raise e
