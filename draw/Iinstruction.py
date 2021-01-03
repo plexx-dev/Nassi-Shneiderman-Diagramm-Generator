@@ -162,3 +162,6 @@ class while_instruction_back(while_instruction_front):
             res += '\t' +str(inst) + ";\n"
         res += f"{'}'}while({self.instruction_text});"
         return res
+
+class for_instruction(while_instruction_front):
+    pass

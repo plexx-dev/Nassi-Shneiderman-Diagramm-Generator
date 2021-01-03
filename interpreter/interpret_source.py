@@ -166,6 +166,9 @@ class JavaInterpreter:
 
         return while_instruction_back(instruction_txt, child_instructions), idx
 
+    def _handle_for(self, line: str, idx: int):
+        return generic_instruction(line), idx
+
     def _handle_variable(self, line: str, idx: int):
         groups = self._variable_pattern.match(line).groups()
         var_type = groups[0]
@@ -187,6 +190,10 @@ class JavaInterpreter:
         elif line.startswith("do"):
             logging.debug("Found do-while construct in line: %i", idx+1)
             return self._handle_do_while(line, idx)
+
+        elif line.startswith("for("):
+            logging.debug("Found for construct in line: %i", idx+1)
+            return self._handle_for(line, idx)
 
         elif self._variable_pattern.match(line):
             logging.debug("Found variable in line %i", idx+1)
