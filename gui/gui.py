@@ -14,17 +14,20 @@ import time
 class Gui:
 
     def __init__(self, theme: str, debug_mode: bool):
+        # Constructor of the gui
         self.debug_mode = debug_mode
         window = self.init_gui(theme=theme)
-        self.show_gui(window=window)
+        self.gui_handler(window=window)
 
     def get_debug_mode(self, mode: bool):
+        # init the Logging module
         loging_level = logging.INFO
         if mode:
             loging_level = logging.DEBUG
         logging.basicConfig(level=loging_level)
 
     def init_gui(self, theme: str):
+        # init main window
         self.get_debug_mode(self.debug_mode)
 
         sg.theme(theme)
@@ -35,7 +38,9 @@ class Gui:
 
         return window
 
-    def show_gui(self, window: sg.Window):
+    def gui_handler(self, window: sg.Window):
+        #  handler for the gui
+        
 
         font_filepath = None
         output_name = None
@@ -60,7 +65,7 @@ class Gui:
                 logging.debug(('event = ' + str(event) +
                                'values = ' + str(values)))
                 try:
-                    if values['-JAVA FOLDER-'] and values['-OUTPUT FOLDER-']:
+                    if values['-JAVA IN-'] and values['-OUTPUT FOLDER-']:
                         logging.debug(
                             ('Try create Image with values = ' + str(values)))
 
@@ -84,7 +89,7 @@ class Gui:
                         popup_3_choice.close()
                         try:
                             file_path = os.path.join(
-                                values["-JAVA FOLDER-"],
+                                values["-JAVA IN-"],
                             )
                             output_path = values['-OUTPUT FOLDER-']
                             if output_name is None:
@@ -123,7 +128,7 @@ class Gui:
                         except:    
                             raise
 
-                    elif values['-JAVA FOLDER-']:
+                    elif values['-JAVA IN-']:
                         sg.popup_annoying('No Output', title='Error',
                                           auto_close_duration=5, auto_close=True)
                     elif values['-OUTPUT FOLDER-']:
@@ -134,11 +139,13 @@ class Gui:
                         sg.popup_annoying('Unexpected Case!', title='Error')
                 except:
                     pass
-
+            
+            # handle event credits
             if event == '-CREDITS-':
                 sg.popup(
                     'This was made by plexx(Image generation), Weckyy702(Interpreter) and oleting(Frontend). Used Python 3.9.1, Libraries PySimpleGUI and Pillow.', title='Credits')
 
+            # handle fun feature
             if event == '-DONATE-':
                 logging.debug(('event = ' + str(event)))
                 sg.popup_notify(
@@ -147,6 +154,7 @@ class Gui:
 
             # needed Input
 
+            # handle event select output folder
             if event == '-OUTPUT FOLDER-':
                 logging.debug(('event = ' + str(event) +
                                ' value = ' + str(values['-OUTPUT FOLDER-'])))
@@ -171,17 +179,20 @@ class Gui:
                     logging.error('Try to open a .png. Unknown error.')
                     pass
 
-            if event == '-JAVA FOLDER-':
+            # handle event select Java File
+            if event == '-JAVA IN-':
                 logging.debug(('event = ' + str(event) +
-                               ' value = ' + str(values['-JAVA FOLDER-'])))
-                folder = values['-JAVA FOLDER-']
-                window['-JAVA FOLDER-'].update(values['-JAVA FILE-'])
+                               ' value = ' + str(values['-JAVA IN-'])))
+                folder = values['-JAVA IN-']
+                window['-JAVA IN-'].update(values['-JAVA FILE-'])
 
             # optional Input
 
+            # handle event custom folder name
             if event == '-OUTPUT NAME-':
                 output_name = values['-OUTPUT NAME-']
 
+            # handle event own font
             if event == '-TTF FOLDER-':
                 logging.debug(('event = ' + str(event) +
                                ' value = ' + str(values['-TTF FOLDER-'])))
@@ -189,15 +200,16 @@ class Gui:
                 window['-TTF FOLDER-'].update(values['-TTF FILE-'])
                 font_filepath = values['-TTF FILE-']
 
+            # handle event add a keyword with categorie types
             if event == '-TYPES-':
-                # 
                 raw_types = sg.popup_get_text('Enter customn keywords (int, double, ...): ', default_text=types)
                 try:
                     raw_types = raw_types.replace(' ', '')
                     types = raw_types.split(',')
                 except:
                     sg.popup('You do not hit "Enter"')
-                
+            
+            # handle event add a keyword with categorie modifier
             if event == '-MODIFIER-':
                 raw_modifier = sg.popup_get_text('Enter customn modifier (public, private, ...): ', default_text=modifier)
                 try:
@@ -206,15 +218,20 @@ class Gui:
                 except:
                     sg.popup('You do not hit "Enter"')
 
+            # handle event add a keyword with categorie comment
             if event == '-COMMENTS-':
                 raw_comments = sg.popup_get_text('Enter customn comments (//, #, ...): ', default_text=comments)
                 try:
-                    raw_comments = raw_comments.replace(' ', '')
-                    comments = raw_comments.split(',')
+                    if raw_comments == None:
+                        pass
+                    else:
+                        raw_comments = raw_comments.replace(' ', '')
+                        comments = raw_comments.split(',')
                 except:
                     sg.popup('You do not hit "Enter"')
             # output view
-
+            
+            # handle event REFRESH
             if event == '-REFRESH-':
                 try:
                     fnames = output(values['-OUTPUT FOLDER-'])
@@ -226,5 +243,7 @@ class Gui:
                     pass
 
         window.close()
+
+        # if the own popwp is there close it
         if exists_choice:
             popup_3_choice.close()

@@ -19,7 +19,7 @@ class Layout_std:
         input_column = [
             [
                 sg.Text('Java File'),
-                sg.In(size=(25, 1), enable_events=True, key="-JAVA FOLDER-"),
+                sg.In(size=(25, 1), enable_events=True, key="-JAVA IN-"),
                 sg.FileBrowse(file_types=(('Java-File', '*.java'), ('ALL Files',
                                                                     '*.*')), key='-JAVA FILE-'),
             ],
@@ -37,7 +37,13 @@ class Layout_std:
                 sg.HSeparator(),
             ],
             [
-                sg.Text('Optional: choose custom font.'),
+                sg.Text('Optional: '),
+            ],
+            [
+                sg.HSeparator(),
+            ],
+            [
+                sg.Text('choose custom font'),
             ],
             [
                 sg.Text('TTF  File'),
@@ -51,7 +57,6 @@ class Layout_std:
             [
                 # modifier
                 sg.Button(button_text='Add costum modifier', key='-MODIFIER-')
-                # comments
             ],
             [
                 sg.Button(button_text='Add costum comments', key='-COMMENTS-')
