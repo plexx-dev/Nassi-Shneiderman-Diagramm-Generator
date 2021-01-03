@@ -1,5 +1,5 @@
 from gui.utils import nassi, output
-from gui.new_window_layouts import layout_popup
+from gui.new_window_layouts import Layout_popup, Layout_std
 from errors.custom import JavaSyntaxError, ScopeNotFoundException, InterpreterException, NoPathError
 from interpreter.NassiShneidermann import OB
 
@@ -28,119 +28,10 @@ class Gui:
         self.get_debug_mode(self.debug_mode)
 
         sg.theme(theme)
-        logging.debug(('Theme = ' + theme))
 
-       
-                    
-
-        toolbar = [
-            [
-                sg.Button(button_text='Create Image', key='-CREATE-'),
-                sg.Button(button_text='Credits', key='-CREDITS-'),
-                # * fun feature
-                sg.Button(button_text='Donate', key='-DONATE-'),
-            ]
-        ]
-
-        input_column = [
-            [
-                sg.Text('Java File'),
-                sg.In(size=(25, 1), enable_events=True, key="-JAVA FOLDER-"),
-                sg.FileBrowse(file_types=(('Java-File', '*.java'), ('ALL Files',
-                                                                    '*.*')), key='-JAVA FILE-'),
-            ],
-            [
-                sg.Text('Output Folder'),
-                sg.In(size=(25, 1), enable_events=True, key="-OUTPUT FOLDER-"),
-                sg.FolderBrowse(),
-            ],
-            [
-                sg.Text('Output name'),
-                sg.In(size=(25, 1), enable_events=True, key='-OUTPUT NAME-'),
-                #sg.Button('Confirm', key='-SET OUTPUT NAME-'),
-            ],
-            [
-                sg.HSeparator(),
-            ],
-            [
-                sg.Text('Optional: choose custom font.'),
-            ],
-            [
-                sg.Text('TTF  File'),
-                sg.In(size=(25, 1), enable_events=True, key="-TTF FOLDER-"),
-                sg.FileBrowse(file_types=(('TTF-File', '*.ttf'), ('ALL Files',
-                                                                  '*.*')), key='-TTF FILE-'),
-            ],
-            [
-                sg.Button(button_text='Add costum types', key='-TYPES-')
-            ],
-            [
-                # modifier
-                sg.Button(button_text='Add costum modifier', key='-MODIFIER-')
-                # comments
-            ],
-            [
-                sg.Button(button_text='Add costum comments', key='-COMMENTS-')
-                # comments
-            ],
-
-        ]
-
-        file_list_column = [
-            [
-                sg.Text('Output folder'),
-
-                sg.Button(button_text='Refresh', key='-REFRESH-')
-            ],
-            [
-                sg.Listbox(
-                    values=[], enable_events=True, size=(40, 20), key="-OUTPUT FILE LIST-",
-                )
-            ],
-        ]
-
-        diagramm_viewer_column = [
-            [sg.Text("Choose your code for preview. ", auto_size_text=True)],
-            [sg.Text(key="-TOUT-", auto_size_text=True)],
-            [sg.Image(key='-IMAGE-')],
-        ]
-
-        execute_column = [
-            [sg.Button(button_text='Create Image', key='-CREATE-')],
-            [sg.Button(button_text='Credits', key='-CREDITS-')],
-            # * fun feature
-            [sg.Button(button_text='Donate', key='-DONATE-')],
-        ]
-        logging.debug('set buttons_column GUI')
-
-        layout = [
-            [
-                sg.Column(input_column),
-                sg.VSeparator(),
-                #sg.Column(execute_column),
-                sg.VSeparator(),
-                sg.Column(file_list_column),
-                sg.VSeparator(),
-                sg.VSeparator(),
-                sg.Column(diagramm_viewer_column),
-            ]
-        ]
-
-        layout_with_toolbar = [
-            [
-                sg.Column(toolbar)
-            ],
-            [
-                sg.HSeparator(),
-            ], 
-            [
-                sg.Column(layout)
-            ]
-        ]
-
-        logging.debug('init layout GUI')
-
-        window = sg.Window('Nassi Viewer', layout_with_toolbar, resizable=False)
+        layout_s = Layout_std(theme=theme)
+        layoutStd = layout_s.layout()
+        window = sg.Window('Nassi Viewer', layoutStd, resizable=False)
 
         return window
 
@@ -173,7 +64,7 @@ class Gui:
                         logging.debug(
                             ('Try create Image with values = ' + str(values)))
 
-                        layout_p = layout_popup()
+                        layout_p = Layout_popup()
                         popup_3_choice = sg.Window(
                             title='', no_titlebar=True, layout=layout_p.layout, resizable=False)
                         event_popup, values_popup = popup_3_choice.read()
