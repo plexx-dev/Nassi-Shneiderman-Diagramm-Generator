@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import Dict, List, Match, Tuple
+from typing import Dict, List, Match, Tuple, Union
 
 from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
@@ -167,7 +167,37 @@ class JavaInterpreter:
         return while_instruction_back(instruction_txt, child_instructions), idx
 
     def _handle_for(self, line: str, idx: int):
-        return generic_instruction(line), idx
+        #line: for(type|name;condition;increment)
+        segments = line.split(";")
+        try:
+            var = segments[0][4:]
+            cond = segments[1]
+            inc = segments[2][:-2]
+            
+            instructions = []
+
+            if cond == "": #did you know test expressions where optional and defaulted to true? Me neither
+                cond = "true"
+
+            if var != "":
+                variable_instruction = self._handle_variable(var, idx)[0]
+                instructions.append(variable_instruction)
+            
+            brace_offset =  self._get_scope_start_offset(idx)
+            child_instructions, idx = self._get_instructions_in_scope(idx+brace_offset)
+            
+            if inc != "":
+                increment_instruction = generic_instruction(inc)
+                child_instructions.append(increment_instruction)
+
+            instructions.append(for_instruction("while " + cond, child_instructions))
+            
+            return instructions, idx
+
+        except IndexError:
+            raise JavaSyntaxError("Ill-formed for loop construct!")
+        except:
+            raise
 
     def _handle_variable(self, line: str, idx: int):
         groups = self._variable_pattern.match(line).groups()
@@ -178,7 +208,7 @@ class JavaInterpreter:
             return generic_instruction(f"declare variable '{var_name}' of type {var_type}"), idx
         return generic_instruction(f"declare variable '{var_name}' of type {var_type} with value {var_value}"), idx
 
-    def _handle_instruction(self, line: str, idx:int) -> Tuple[Iinstruction, int]:
+    def _handle_instruction(self, line: str, idx:int) -> Tuple[Union[Iinstruction, List[Iinstruction]], int]:
         if line.startswith("while("):
             logging.debug("Found while construct in line: %i", idx+1)
             return self._handle_while(line, idx)
@@ -213,7 +243,10 @@ class JavaInterpreter:
                 break
 
             instruction, i = self._handle_instruction(line, i)
-            scope.append(instruction)
+            if isinstance(instruction, List):
+                scope.extend(instruction)
+            else:
+                scope.append(instruction)
 
             i += 1
         return scope, i

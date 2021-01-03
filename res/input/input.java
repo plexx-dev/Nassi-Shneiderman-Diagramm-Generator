@@ -95,8 +95,9 @@ public class Rover extends Actor
             nachricht("Ich muss mindestens drei Zeilen fahren! :(");
             return;
         }
+        int i = 1;
         fahreZeileDreheHoch();
-        for(int i = 1; i < anzahlZeilen-1; i++) {
+        for(; i < anzahlZeilen-1; i++) {
             fahreZeileDreheRunter(true);
         }
         fahreZeileDreheRunter(false);
