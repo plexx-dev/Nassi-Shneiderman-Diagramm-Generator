@@ -226,7 +226,7 @@ class Gui:
                                 output_name = secrets.token_hex(16)
 
                             nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
-                                  font_filepath=font_filepath, behaviour=exists_choice, types=types, remove_tages=modifier, comments=comments)
+                                  font_filepath=font_filepath, behaviour=exists_choice, types=types, remove_tags=modifier, comments=comments)
 
                             fnames = output(values['-OUTPUT FOLDER-'])
                             sg.popup_annoying('Successfully created!', title='Created',

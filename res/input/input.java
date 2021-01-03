@@ -10,6 +10,12 @@ public class Rover extends Actor
      * this function is to be implemented by the user
      * depending on the needed actions
      */
+
+    public Display getDisplay()
+    {
+        return anzeige;
+    }
+
     public void act()
     {
         S66Nr3(7);

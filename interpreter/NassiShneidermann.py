@@ -1,5 +1,5 @@
 from interpreter.interpret_source import Function_scope
-from typing import List
+from typing import Dict, List
 import logging
 from enum import IntEnum
 import os.path
@@ -69,6 +69,7 @@ class NassiShneidermanDiagram:
                     logging.error(f"Failed to save image {filepath}. Unknown error")
                     raise
 
-    def load_from_file(self, filepath:str):
+    def load_from_file(self, filepath:str, itp_custom_tags: Dict[str, List[str]]):
         itp = JavaInterpreter(filepath)
+        itp.reset_tags(itp_custom_tags)
         self.function_scopes = itp.load_instruction_scopes()
