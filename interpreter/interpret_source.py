@@ -207,7 +207,7 @@ class JavaInterpreter:
         self.src = self.src.replace(' ', '')
         self.src = self.comment_pattern.sub('', self.src)
         self.src = self.remove_pattern.sub('', self.src)
-        self.lines = self.src.splitlines(True)
+        self.lines = self.src.splitlines()
 
     def _get_function_info(self, match: Match[str]) -> Tuple[str, str, List[str]]:
         groups = match.groupdict()
@@ -225,7 +225,7 @@ class JavaInterpreter:
         scopes = []
         for match in self.function_pattern.finditer(self.src):
             span = match.span()
-            header = self.src[span[0]:span[1]]
+            header = self.src[span[0]:span[1]].replace('\n', '')
 
             rtype, name, args = self._get_function_info(match)
 
