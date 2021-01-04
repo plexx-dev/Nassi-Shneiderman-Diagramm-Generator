@@ -1,5 +1,5 @@
 from gui.utils import nassi, output
-from gui.new_window_layouts import Layout_popup, Layout_std, Layout_settings
+from gui.new_window_layouts import Layout_std, Layout_settings
 from errors.custom import JavaSyntaxError, ScopeNotFoundException, InterpreterException, NoPathError
 from interpreter.NassiShneidermann import OB
 
@@ -67,27 +67,18 @@ class Gui:
                 window_settings = sg.Window(title='Settings', layout=layout_settings.layout, resizable=False)
                 event_settings, values_settings = window_settings.read()
                 while event_settings != '-EXIT-':
-                    if event_settings == '-CONFLICT_BEHAVIOUR-':
-                        layout_p = Layout_popup()
-                        popup_3_choice = sg.Window(
-                                title='', no_titlebar=True, layout=layout_p.layout, resizable=False)
-                        event_popup, values_popup = popup_3_choice.read()
-
-                        while event_popup != '-OVERWRITE-' or event_popup != '-EXPICIT-' or event_popup != '-SKIP-':
-                            if event_popup == '-OVERWRITE-':
-                                exists_choice = OB.OVERWWRITE
-                                break
-                            if event_popup == '-EXPICIT-':
-                                exists_choice = OB.RANDOM_NAME
-                                break
-                            if event_popup == '-SKIP-':
-                                exists_choice = OB.SKIP
-                                break
-                            if event_popup == sg.WIN_CLOSED or event == 'Exit':
-                                break
-                        popup_3_choice.close()
+                    if event_settings == '-OVERWRITE-' and exists_choice != OB.OVERWWRITE:
+                        exists_choice = OB.OVERWWRITE
+                        break
+                    if event_settings == '-EXPICIT-' and exists_choice != OB.RANDOM_NAME:
+                        exists_choice = OB.RANDOM_NAME
+                        break
+                    if event_settings == '-SKIP-' and exists_choice != OB.SKIP:
+                        exists_choice = OB.SKIP
+                        break
                     if event_settings == sg.WIN_CLOSED or event == 'Quit':
                         break
+                    
                 window_settings.close()           
             if event == '-CREATE-':
                 logging.debug(('event = ' + str(event) +
