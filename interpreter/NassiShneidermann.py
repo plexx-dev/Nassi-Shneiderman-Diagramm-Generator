@@ -1,7 +1,7 @@
 from os import stat
 from interpreter.interpret_source import Function_scope
 from typing import Dict, List, Optional
-from PySimpleGUI import one_line_progress_meter #this sucks
+from PySimpleGUI import one_line_progress_meter
 import logging
 from enum import IntEnum
 import os.path
