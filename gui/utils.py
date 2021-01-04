@@ -30,9 +30,12 @@ def nassi(input_path: str, output_path: str, outputname: str, types, remove_tags
 
 
 
-def output(output_path):
+def output(output_path, output_name=None):
+    
     if output_path == '':
         raise NoPathError
+    if output_name:
+        output_path = output_path + '/' + output_name
     try:
         file_list = os.listdir(output_path)
     except:

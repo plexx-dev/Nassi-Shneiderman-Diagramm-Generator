@@ -101,7 +101,7 @@ class Gui:
                             nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
                                   font_filepath=font_filepath, behaviour=exists_choice, types=types, remove_tags=modifier, comments=comments)
 
-                            fnames = output(values['-OUTPUT FOLDER-'])
+                            fnames = output(values['-OUTPUT FOLDER-'], output_name)
                             sg.popup_annoying('Successfully created!', title='Created',
                                               auto_close_duration=2, auto_close=True, text_color='green')
                             window['-OUTPUT FILE LIST-'].update(fnames)
@@ -165,9 +165,14 @@ class Gui:
                 logging.debug(('event = ' + str(event) +
                                ' value = ' + str(values['-OUTPUT FILE LIST-'])))
                 try:
-                    filename = os.path.join(
-                        values["-OUTPUT FOLDER-"], values["-OUTPUT FILE LIST-"][0]
-                    )
+                    if output_name:
+                        filename = os.path.join(
+                            (values["-OUTPUT FOLDER-"]+ '/' + output_name), values["-OUTPUT FILE LIST-"][0]
+                        )
+                    else:
+                        filename = os.path.join(
+                            values["-OUTPUT FOLDER-"], values["-OUTPUT FILE LIST-"][0]
+                        )
                     window["-TOUT-"].update(filename)
                     window["-IMAGE-"].update(filename=filename)
                 except FileNotFoundError:
@@ -175,7 +180,7 @@ class Gui:
                                    title='FileNotFoundError',)
                 except Exception as e:
                     sg.popup_cancel(str(e), title='Error')
-                    logging.error('Try to open a .png. {e}')
+                    logging.error(f'Try to open a .png. {e}')
                 except:
                     logging.error('Try to open a .png. Unknown error.')
                     pass
