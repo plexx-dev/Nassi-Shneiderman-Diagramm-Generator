@@ -28,14 +28,12 @@ public class Rover extends Actor
         if(richtung.equals("Hoch")) {
             pri = "links";
             sec = "rechts";
-        } else { 
-            if (richtung.equals("Runter")) {
-                pri = "rechts";
-                sec = "links";
-            } else {
-                nachricht("JUNGE DU SPAST!");
-                return;
-            }
+        } else if (richtung.equals("Runter")) {
+            pri = "rechts";
+            sec = "links";
+        } else {
+            nachricht("JUNGE DU SPAST!");
+            return;
         }
         drehe(pri);
         fahre();

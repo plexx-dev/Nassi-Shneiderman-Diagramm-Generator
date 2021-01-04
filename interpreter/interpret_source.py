@@ -10,9 +10,9 @@ if sys.version_info < (3, 9):
     raise Exception("Unsupported Python version! Pyton 3.9 is required")
 
 logging.warning("""Because the Interpreter is still WIP, some Java language features are not supported. These include:
-    *else if statements
     *foreach loops (will throw JavaSyntaxError)
-    *Constructors (will be ignored)
+    *constructors (will be ignored)
+    *switch statements
 Please remove these features from the source code as they will result in incorrect behaviour""")
 
 class Function_scope(Iterable):
@@ -120,34 +120,44 @@ class JavaInterpreter:
         bracket_idx = line.rindex(')') # throws if while contruct is illformed
 
         instruction_txt = line[6:bracket_idx]
-        brace_offset = self._get_scope_start_offset(idx)
-        child_instructions, idx = self._get_instructions_in_scope(idx+brace_offset)
+        child_instructions, idx = self._get_subscope(idx)
         return while_instruction_front(("while" + instruction_txt), child_instructions), idx
     
-    def _handle_else(self, idx: int):
+    def _get_subscope(self, idx: int):
         brace_offset = self._get_scope_start_offset(idx)
         return self._get_instructions_in_scope(idx+brace_offset)
 
     def _get_else_scope(self, idx:int):
         instructions = None
         if self._check_line_start(idx, "}else"):
-            logging.debug("found else construct in line: %i", idx+1)
-            instructions, idx = self._handle_else(idx)
+            if self._check_src(idx, "if("):
+                logging.debug("found else if construct in line: %i", idx+1)
+                line = self._lines[idx][5:]
+                instructions, idx = self._handle_if(line, idx)
+                instructions = [instructions]
+            else:
+                logging.debug("found else construct in line: %i", idx+1)
+                instructions, idx = self._get_subscope(idx)
         
         elif self._check_line_start(idx+1, "else"):
-            logging.debug("found else construct in line: %i", idx+2)
-            instructions, idx = self._handle_else(idx+1)
-        return instructions
+            if self._check_src(idx+1, "if("):
+                logging.debug("found else if construct in line: %i", idx+2)
+                line = self._lines[idx+1][4:]
+                instructions, idx = self._handle_if(line, idx+1)
+                instructions = [instructions]
+            else:
+                logging.debug("found else construct in line: %i", idx+2)
+                instructions, idx = self._get_subscope(idx+1)
+        return instructions, idx
         
 
     def _handle_if(self, line: str, idx: int):
         bracket_idx = line.rindex(')') # throws if the contruct is illformed
         instruction_txt = line[3:bracket_idx]
 
-        brace_offset = self._get_scope_start_offset(idx)
-        true_instructions, idx = self._get_instructions_in_scope(idx+brace_offset)
+        true_instructions, idx = self._get_subscope(idx)
 
-        false_instructions = self._get_else_scope(idx)
+        false_instructions, idx = self._get_else_scope(idx)
         
         return if_instruction(instruction_txt, true_instructions, false_instructions), idx
 
@@ -282,7 +292,6 @@ class JavaInterpreter:
         child_instructions = self._get_function_instructions(header)
 
         return Function_scope(child_instructions, name, rtype, args)
-
 
     def _get_function_scopes(self) -> List[Function_scope]:
         matches = self._function_pattern.finditer(self.src)
