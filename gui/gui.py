@@ -1,5 +1,5 @@
 from gui.utils import nassi, output
-from gui.new_window_layouts import Layout_popup, Layout_std
+from gui.new_window_layouts import Layout_popup, Layout_std, Layout_settings
 from errors.custom import JavaSyntaxError, ScopeNotFoundException, InterpreterException, NoPathError
 from interpreter.NassiShneidermann import OB
 
@@ -32,9 +32,9 @@ class Gui:
 
         sg.theme(theme)
 
-        layout_s = Layout_std(theme=theme)
-        layoutStd = layout_s.layout()
-        window = sg.Window('Nassi Viewer', layoutStd, resizable=False)
+        layout_s = Layout_std()
+        # layoutStd = layout_s.layout()
+        window = sg.Window('Nassi Viewer', layout_s.layout_with_toolbar, resizable=False)
 
         return window
 
@@ -44,7 +44,7 @@ class Gui:
 
         font_filepath = None
         output_name = None
-        exists_choice = None
+        exists_choice = OB.SKIP
         types = None
         comments = None
         modifier = None
@@ -61,17 +61,16 @@ class Gui:
                 break
 
             # toolbar
-            if event == '-CREATE-':
-                logging.debug(('event = ' + str(event) +
-                               'values = ' + str(values)))
-                try:
-                    if values['-JAVA IN-'] and values['-OUTPUT FOLDER-']:
-                        logging.debug(
-                            ('Try create Image with values = ' + str(values)))
 
+            if event =='-SETTINGS-':
+                layout_settings = Layout_settings()
+                window_settings = sg.Window(title='Settings', layout=layout_settings.layout, resizable=False)
+                event_settings, values_settings = window_settings.read()
+                while event_settings != '-EXIT-':
+                    if event_settings == '-CONFLICT_BEHAVIOUR-':
                         layout_p = Layout_popup()
                         popup_3_choice = sg.Window(
-                            title='', no_titlebar=True, layout=layout_p.layout, resizable=False)
+                                title='', no_titlebar=True, layout=layout_p.layout, resizable=False)
                         event_popup, values_popup = popup_3_choice.read()
 
                         while event_popup != '-OVERWRITE-' or event_popup != '-EXPICIT-' or event_popup != '-SKIP-':
@@ -84,9 +83,20 @@ class Gui:
                             if event_popup == '-SKIP-':
                                 exists_choice = OB.SKIP
                                 break
-                            if event == sg.WIN_CLOSED or event == 'Quit':
+                            if event_popup == sg.WIN_CLOSED or event == 'Exit':
                                 break
                         popup_3_choice.close()
+                    if event_settings == sg.WIN_CLOSED or event == 'Quit':
+                        break
+                window_settings.close()           
+            if event == '-CREATE-':
+                logging.debug(('event = ' + str(event) +
+                               'values = ' + str(values)))
+                try:
+                    if values['-JAVA IN-'] and values['-OUTPUT FOLDER-']:
+                        logging.debug(
+                            ('Try create Image with values = ' + str(values)))
+
                         try:
                             file_path = os.path.join(
                                 values["-JAVA IN-"],
@@ -244,6 +254,4 @@ class Gui:
 
         window.close()
 
-        # if the own popwp is there close it
-        if exists_choice:
-            popup_3_choice.close()
+

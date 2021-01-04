@@ -2,15 +2,12 @@ import PySimpleGUI as sg
 
 class Layout_std:
 
-    def __init__(self, theme: str):
-        self.theme = theme
-
-    def layout(self):
-        sg.theme(self.theme)
+    def __init__(self):
         toolbar = [
             [
                 sg.Button(button_text='Create Image', key='-CREATE-'),
                 sg.Button(button_text='Credits', key='-CREDITS-'),
+                sg.Button(button_text='Settings', key='-SETTINGS-'),
                 # * fun feature
                 sg.Button(button_text='Donate', key='-DONATE-'),
             ]
@@ -104,7 +101,7 @@ class Layout_std:
             ]
         ]
 
-        layout_with_toolbar = [
+        self.layout_with_toolbar = [
             [
                 sg.Column(toolbar)
             ],
@@ -116,7 +113,27 @@ class Layout_std:
             ]
         ]
 
-        return layout_with_toolbar
+
+class Layout_settings():
+    def __init__(self):
+        text_column = [
+            [
+                sg.Text('conflict_behaviour')
+            ]
+        ]
+
+        choices = [
+            [
+                sg.Button(button_text='conflict_behaviour', key='-CONFLICT_BEHAVIOUR-'),
+            ]
+        ]
+        self.layout = [
+            [
+                sg.Column(text_column),
+                sg.Column(choices),
+            ]
+        ]
+
 
 class Layout_popup:
     def __init__(self):
