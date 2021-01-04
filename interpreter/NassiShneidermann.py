@@ -1,3 +1,4 @@
+from os import stat
 from interpreter.interpret_source import Function_scope
 from typing import Dict, List, Optional
 import logging
@@ -23,25 +24,29 @@ class NassiShneidermanDiagram:
         self.function_scopes: List[Function_scope] = []
         self.init_logging(do_debug)
 
-    def init_logging(self, debug: bool):
+    @staticmethod
+    def init_logging(debug: bool):
         logLevel = logging.INFO
         if debug:
             logLevel = logging.DEBUG
         
         logging.basicConfig(level=logLevel)
 
-    def set_font(self, font_filepath: str):
+    @staticmethod
+    def set_font(font_filepath: str):
         cti.set_font(font_filepath)
 
-    def _save_scope(self, scope: Function_scope, output_path: str, x_size: int):
-        """DEBUGING ONLY"""
+    @staticmethod
+    def _save_scope(scope: Function_scope, output_path: str):
         image_y_sz = scope.get_height()
+        x_size = scope.get_width()
         with NSD_writer(output_path, x_size, image_y_sz):
             x, y = 0, 0
             for instruction in scope.contents:
                 x, y = instruction.to_image(x, y, x_size)
 
-    def check_conflicts(self, filepath:str, behavoiur: Overwrite_behaviour):
+    @staticmethod
+    def check_conflicts(filepath:str, behavoiur: Overwrite_behaviour):
         if os.path.exists(filepath + ".png"):
             if behavoiur == OB.SKIP:
                 return None
@@ -53,7 +58,7 @@ class NassiShneidermanDiagram:
                 return filepath
         return filepath
 
-    def convert_to_image(self, output_path: str, on_conflict: Overwrite_behaviour=OB.SKIP, x_size: int=200):
+    def convert_to_image(self, output_path: str, on_conflict: Overwrite_behaviour=OB.SKIP):
         for scope in self.function_scopes:
             filepath = f"{output_path}/{scope.name}"
             filepath = self.check_conflicts(filepath, on_conflict)
@@ -61,7 +66,7 @@ class NassiShneidermanDiagram:
                 logging.info(f"Saving NSD to {filepath}.png...")
 
                 try:
-                    self._save_scope(scope, filepath, x_size)
+                    self._save_scope(scope, filepath)
                 except Exception as e:
                     logging.error(f"Failed to save image {filepath} with error '{e}'")
                     raise e

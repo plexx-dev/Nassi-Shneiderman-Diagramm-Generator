@@ -24,7 +24,7 @@ def nassi(input_path: str, output_path: str, outputname: str, types, remove_tags
     custom_tags = {"comments" : comments, "ignore" : remove_tags, "types" : types}
     
     NSD.load_from_file(input_path, custom_tags)
-    NSD.convert_to_image(output_directory, on_conflict=behaviour, x_size=750)
+    NSD.convert_to_image(output_directory, on_conflict=behaviour)
 
     return output_directory
 

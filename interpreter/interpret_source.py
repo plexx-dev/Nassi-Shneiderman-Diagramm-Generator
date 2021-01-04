@@ -25,8 +25,14 @@ class Function_scope(Iterable):
     def get_height(self) -> int:
         h = 0.0
         for inst in self.contents:
-            h += inst.getblksize()
+            h += inst.getblkheight()
         return int(h)
+
+    def get_width(self) -> int:
+        w = 0.0
+        for inst in self.contents:
+            w = max(w, inst.getblkwidth())
+        return int(max(200, w))
 
     def __iter__(self):
         return self.contents.__iter__()
