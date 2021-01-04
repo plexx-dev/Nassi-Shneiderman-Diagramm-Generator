@@ -24,7 +24,7 @@ class Gui:
         loging_level = logging.INFO
         if mode:
             loging_level = logging.DEBUG
-        logging.basicConfig(level=loging_level)
+        logging.basicConfig(level=loging_level, force=True)
 
     def init_gui(self, theme: str):
         # init main window
@@ -53,7 +53,7 @@ class Gui:
                  auto_close=True, auto_close_duration=5)
 
         while True:
-            logging.info('test')
+            logging.debug('test')
             event, values = window.read()
 
             if event == 'Exit' or event == sg.WIN_CLOSED:
