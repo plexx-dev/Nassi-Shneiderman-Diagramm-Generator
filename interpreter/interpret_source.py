@@ -1,13 +1,17 @@
 import logging
 import re
+import sys
 from typing import Dict, List, Match, Tuple, Union
 
 from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
 
+if sys.version_info < (3, 9):
+    raise Exception("Unsupported Python version! Pyton 3.9 is required")
+
 logging.warning("""Because the Interpreter is still WIP, some Java language features are not supported. These include:
     *else if statements
-    *for loops
+    *foreach loops (will throw JavaSyntaxError)
     *Constructors (will be ignored)
 Please remove these features from the source code as they will result in incorrect behaviour""")
 
