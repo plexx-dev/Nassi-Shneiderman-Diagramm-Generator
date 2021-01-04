@@ -97,7 +97,7 @@ class Gui:
                                 sg.popup_auto_close(
                                     'You didn\'t set a name for the image, it will be named randomly.')
                                 output_name = secrets.token_hex(16)
-
+                    
                             nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
                                   font_filepath=font_filepath, behaviour=exists_choice, types=types, remove_tags=modifier, comments=comments)
 

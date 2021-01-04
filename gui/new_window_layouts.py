@@ -46,7 +46,7 @@ class Layout_std:
                 sg.Text('TTF  File'),
                 sg.In(size=(25, 1), enable_events=True, key="-TTF FOLDER-"),
                 sg.FileBrowse(file_types=(('TTF-File', '*.ttf'), ('ALL Files',
-                                                                    '*.*')), key='-TTF FILE-'),
+                                                                  '*.*')), key='-TTF FILE-'),
             ],
             [
                 sg.Button(button_text='Add costum types', key='-TYPES-')
@@ -92,7 +92,7 @@ class Layout_std:
             [
                 sg.Column(input_column),
                 sg.VSeparator(),
-                #sg.Column(execute_column),
+                # sg.Column(execute_column),
                 sg.VSeparator(),
                 sg.Column(file_list_column),
                 sg.VSeparator(),
@@ -107,7 +107,7 @@ class Layout_std:
             ],
             [
                 sg.HSeparator(),
-            ], 
+            ],
             [
                 sg.Column(layout)
             ]
@@ -123,7 +123,7 @@ class Layout_settings():
         ]
 
         choices = [
-            [   
+            [
                 sg.Text('What should the program do if a file already exist?'),
                 sg.Button(button_text='skip', key='-SKIP-'),
                 sg.Button(button_text='overwrite', key='-OVERWRITE-'),
@@ -136,7 +136,5 @@ class Layout_settings():
                 sg.Column(choices),
             ]
         ]
-
-
 
 

@@ -1,6 +1,7 @@
 from os import stat
 from interpreter.interpret_source import Function_scope
 from typing import Dict, List, Optional
+from PySimpleGUI import one_line_progress_meter
 import logging
 from enum import IntEnum
 import os.path
@@ -59,7 +60,11 @@ class NassiShneidermanDiagram:
         return filepath
 
     def convert_to_image(self, output_path: str, on_conflict: Overwrite_behaviour=OB.SKIP):
+        number_of_item = 1
         for scope in self.function_scopes:
+            number_of_item += 1
+            one_line_progress_meter('Progress', number_of_item, len(self.function_scopes), '-PROGRESSBAR-')
+
             filepath = f"{output_path}/{scope.name}"
             filepath = self.check_conflicts(filepath, on_conflict)
             if filepath is not None:
