@@ -98,13 +98,18 @@ class Gui:
                                     'You didn\'t set a name for the image, it will be named randomly.')
                                 output_name = secrets.token_hex(16)
                     
-                            nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
+                            path = nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
                                   font_filepath=font_filepath, behaviour=exists_choice, types=types, remove_tags=modifier, comments=comments)
-
-                            fnames = output(values['-OUTPUT FOLDER-'], output_name)
-                            sg.popup_annoying('Successfully created!', title='Created',
-                                              auto_close_duration=2, auto_close=True, text_color='green')
-                            window['-OUTPUT FILE LIST-'].update(fnames)
+                            if path:
+                                fnames = output(path)
+                                sg.popup_annoying('Successfully created!', title='Created',
+                                                auto_close_duration=2, auto_close=True, text_color='green')
+                                window['-OUTPUT FILE LIST-'].update(fnames)
+                            else: 
+                                fnames = output(output_path, output_name)
+                                sg.popup_annoying('There are some images created!', title='Cancel',
+                                                auto_close_duration=2, auto_close=True, text_color='green')
+                                window['-OUTPUT FILE LIST-'].update(fnames)
 
                         except JavaSyntaxError as JsE:
                             logging.error(

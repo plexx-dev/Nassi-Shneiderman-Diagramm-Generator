@@ -62,7 +62,9 @@ class NassiShneidermanDiagram:
         number_of_item = 1
         for scope in self.function_scopes:
             number_of_item += 1
-            one_line_progress_meter('Progress', number_of_item, len(self.function_scopes), '-PROGRESSBAR-')
+            cancel = one_line_progress_meter('Progress', number_of_item, len(self.function_scopes), '-PROGRESSBAR-')
+            if not cancel:
+                return False
 
             filepath = f"{output_path}/{scope.name}"
             filepath = self.check_conflicts(filepath, on_conflict)
