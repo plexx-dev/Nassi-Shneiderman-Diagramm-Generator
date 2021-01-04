@@ -58,7 +58,7 @@ class NassiShneidermanDiagram:
                 return filepath
         return filepath
 
-    def convert_to_image(self, output_path: str, on_conflict: Overwrite_behaviour=OB.SKIP):
+    def convert_to_image(self, output_path: str, on_conflict: Overwrite_behaviour=OB.SKIP) -> bool:
         number_of_item = 1
         for scope in self.function_scopes:
             number_of_item += 1
@@ -79,6 +79,7 @@ class NassiShneidermanDiagram:
                 except:
                     logging.error(f"Failed to save image {filepath}. Unknown error")
                     raise
+        return True
 
     def load_from_file(self, filepath:str, itp_custom_tags: Optional[Dict[str, List[str]]]):
         itp = JavaInterpreter(filepath)
