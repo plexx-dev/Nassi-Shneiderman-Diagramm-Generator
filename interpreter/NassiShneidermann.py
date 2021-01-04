@@ -1,13 +1,12 @@
 from os import stat
 from interpreter.interpret_source import Function_scope
 from typing import Dict, List, Optional
-from PySimpleGUI import one_line_progress_meter
+from PySimpleGUI import one_line_progress_meter #this sucks
 import logging
 from enum import IntEnum
 import os.path
 import secrets
 
-from draw.Iinstruction import Iinstruction
 from interpreter.interpret_source import JavaInterpreter
 from draw.code_to_image_wrapper import NSD_writer
 import draw.code_to_image as cti
