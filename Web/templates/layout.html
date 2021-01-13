@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <link rel="stylesheet" type="text/css" href="">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 
     {% if title %}
         <title>NassiShneiderman Generator - {{ title }}</title>
@@ -27,8 +27,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarToggle">
               <div class="navbar-nav mr-auto">
-                <a class="nav-item nav-link" href="">Home</a>
-                <a class="nav-item nav-link" href="">Datenschutz</a>
+                <a class="nav-item nav-link" href="nassi.ole-siepmann.de">Home</a>
+                <a class="nav-item nav-link" href="https://ole-siepmann.de/startseite/datenschutzerklaerung/">Datenschutz</a>
               </div>
               <!-- Navbar Right Side -->
               <div class="navbar-nav">

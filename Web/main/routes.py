@@ -1,5 +1,4 @@
 from flask.helpers import send_file
-import Web
 from flask import render_template, abort, flash, Blueprint
 from Web.main.forms import UploadJavaForm
 from random import randint
@@ -71,5 +70,5 @@ def generator():
 
             return send_file(zip_path + '.zip', as_attachment=True)
 
-    return render_template('upload.html', title='', legend='', form=form )
+    return render_template('upload.html', title='Upload', legend='Upload', form=form )
     
