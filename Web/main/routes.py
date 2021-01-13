@@ -2,22 +2,31 @@ from flask.helpers import send_file
 from flask import render_template, abort, flash, Blueprint
 from Web.main.forms import UploadJavaForm
 from random import randint
-import shutil as zip
+import shutil
 import secrets
 import os
 import logging
-
-UPLOAD_FOLDER = '/path/to/'
-ALLOWED_EXTENSIONS = {'java','txt'}
 
 from gui.utils import nassi
 from interpreter.NassiShneidermann import NassiShneidermanDiagram, OB
 
 main = Blueprint('main', __name__)
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+def deleteFile(path):
+    file_list = os.listdir(path)
+    for f in file_list:
+        try:
+            os.remove(path + '/' +f)
+            print("remove " + f)
+        except:
+            print("fail to remove " + f)
+
+def deleteFolder(path):
+    try:
+        shutil.rmtree(path)
+        print("remove " + path)
+    except:
+        print("fail to remove " + path)
 
 def javaDatei(form_file):
     try:
@@ -50,8 +59,6 @@ def generator():
             NSD = NassiShneidermanDiagram(True)
             output_directory = output_path + '/' + outputname
             
-            # if font_filepath != None:
-            #     NSD.set_font(font_filepath)
 
             try:
                 if not os.path.exists(output_directory):
@@ -66,8 +73,10 @@ def generator():
             NSD.convert_to_image(output_directory, on_conflict=behaviour)
 
             zip_path = os.path.join(os.path.abspath(os.path.join('Web', os.pardir)), f'../tmp/output/{outputname}')
-            zip.make_archive(zip_path, 'zip', output_directory) 
+            shutil.make_archive(zip_path, 'zip', output_directory) 
 
+            deleteFolder(output_path)
+            
             return send_file(zip_path + '.zip', as_attachment=True)
 
     return render_template('upload.html', title='Upload', legend='Upload', form=form )

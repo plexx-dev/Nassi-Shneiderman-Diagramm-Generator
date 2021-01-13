@@ -4,7 +4,11 @@
         {{ form.hidden_tag() }}
         <div class="media">
             <div class="media-body">
-                <p></p>
+                <p>WARNING Because the Interpreter is still WIP, some Java language features are not supported. These include:
+                    *foreach loops (will throw JavaSyntaxError)
+                    *constructors (will be ignored)
+                    *switch statements
+                Please remove these features from the source code as they will result in incorrect behaviour</p>
             </div>
         </div>
         <form method='Post' action='' enctype="multipart/form-data">
