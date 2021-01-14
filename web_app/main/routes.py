@@ -46,21 +46,24 @@ def generator():
 
     if form.validate_on_submit():
         if form.java.data:
-            deleteFilesInFolder(os.path.join(os.path.abspath(os.path.join('Web', os.pardir)), f'../tmp/output/'))
             input_path = javaDatei(form.java.data)
             output_path = os.path.join(os.path.abspath(os.path.join('Web', os.pardir)), './tmp/input')
             outputname = str(randint(0, 100) )
+            output_path_zip = os.path.join(os.path.abspath(os.path.join('Web', os.pardir)), f'./tmp/output/{outputname}')
+            
             remove_tags = None 
             comments = None 
             behaviour = OB.RANDOM_NAME 
             types = None
 
+               
+            deleteFilesInFolder(str(os.path.join(os.path.abspath(os.path.join('Web', os.pardir)), './tmp/output/')))
             NSD = NassiShneidermanDiagram(True)
             output_directory = output_path + '/' + outputname
             
-
+            
             try:
-                if not os.path.exists(output_directory):
+               if not os.path.exists(output_directory):
                     os.makedirs(output_directory)
             except OSError:
                 logging.error('Error: Creating directory. ' +  output_directory)
@@ -71,11 +74,10 @@ def generator():
             NSD.load_from_file(input_path, custom_tags)
             NSD.convert_to_image(output_directory, on_conflict=behaviour)
 
-            zip_path = os.path.join(os.path.abspath(os.path.join('Web', os.pardir)), f'../tmp/output/{outputname}')
-            shutil.make_archive(zip_path, 'zip', output_directory) 
+            shutil.make_archive(output_path_zip, 'zip', output_directory) 
             
             deleteFilesInFolder(output_path)
-            return send_file(zip_path + '.zip', as_attachment=True)
+            return send_file(output_path_zip + '.zip', as_attachment=True)
             
             
 
