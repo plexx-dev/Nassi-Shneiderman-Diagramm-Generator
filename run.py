@@ -6,10 +6,5 @@
 
 # Gui(theme='DarkGrey11', debug_mode=do_debug)
 
-# Web App
-from Web import create_app
 
-app = create_app()
 
-if __name__ == '__main__':
-    app.run(port=5000 ,debug=True)

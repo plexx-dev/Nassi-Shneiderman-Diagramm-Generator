@@ -1,6 +1,6 @@
 from flask.helpers import send_file
 from flask import render_template, abort, flash, Blueprint
-from Web.main.forms import UploadJavaForm
+from web_app.main.forms import UploadJavaForm
 from random import randint
 import shutil
 import secrets
@@ -12,21 +12,19 @@ from interpreter.NassiShneidermann import NassiShneidermanDiagram, OB
 
 main = Blueprint('main', __name__)
 
-def deleteFile(path):
+def deleteFilesInFolder(path):
     file_list = os.listdir(path)
     for f in file_list:
         try:
             os.remove(path + '/' +f)
-            print("remove " + f)
+            # print("remove " + f)
         except:
-            print("fail to remove " + f)
+            try:
+                shutil.rmtree(path + '/' + f)
+                # print("remove " + f)
+            except:
+                logging.error("fail to remove " + f)
 
-def deleteFolder(path):
-    try:
-        shutil.rmtree(path)
-        print("remove " + path)
-    except:
-        print("fail to remove " + path)
 
 def javaDatei(form_file):
     try:
@@ -48,6 +46,7 @@ def generator():
 
     if form.validate_on_submit():
         if form.java.data:
+            deleteFilesInFolder(os.path.join(os.path.abspath(os.path.join('Web', os.pardir)), f'../tmp/output/'))
             input_path = javaDatei(form.java.data)
             output_path = os.path.join(os.path.abspath(os.path.join('Web', os.pardir)), './tmp/input')
             outputname = str(randint(0, 100) )
@@ -74,10 +73,11 @@ def generator():
 
             zip_path = os.path.join(os.path.abspath(os.path.join('Web', os.pardir)), f'../tmp/output/{outputname}')
             shutil.make_archive(zip_path, 'zip', output_directory) 
-
-            deleteFolder(output_path)
             
+            deleteFilesInFolder(output_path)
             return send_file(zip_path + '.zip', as_attachment=True)
+            
+            
 
     return render_template('upload.html', title='Upload', legend='Upload', form=form )
     
