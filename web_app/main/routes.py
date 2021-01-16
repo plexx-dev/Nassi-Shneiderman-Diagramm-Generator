@@ -50,11 +50,9 @@ def generator():
             output_path = os.path.join(os.path.abspath(os.path.join('Web', os.pardir)), './tmp/input')
             outputname = str(randint(0, 100) )
             output_path_zip = os.path.join(os.path.abspath(os.path.join('Web', os.pardir)), f'./tmp/output/{outputname}')
-            
-            remove_tags = None 
-            comments = None 
+
             behaviour = OB.RANDOM_NAME 
-            types = None
+
 
                
             deleteFilesInFolder(str(os.path.join(os.path.abspath(os.path.join('Web', os.pardir)), './tmp/output/')))
@@ -69,7 +67,7 @@ def generator():
                 logging.error('Error: Creating directory. ' +  output_directory)
 
 
-            custom_tags = {"comments" : comments, "ignore" : remove_tags, "types" : types}
+            custom_tags = {"comments" : form.comments.data, "ignore" : form.remove_tags.data, "types" : form.types.data}
             
             NSD.load_from_file(input_path, custom_tags)
             NSD.convert_to_image(output_directory, on_conflict=behaviour)
@@ -82,4 +80,7 @@ def generator():
             
 
     return render_template('upload.html', title='Upload', legend='Upload', form=form )
-    
+
+@main.route('/working', methods=['POST', 'GET'])
+def working():
+    abort(501)

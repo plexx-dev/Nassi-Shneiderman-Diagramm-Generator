@@ -18,6 +18,6 @@ def error_500(error):
 def error_600(error):
     return render_template('errors/418.html'), 418
 
-@errors.app_errorhandler(512)
+@errors.app_errorhandler(501)
 def error_600(error):
-    return render_template('errors/512.html'), 512
+    return render_template('errors/512.html'), 501
