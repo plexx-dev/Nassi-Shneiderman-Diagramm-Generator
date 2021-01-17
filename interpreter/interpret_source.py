@@ -118,7 +118,7 @@ class JavaInterpreter:
     def _get_scope_start_offset(self, i: int) -> int:
         if self._check_src(i, "{"):
             return 1
-        elif self._check_src(i+1, "{"):      
+        elif self._check_src(i+1, "{"):
             return 2
         raise ScopeNotFoundException("Unable to find scope start. Is the program ill-formed?")
 
@@ -128,7 +128,7 @@ class JavaInterpreter:
         instruction_txt = line[6:bracket_idx]
         child_instructions, idx = self._get_subscope(idx)
         return while_instruction_front(("while" + instruction_txt), child_instructions), idx
-    
+
     def _get_subscope(self, idx: int):
         brace_offset = self._get_scope_start_offset(idx)
         return self._get_instructions_in_scope(idx+brace_offset)
@@ -144,7 +144,7 @@ class JavaInterpreter:
             else:
                 logging.debug("found else construct in line: %i", idx+1)
                 instructions, idx = self._get_subscope(idx)
-        
+
         elif self._check_line_start(idx+1, "else"):
             if self._check_src(idx+1, "if("):
                 logging.debug("found else if construct in line: %i", idx+2)
@@ -155,7 +155,7 @@ class JavaInterpreter:
                 logging.debug("found else construct in line: %i", idx+2)
                 instructions, idx = self._get_subscope(idx+1)
         return instructions, idx
-        
+
 
     def _handle_if(self, line: str, idx: int):
         bracket_idx = line.rindex(')') # throws if the contruct is illformed
@@ -164,7 +164,7 @@ class JavaInterpreter:
         true_instructions, idx = self._get_subscope(idx)
 
         false_instructions, idx = self._get_else_scope(idx)
-        
+
         return if_instruction(instruction_txt, true_instructions, false_instructions), idx
 
     def _handle_do_while(self, line: str, idx: int):
@@ -193,7 +193,7 @@ class JavaInterpreter:
             var = segments[0][4:]
             cond = segments[1]
             inc = segments[2][:-2]
-            
+
             instructions = []
 
             if cond == "": #did you know test expressions where optional and defaulted to true? Me neither
@@ -202,16 +202,16 @@ class JavaInterpreter:
             if var != "":
                 variable_instruction = self._handle_variable(var, idx)[0]
                 instructions.append(variable_instruction)
-            
+
             brace_offset =  self._get_scope_start_offset(idx)
             child_instructions, idx = self._get_instructions_in_scope(idx+brace_offset)
-            
+
             if inc != "":
                 increment_instruction = generic_instruction(inc)
                 child_instructions.append(increment_instruction)
 
             instructions.append(for_instruction("while " + cond, child_instructions))
-            
+
             return instructions, idx
 
         except IndexError:
@@ -232,7 +232,7 @@ class JavaInterpreter:
         if line.startswith("while("):
             logging.debug("Found while construct in line: %i", idx+1)
             return self._handle_while(line, idx)
-        
+
         elif line.startswith("if("):
             logging.debug("Found if construct in line: %i", idx+1)
             return self._handle_if(line, idx)
@@ -258,7 +258,7 @@ class JavaInterpreter:
         i = idx
         while i < len(self._lines):
             line = self._lines[i]
-            
+
             if self._check_src(i, '}'):
                 break
 
@@ -270,7 +270,7 @@ class JavaInterpreter:
 
             i += 1
         return scope, i
-    
+
     def _remove_keywords(self):
         self.src = self._src.replace(' ', '')
         self.src = self._comment_pattern.sub('', self.src)

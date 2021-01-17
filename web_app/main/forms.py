@@ -1,6 +1,6 @@
-from typing import Optional
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
+from wtforms.validators import Optional
 from flask_wtf.file import FileAllowed
 from wtforms.fields.core import StringField
 

@@ -6,7 +6,10 @@ datei_endung = ".png"
 
 img = None
 output_img = None
-_bkp_font = ImageFont.truetype("res/fonts/NotoSans-Regular.ttf", 12) #in case set_font does funky stuff, backup the original font
+
+_bkp_font = ImageFont.load_default()
+
+ #in case set_font does funky stuff, backup the original font
 font = _bkp_font
 
 
@@ -77,7 +80,7 @@ def draw_if_statement(condition: str, x: int, y: int, true_sz: int, false_sz: in
     return x, y + text_y_size, true_sz, ysize - text_y_size, x + true_sz, y + text_y_size, false_sz, ysize - text_y_size
 
 def draw_while_loop_front(condition: str, x: int, y: int, xsize: int, ysize: int):
-    
+
     if not output_img:
         raise Exception("Output image was not initialized! Make sure to call NSD_init first")
 
@@ -98,7 +101,7 @@ def draw_while_loop_front(condition: str, x: int, y: int, xsize: int, ysize: int
     return x + xsize * .1, y + text_y_sz, xsize * .9
 
 def draw_while_loop_back(condition: str, x: int, y: int, xsize: int, ysize: int):
-    
+
     if not output_img:
         raise Exception("Output image was not initialized! Make sure to call NSD_init first")
 
