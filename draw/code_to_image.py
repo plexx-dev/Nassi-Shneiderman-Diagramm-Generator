@@ -7,7 +7,7 @@ datei_endung = ".png"
 img = None
 output_img = None
 
-_bkp_font = ImageFont.load_default()
+_bkp_font = ImageFont.truetype("res/fonts/NotoSans-Regular.ttf", 12) # ImageFont.load_default()
 
  #in case set_font does funky stuff, backup the original font
 font = _bkp_font
