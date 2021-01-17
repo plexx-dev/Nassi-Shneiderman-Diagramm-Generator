@@ -1,6 +1,5 @@
 import logging
 import re
-import sys
 from typing import Dict, List, Match, Tuple, Union
 
 from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
@@ -122,16 +121,16 @@ class JavaInterpreter:
             return 2
         raise ScopeNotFoundException("Unable to find scope start. Is the program ill-formed?")
 
+    def _get_subscope(self, idx: int):
+        brace_offset = self._get_scope_start_offset(idx)
+        return self._get_instructions_in_scope(idx+brace_offset)
+
     def _handle_while(self, line: str, idx: int):
         bracket_idx = line.rindex(')') # throws if while contruct is illformed
 
         instruction_txt = line[6:bracket_idx]
         child_instructions, idx = self._get_subscope(idx)
         return while_instruction_front(("while" + instruction_txt), child_instructions), idx
-
-    def _get_subscope(self, idx: int):
-        brace_offset = self._get_scope_start_offset(idx)
-        return self._get_instructions_in_scope(idx+brace_offset)
 
     def _get_else_scope(self, idx:int):
         instructions = None
@@ -289,7 +288,7 @@ class JavaInterpreter:
         brace_offset = self._get_scope_start_offset(idx)
         return self._get_instructions_in_scope(idx+brace_offset)[0]
 
-    def _get_function_scope(self, match: re.Match[str]):
+    def _get_function_scope(self, match: Match[str]):
         span = match.span()
         header = self.src[span[0]:span[1]].replace('\n', '')
 
