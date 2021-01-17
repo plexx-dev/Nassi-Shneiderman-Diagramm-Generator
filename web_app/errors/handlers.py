@@ -20,4 +20,4 @@ def error_600(error):
 
 @errors.app_errorhandler(501)
 def error_600(error):
-    return render_template('errors/512.html'), 501
+    return render_template('errors/501.html'), 501
