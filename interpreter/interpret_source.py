@@ -289,7 +289,7 @@ class JavaInterpreter:
         brace_offset = self._get_scope_start_offset(idx)
         return self._get_instructions_in_scope(idx+brace_offset)[0]
 
-    def _get_function_scope(self, match: re.Match[str]):
+    def _get_function_scope(self, match: Match[str]):
         span = match.span()
         header = self.src[span[0]:span[1]].replace('\n', '')
 

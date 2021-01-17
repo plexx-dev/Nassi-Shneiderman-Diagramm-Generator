@@ -1,7 +1,7 @@
 from os import stat
 from interpreter.interpret_source import Function_scope
 from typing import Dict, List, Optional
-from PySimpleGUI import one_line_progress_meter
+# from PySimpleGUI import one_line_progress_meter
 import logging
 from enum import IntEnum
 import os.path
@@ -29,7 +29,7 @@ class NassiShneidermanDiagram:
         logLevel = logging.INFO
         if debug:
             logLevel = logging.DEBUG
-        
+
         logging.basicConfig(force=True, level=logLevel)
 
     @staticmethod
