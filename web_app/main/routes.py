@@ -1,6 +1,7 @@
 from flask.helpers import send_file
 from flask import render_template, abort, flash, Blueprint
 from web_app.main.forms import UploadJavaForm
+from errors.custom import JavaSyntaxError, ScopeNotFoundException, InterpreterException, NoPathError
 from random import randint
 import shutil
 import secrets
@@ -56,24 +57,36 @@ def generator():
 
                
             deleteFilesInFolder(str(os.path.join(os.path.abspath(os.path.join('Web', os.pardir)), './tmp/output/')))
-            NSD = NassiShneidermanDiagram(True)
-            output_directory = output_path + '/' + outputname
-            
-            
             try:
-               if not os.path.exists(output_directory):
-                    os.makedirs(output_directory)
-            except OSError:
-                logging.error('Error: Creating directory. ' +  output_directory)
+                NSD = NassiShneidermanDiagram(True)
+                output_directory = output_path + '/' + outputname
+                
+                
+                try:
+                    if not os.path.exists(output_directory):
+                        os.makedirs(output_directory)
+                except OSError:
+                    logging.error('Error: Creating directory. ' +  output_directory)
 
 
-            custom_tags = {"comments" : form.comments.data, "ignore" : form.remove_tags.data, "types" : form.types.data}
-            
-            NSD.load_from_file(input_path, custom_tags)
-            NSD.convert_to_image(output_directory, on_conflict=behaviour)
+                custom_tags = {"comments" : form.comments.data, "ignore" : form.remove_tags.data, "types" : form.types.data}
+                
+                NSD.load_from_file(input_path, custom_tags)
+                NSD.convert_to_image(output_directory, on_conflict=behaviour)
 
-            shutil.make_archive(output_path_zip, 'zip', output_directory) 
-            
+                shutil.make_archive(output_path_zip, 'zip', output_directory) 
+            except JavaSyntaxError as JsE:
+                flash((str(JsE)))
+            except ScopeNotFoundException as SnFe:
+                flash((str(SnFe)))
+            except FileNotFoundError as FnFe:
+                flash(str(FnFe))
+            except InterpreterException as iE:
+                flash(str(iE))
+            except Exception as e:
+                flash(('Failed to create an image of one funktion correctly. ' + str(e)) + 'There may be some images created. ')
+            except:    
+                raise            
             deleteFilesInFolder(output_path)
             return send_file(output_path_zip + '.zip', as_attachment=True)
             
