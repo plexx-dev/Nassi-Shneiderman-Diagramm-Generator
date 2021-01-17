@@ -7,5 +7,4 @@ In the final version, you will just have to execute the nassi.exe and choose you
 
 Using:
 Python 3.9.1 with 
-PySimpleGUI &
-Pillow
+PySimpleGUI, Pillow, Flask & wtforms
