@@ -81,19 +81,19 @@ class if_instruction(Iinstruction):
         return max(self._getblkwidth(), self.get_truewidth() + self.get_falsewidth())
 
     def get_truewidth(self) -> float:
-        w = 0.0
+        w = 50
 
         for inst in self.true_case:
-            w += inst.getblkwidth()
+            w = max(w, inst.getblkwidth())
         
         return w
     
     def get_falsewidth(self) -> float:
-        w = 0.0
+        w = 50
 
         if self.false_case:
             for inst in self.false_case:
-                w += inst.getblkwidth()
+                w = max(w, inst.getblkwidth())
 
         return w
         
@@ -161,9 +161,9 @@ class while_instruction_front(Iinstruction):
         return children_sz
 
     def get_children_width(self) -> float:
-        w = 0.0
+        w = 50.0
         for inst in self.child_instructions:
-            w += inst.getblkheight()
+            w = max(w, inst.getblkheight())
         return w
 
     def getblkheight(self) -> float:

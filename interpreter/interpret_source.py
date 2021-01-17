@@ -4,6 +4,7 @@ from typing import Dict, List, Match, Tuple, Union
 
 from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
+from interpreter.Function_scope import Function_scope
 
 logging.warning("""Because the Interpreter is still WIP, some Java language features are not supported. These include:
     *foreach loops (will throw JavaSyntaxError)
@@ -11,28 +12,6 @@ logging.warning("""Because the Interpreter is still WIP, some Java language feat
     *switch statements
     *Generics
 Please remove these features from the source code as they will result in incorrect behaviour""")
-
-class Function_scope(Iterable):
-    def __init__(self, child_instructions: List[Iinstruction], name: str, return_type: str, args: List[str]) -> None:
-        self.contents = child_instructions
-        self.name = name
-        self.return_type = return_type
-        self.args = args
-
-    def get_height(self) -> int:
-        h = 0.0
-        for inst in self.contents:
-            h += inst.getblkheight()
-        return int(h)
-
-    def get_width(self) -> int:
-        w = 200.0
-        for inst in self.contents:
-            w = max(w, inst.getblkwidth())
-        return int(w)
-
-    def __iter__(self):
-        return self.contents.__iter__()
 
 class JavaInterpreter:
 
