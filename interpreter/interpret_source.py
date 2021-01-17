@@ -6,9 +6,6 @@ from typing import Dict, List, Match, Tuple, Union
 from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
 
-if sys.version_info < (3, 9):
-    raise Exception("Unsupported Python version! Pyton 3.9 is required")
-
 logging.warning("""Because the Interpreter is still WIP, some Java language features are not supported. These include:
     *foreach loops (will throw JavaSyntaxError)
     *constructors (will be ignored)
@@ -57,13 +54,16 @@ class JavaInterpreter:
 
         if additional_tags:
             if "comments" in additional_tags.keys():
-                if tags := additional_tags["comments"]:
+                tags = additional_tags["comments"]
+                if tags:
                     self._comment_tags.extend(tags)
             if "ignore" in additional_tags.keys():
-                if tags := additional_tags["ignore"]:
+                tags = additional_tags["ignore"]
+                if tags:
                     self._remove_tags.extend(tags)
             if "types" in additional_tags.keys():
-                if tags := additional_tags["types"]:
+                tags = additional_tags["types"]
+                if tags:
                     self._type_tags.extend(tags)
                     self._function_tags.extend(tags)
         else:
