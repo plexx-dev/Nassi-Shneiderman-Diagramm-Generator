@@ -13,6 +13,7 @@ logging.warning("""Because the Interpreter is still WIP, some Java language feat
     *foreach loops (will throw JavaSyntaxError)
     *constructors (will be ignored)
     *switch statements
+    *Generics
 Please remove these features from the source code as they will result in incorrect behaviour""")
 
 class Function_scope(Iterable):
@@ -29,10 +30,10 @@ class Function_scope(Iterable):
         return int(h)
 
     def get_width(self) -> int:
-        w = 0.0
+        w = 200.0
         for inst in self.contents:
             w = max(w, inst.getblkwidth())
-        return int(max(200, w))
+        return int(w)
 
     def __iter__(self):
         return self.contents.__iter__()
@@ -43,16 +44,15 @@ class JavaInterpreter:
         with open(filepath) as file:
             if not file.readable():
                 raise InterpreterException(f"Unable to read input file {filepath}")
-            self._src = file.read()
+            self._src = file.read() #WARNING: throws if file is too large
             self._lines = [] # to be filled in later
-        self._init_regex()
-        self._recompile_regex()
+        self.reset_tags()
 
     def reset_tags(self, additional_tags: Dict[str, List[str]]=None):
-        """Reset the Interpreters internal tags to include the new tags given in {additional_tags}
-        the key for comment tags is "comments"
-        the key for tags that should be ignored is "ignore"
-        the key for additional type tags is "types"
+        """Reset the Interpreters internal tags to include the new tags given in {additional_tags} or default.
+        The key for comment tags is "comments"
+        The key for tags that should be ignored is "ignore"
+        The key for additional type tags is "types"
         """
 
         if additional_tags:

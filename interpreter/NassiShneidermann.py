@@ -30,7 +30,7 @@ class NassiShneidermanDiagram:
         if debug:
             logLevel = logging.DEBUG
         
-        logging.basicConfig(level=logLevel)
+        logging.basicConfig(force=True, level=logLevel)
 
     @staticmethod
     def set_font(font_filepath: str):
@@ -38,11 +38,11 @@ class NassiShneidermanDiagram:
 
     @staticmethod
     def _save_scope(scope: Function_scope, output_path: str):
-        image_y_sz = scope.get_height()
+        y_size = scope.get_height()
         x_size = scope.get_width()
-        with NSD_writer(output_path, x_size, image_y_sz):
+        with NSD_writer(output_path, x_size, y_size):
             x, y = 0, 0
-            for instruction in scope.contents:
+            for instruction in scope:
                 x, y = instruction.to_image(x, y, x_size)
 
     @staticmethod
