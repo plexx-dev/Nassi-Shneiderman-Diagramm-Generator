@@ -99,9 +99,12 @@ class Gui:
                                     'You didn\'t set a name for the image, it will be named randomly.')
                                 output_name = secrets.token_hex(16)
                     
-                            path = nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
+                            path, file_is_empty = nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
                                   font_filepath=font_filepath, behaviour=exists_choice, types=types, remove_tags=modifier, comments=comments)
-                            if path:
+
+                            if file_is_empty:
+                                sg.popup_annoying('Our interpreter did not find anything. --> blame Kons or yourself!', title='Empty')
+                            elif path:
                                 fnames = output(path)
                                 sg.popup_annoying('Successfully created!', title='Created',
                                                 auto_close_duration=2, auto_close=True, text_color='green')
@@ -163,10 +166,14 @@ class Gui:
 
             # handle event select output folder
             if event == '-OUTPUT FOLDER-':
-                logging.debug(('event = ' + str(event) +
-                               ' value = ' + str(values['-OUTPUT FOLDER-'])))
-                fnames = output(values['-OUTPUT FOLDER-'])
-                window['-OUTPUT FILE LIST-'].update(fnames)
+                try:
+                    logging.debug(('event = ' + str(event) +
+                                ' value = ' + str(values['-OUTPUT FOLDER-'])))
+                    fnames = output(values['-OUTPUT FOLDER-'])
+                    window['-OUTPUT FILE LIST-'].update(fnames)
+                except Exception as e:
+                    logging.error(str(e))
+                    sg.popup_error(str(e))
             elif event == '-OUTPUT FILE LIST-':
                 logging.debug(('event = ' + str(event) +
                                ' value = ' + str(values['-OUTPUT FILE LIST-'])))

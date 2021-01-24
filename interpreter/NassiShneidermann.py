@@ -85,3 +85,8 @@ class NassiShneidermanDiagram:
         itp = JavaInterpreter(filepath)
         itp.reset_tags(itp_custom_tags)
         self.function_scopes = itp.load_instruction_scopes()
+        
+        if not self.function_scopes:
+            return True
+        else:
+            return False
