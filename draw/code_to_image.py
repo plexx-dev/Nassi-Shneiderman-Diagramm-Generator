@@ -63,8 +63,8 @@ def draw_if_statement(condition: str, x: int, y: int, true_sz: int, false_sz: in
 
     box_sz = true_sz + false_sz
 
-    output_img.line((x,y) + (x + box_sz/2, y + text_y_size), fill=(0))
-    output_img.line((x + box_sz, y) + (x + box_sz/2, y + text_y_size), fill=(0))
+    output_img.line((x,y) + (x + true_sz, y + text_y_size), fill=(0))
+    output_img.line((x + box_sz, y) + (x + true_sz, y + text_y_size), fill=(0))
     output_img.rectangle((x, y + text_y_size) + (x + box_sz, y + ysize), outline=(0), width=1)
     output_img.rectangle((x, y) + (x + box_sz, y + text_y_size), outline=(0), width=1)
     output_img.line((x + true_sz, y + text_y_size) + (x + true_sz, y + ysize), fill=(0))
