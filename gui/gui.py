@@ -41,9 +41,10 @@ class Gui:
     def gui_handler(self, window: sg.Window):
         #  handler for the gui
         
-
+        file_path = None
         font_filepath = None
         output_name = None
+        output_path = None
         exists_choice = OB.SKIP
         types = None
         comments = None
