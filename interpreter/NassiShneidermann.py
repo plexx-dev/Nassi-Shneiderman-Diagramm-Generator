@@ -57,13 +57,18 @@ class NassiShneidermanDiagram:
     def convert_to_image(self, output_path: str, on_conflict: Overwrite_behaviour=OB.SKIP) -> bool:
         number_of_item = 1
         for scope in self.function_scopes:
+            #this shizz is not my fault. Ole was the stupid one
             number_of_item += 1
             try:
                 cancel = one_line_progress_meter('Progress', number_of_item, len(self.function_scopes), '-PROGRESSBAR-')
                 if not cancel:
                     return False
+<<<<<<< HEAD
             except:
                 pass
+=======
+            #I am the one responsible from here on
+>>>>>>> a41cc0369d1e82c88f6313397e7298043eee5fd1
 
             filepath = f"{output_path}/{scope.name}"
             filepath = self.check_conflicts(filepath, on_conflict)
