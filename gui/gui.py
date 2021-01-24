@@ -104,7 +104,7 @@ class Gui:
 
                             if file_is_empty:
                                 sg.popup_annoying('Our interpreter did not find anything. --> blame Kons or yourself!', title='Empty')
-                            elif path:
+                            if path:
                                 fnames = output(path)
                                 sg.popup_annoying('Successfully created!', title='Created',
                                                 auto_close_duration=2, auto_close=True, text_color='green')
@@ -118,11 +118,11 @@ class Gui:
                         except JavaSyntaxError as JsE:
                             logging.error(
                                 ('||SyntaxError in Java File|| Failed to create Image with values = ' + str(values)))
-                            sg.popup_error((str(JsE)))
+                            sg.popup_error(str(JsE))
                         except ScopeNotFoundException as SnFe:
                             logging.error(
                                 ('||ScopeNotFoundExeption|| Failed to create Image with values = ' + str(values)))
-                            sg.popup_error((str(SnFe)))
+                            sg.popup_error(str(SnFe))
                         except FileNotFoundError as FnFe:
                             logging.error(
                                 ('||FileNotFoundError|| Failed to create Image with values = ' + str(values)))
@@ -134,7 +134,7 @@ class Gui:
                         except Exception as e:
                             logging.error(
                                 ('Failed to create Image with values = ' + str(values)))
-                            sg.popup_error(('Failed to create an image of one funktion correctly. ' + str(e)) + 'There may be some images created. ')
+                            sg.popup_error(('Failed to create an image of one function correctly. ' + str(e)) + 'There may be some images created. ')
                         except:    
                             raise
 
