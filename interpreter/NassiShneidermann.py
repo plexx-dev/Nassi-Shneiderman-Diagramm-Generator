@@ -22,12 +22,8 @@ class NassiShneidermanDiagram:
 
     def __init__(self, do_debug: bool):
         self.function_scopes: List[Function_scope] = []
-        self.init_logging(do_debug)
-
-    @staticmethod
-    def init_logging(debug: bool):
         logLevel = logging.INFO
-        if debug:
+        if do_debug:
             logLevel = logging.DEBUG
 
         logging.basicConfig(force=True, level=logLevel)
