@@ -16,7 +16,7 @@ class Function_scope(Iterable):
         return int(h)
 
     def get_width(self) -> int:
-        w = 200.0
+        w = 200.0 #minimum width for every block
         for inst in self.contents:
             w = max(w, inst.getblkwidth())
         return int(w)

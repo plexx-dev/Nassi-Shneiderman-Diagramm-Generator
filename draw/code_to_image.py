@@ -54,30 +54,30 @@ def draw_generic_instruction(instruction: str, x, y, xsize, ysize) -> Iterable[f
 
     return x, y + ysize
 
-def draw_if_statement(condition: str, x: int, y: int, true_sz: int, false_sz: int, ysize: int):
+def draw_if_statement(condition: str, x: int, y: int, true_w: int, false_w: int, ysize: int):
     """Draw an if statement into the NSD"""
     if not output_img:
         raise Exception("Output image was not initialized! Make sure to call NSD_init first")
 
-    text_y_size = font.getsize(condition)[1]
+    text_h = font.getsize(condition)[1] + 5
 
-    box_sz = true_sz + false_sz
+    box_w = true_w + false_w
 
-    output_img.line((x,y) + (x + box_sz/2, y + text_y_size), fill=(0))
-    output_img.line((x + box_sz, y) + (x + box_sz/2, y + text_y_size), fill=(0))
-    output_img.rectangle((x, y + text_y_size) + (x + box_sz, y + ysize), outline=(0), width=1)
-    output_img.rectangle((x, y) + (x + box_sz, y + text_y_size), outline=(0), width=1)
-    output_img.line((x + true_sz, y + text_y_size) + (x + true_sz, y + ysize), fill=(0))
+    output_img.line((x,y) + (x + box_w/2, y + text_h), fill=(0))
+    output_img.line((x + box_w, y) + (x + box_w/2, y + text_h), fill=(0))
+    output_img.rectangle((x, y + text_h) + (x + box_w, y + ysize), outline=(0), width=1)
+    output_img.rectangle((x, y) + (x + box_w, y + text_h), outline=(0), width=1)
+    output_img.line((x + true_w, y + text_h) + (x + true_w, y + ysize), fill=(0))
 
     # condition text
-    output_img.multiline_text((x + box_sz / 2, y + text_y_size / 2), condition, fill=(0), font=font, anchor="mm", spacing=4, align='right')
+    output_img.multiline_text((x + box_w / 2, y + text_h / 2), condition, fill=(0), font=font, anchor="mm", spacing=4, align='right')
 
     # true / false
-    output_img.text((x + 5, y + text_y_size), "true", font = font, fill = (0), anchor="ld")
-    output_img.text((x + box_sz - 5, y + text_y_size), "false", font = font, fill = (0), anchor="rd")
+    output_img.text((x + 5, y + text_h), "true", font = font, fill = (0), anchor="ld")
+    output_img.text((x + box_w - 5, y + text_h), "false", font = font, fill = (0), anchor="rd")
 
-    #first x, y, xsize and ysize of "true" label then of "false" label
-    return x, y + text_y_size, true_sz, ysize - text_y_size, x + true_sz, y + text_y_size, false_sz, ysize - text_y_size
+    #x, and y of "true" and "false" label
+    return x, y + text_h, x + true_w, y + text_h
 
 def draw_while_loop_front(condition: str, x: int, y: int, xsize: int, ysize: int):
 

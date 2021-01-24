@@ -1,10 +1,7 @@
 #!/usr/bin/env python
-from gui.gui import Gui
-import sys
+from gui.gui import Gui as gui
+from sys import argv
 
-do_debug = "--debug" in sys.argv
+do_debug = "--debug" in argv
 
-Gui(theme='DarkGrey11', debug_mode=do_debug)
-
-
-
+gui(theme='DarkGrey11', debug_mode=do_debug)

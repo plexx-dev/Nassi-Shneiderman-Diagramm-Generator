@@ -36,7 +36,7 @@ class generic_instruction(Iinstruction):
 
     def __init__(self, instruction_text: str) -> None:
         Iinstruction.__init__(self, instruction_text)
-
+ 
     def to_image(self, x:int, y:int, x_sz: int) -> Iterable[float]:
         return cti.draw_generic_instruction(self.instruction_text, x, y, x_sz, self.getblkheight())
 
@@ -74,38 +74,38 @@ class if_instruction(Iinstruction):
                 sz += inst.getblkwidth()
         return sz
 
-    def getblkheight(self) -> float:
-        return self._getblkheight() + max(self.get_trueheight(), self.get_falseheight())
-
-    def getblkwidth(self) -> float:
-        return max(self._getblkwidth(), self.get_truewidth() + self.get_falsewidth())
-
     def get_truewidth(self) -> float:
-        w = 0.0
+        w = 200.0
 
         for inst in self.true_case:
-            w += inst.getblkwidth()
+            w = max(w, inst.getblkwidth())
         
         return w
     
     def get_falsewidth(self) -> float:
-        w = 0.0
+        w = 200.0
 
         if self.false_case:
             for inst in self.false_case:
-                w += inst.getblkwidth()
+                w = max(w, inst.getblkwidth())
 
         return w
+
+    def getblkheight(self) -> float:
+        return max(self.get_trueheight(), self.get_falseheight())
+
+    def getblkwidth(self) -> float:
+        return max(self._getblkwidth(), self.get_truewidth() + self.get_falsewidth())
         
     
     def to_image(self, x:int, y:int, x_sz: int) -> Iterable[float]:
         true_w = self.get_truewidth()
-        false_w = self.get_falseheight()
-        true_x, true_y, true_sz_x, _, false_x, false_y, false_sz_x, _ = cti.draw_if_statement(
+        false_w = self.get_falsewidth()
+        true_x, true_y, _, _, false_x, false_y, _, _ = cti.draw_if_statement(
             self.instruction_text, x, y, true_w, false_w, self.getblkheight()
         )
-        self.draw_true_case(true_x, true_y, true_sz_x)
-        self.draw_false_case(false_x, false_y, false_sz_x)
+        self.draw_true_case(true_x, true_y, true_w)
+        self.draw_false_case(false_x, false_y, false_w)
         blk_size = self.getblkheight()
         return x, y + blk_size
 
