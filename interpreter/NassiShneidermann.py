@@ -54,7 +54,7 @@ class NassiShneidermanDiagram:
         return filepath
 
     def convert_to_image(self, output_path: str, on_conflict: Overwrite_behaviour=OB.SKIP) -> bool:
-        i = 0
+        i = 1
         for scope in self.function_scopes:
             cancel = one_line_progress_meter('Progress', i, len(self.function_scopes), '-PROGRESSBAR-')
             if not cancel:
