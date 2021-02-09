@@ -16,18 +16,10 @@ import logging
 #types=types, remove_tages=modifier, comments=comments
 def nassi(input_path: str, output_path: str, outputname: str, types, remove_tags, comments, gui, behaviour: Overwrite_behaviour, font_filepath: Optional[str]=None):
     NSD = NassiShneidermanDiagram(gui.debug_mode)
-    output_directory = output_path + '/' + outputname
+    output_directory = check_and_create_output_directory(output_path + '/' + outputname)
     
     if font_filepath != None:
         NSD.set_font(font_filepath)
-
-    try:
-        if not os.path.exists(output_directory):
-            os.makedirs(output_directory)
-    except OSError:
-        logging.error('Error: Creating directory. ' +  output_directory)
-    except:
-        raise
 
     custom_tags = {"comments" : comments, "ignore" : remove_tags, "types" : types}
     
@@ -37,10 +29,19 @@ def nassi(input_path: str, output_path: str, outputname: str, types, remove_tags
         cancel = one_line_progress_meter('Progress', scopes_index, len(NSD.function_scopes), '-PROGRESSBAR-')
         
         if not cancel:
-            break
-    
+            break    
     
     return output_directory, is_empty
+
+def check_and_create_output_directory(output_directory):
+    try:
+        if not os.path.exists(output_directory):
+            os.makedirs(output_directory)
+    except Exception as e:
+        logging.error(e+ ': ' +  output_directory)
+        raise
+       
+    return output_directory
 
 
 
