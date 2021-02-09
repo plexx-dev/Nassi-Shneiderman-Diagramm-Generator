@@ -5,7 +5,6 @@ __author__      = "Weckyy702"
 
 
 from typing import Dict, List, Optional
-from PySimpleGUI import one_line_progress_meter
 import logging
 from enum import IntEnum
 import os.path
@@ -59,11 +58,9 @@ class NassiShneidermanDiagram:
                 return filepath
         return filepath
 
-    def convert_to_image(self, output_path: str, on_conflict: Overwrite_behaviour=OB.SKIP) -> bool:
+    def convert_to_image(self, output_path: str, on_conflict: Overwrite_behaviour=OB.SKIP):
         i = 0
-        for scope in self.function_scopes:
-            cancel = one_line_progress_meter('Progress', i+1, len(self.function_scopes), '-PROGRESSBAR-')
-            
+        for scope in self.function_scopes:      
 
             filepath = f"{output_path}/{scope.name}"
             filepath = self.check_conflicts(filepath, on_conflict)
@@ -79,11 +76,10 @@ class NassiShneidermanDiagram:
                     logging.error(f"Failed to save image {filepath}. Unknown error")
                     raise
             
-            if not cancel:
-                return False
+            
+            yield i+1
             i+=1
-        return True
-
+            
     def load_from_file(self, filepath:str, itp_custom_tags: Optional[Dict[str, List[str]]]):
         itp = JavaInterpreter(filepath)
         itp.reset_tags(itp_custom_tags)

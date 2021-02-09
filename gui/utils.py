@@ -8,6 +8,7 @@ __author__      = "oleting, Weckyy702"
 from errors.custom import NoPathError
 from interpreter.NassiShneidermann import NassiShneidermanDiagram, Overwrite_behaviour, OB
 
+from PySimpleGUI import one_line_progress_meter
 from typing import Optional
 import os
 import logging
@@ -32,7 +33,11 @@ def nassi(input_path: str, output_path: str, outputname: str, types, remove_tags
     
     is_empty = NSD.load_from_file(input_path, custom_tags)
 
-    NSD.convert_to_image(output_directory, on_conflict=behaviour)
+    for scopes_index in NSD.convert_to_image(output_directory, on_conflict=behaviour):
+        cancel = one_line_progress_meter('Progress', scopes_index, len(NSD.function_scopes), '-PROGRESSBAR-')
+        
+        if not cancel:
+            break
     
     
     return output_directory, is_empty
