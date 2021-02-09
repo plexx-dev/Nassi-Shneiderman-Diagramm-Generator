@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+
+"""utils.py: utils for gui.py"""
+
+__author__      = "oleting, Weckyy702"
+
+
 from errors.custom import NoPathError
 from interpreter.NassiShneidermann import NassiShneidermanDiagram, Overwrite_behaviour, OB
 
@@ -27,9 +34,7 @@ def nassi(input_path: str, output_path: str, outputname: str, types, remove_tags
 
     cancel = NSD.convert_to_image(output_directory, on_conflict=behaviour)
     
-    if not cancel:
-        return None
-
+    
     return output_directory, is_empty
 
 

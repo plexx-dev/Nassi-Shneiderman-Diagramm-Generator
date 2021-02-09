@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+
+"""NassiShneidermann.py: #TODO"""
+
+__author__      = "Weckyy702"
+
+
+
 from typing import Dict, List, Optional
 from PySimpleGUI import one_line_progress_meter
 import logging

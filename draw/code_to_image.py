@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+
+"""code_to_image.py: #TODO"""
+
+__author__      = "plexx, Weckyy702"
+
 from typing import Iterable
 from PIL import Image, ImageDraw, ImageFont
 import os

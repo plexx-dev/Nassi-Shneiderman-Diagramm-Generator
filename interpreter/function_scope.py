@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+
+"""function_scope.py: #TODO"""
+
+__author__      = "Weckyy702"
+
 from typing import Iterable, List
 from draw.Iinstruction import Iinstruction
 

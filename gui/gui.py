@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+
+"""gui.py: handle and init Gui."""
+
+__author__      = "oleting"
+
+
 from gui.utils import nassi, output
 from gui.new_window_layouts import Layout_std, Layout_settings
 from errors.custom import JavaSyntaxError, ScopeNotFoundException, InterpreterException, NoPathError
@@ -154,12 +161,6 @@ class Gui:
             if event == '-CREDITS-':
                 sg.popup(
                     'This was made by plexx(Image generation), Weckyy702(Interpreter) and oleting(Frontend). Used Python 3.9.1, Libraries PySimpleGUI and Pillow.', title='Credits')
-
-            # handle fun feature
-            if event == '-DONATE-':
-                logging.debug(('event = ' + str(event)))
-                sg.popup_notify(
-                    ('You donated $' + str(random.randint(500, 100000000)) + '.'), title='Thanks')
 
 
             # needed Input
