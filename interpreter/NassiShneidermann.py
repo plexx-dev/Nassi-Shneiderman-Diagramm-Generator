@@ -50,7 +50,7 @@ class NassiShneidermanDiagram:
         if os.path.exists(filepath + ".png"):
             if behavoiur == OB.SKIP:
                 return None
-            elif behavoiur == OB.OVERWWRITE:
+            elif behavoiur == OB.OVERWRITE:
                 return filepath
             else:
                 while os.path.exists(filepath+".png"):
