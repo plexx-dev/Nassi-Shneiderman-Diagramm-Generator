@@ -32,7 +32,7 @@ def nassi(input_path: str, output_path: str, outputname: str, types, remove_tags
     
     is_empty = NSD.load_from_file(input_path, custom_tags)
 
-    cancel = NSD.convert_to_image(output_directory, on_conflict=behaviour)
+    NSD.convert_to_image(output_directory, on_conflict=behaviour)
     
     
     return output_directory, is_empty

@@ -52,7 +52,7 @@ class Gui:
         font_filepath = None
         output_name = None
         output_path = None
-        exists_choice = OB.SKIP
+        exists_choice = OB.OVERWRITE
         types = None
         comments = None
         modifier = None
@@ -78,14 +78,16 @@ class Gui:
                     if event_settings == '-OVERWRITE-' and exists_choice != OB.OVERWWRITE:
                         exists_choice = OB.OVERWWRITE
                         break
-                    if event_settings == '-EXPICIT-' and exists_choice != OB.RANDOM_NAME:
+                    elif event_settings == '-EXPICIT-' and exists_choice != OB.RANDOM_NAME:
                         exists_choice = OB.RANDOM_NAME
                         break
-                    if event_settings == '-SKIP-' and exists_choice != OB.SKIP:
+                    elif event_settings == '-SKIP-' and exists_choice != OB.SKIP:
                         exists_choice = OB.SKIP
                         break
-                    if event_settings == sg.WIN_CLOSED or event == 'Quit':
+                    elif event_settings == sg.WIN_CLOSED or event == 'Quit':
                         break
+                    else:
+                        pass
                     
                 window_settings.close()           
             if event == '-CREATE-':
@@ -111,7 +113,7 @@ class Gui:
 
                             if file_is_empty:
                                 sg.popup_annoying('Our interpreter did not find anything. --> blame Kons or yourself!', title='Empty')
-                            elif path:
+                            if path:
                                 fnames = output(path)
                                 sg.popup_annoying('Successfully created!', title='Created',
                                                 auto_close_duration=2, auto_close=True, text_color='green')
