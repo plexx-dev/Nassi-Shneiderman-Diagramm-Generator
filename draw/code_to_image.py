@@ -8,6 +8,9 @@ from typing import Iterable
 from PIL import Image, ImageDraw, ImageFont
 import os
 
+PADDING_X = 100
+PADDING_Y = 5
+
 datei_endung = ".png"
 
 img = None
@@ -65,9 +68,11 @@ def draw_if_statement(condition: str, x: int, y: int, true_w: int, false_w: int,
     if not output_img:
         raise Exception("Output image was not initialized! Make sure to call NSD_init first")
 
-    text_h = font.getsize(condition)[1] + 5
+    text_sz = font.getsize(condition)
+    text_h = text_sz[1] + PADDING_Y
+    text_w = text_sz[0] + PADDING_X
 
-    box_w = true_w + false_w
+    box_w = max(text_w, true_w + false_w)
 
     output_img.line((x,y) + (x + box_w/2, y + text_h), fill=(0))
     output_img.line((x + box_w, y) + (x + box_w/2, y + text_h), fill=(0))

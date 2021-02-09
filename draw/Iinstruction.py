@@ -32,10 +32,10 @@ class Iinstruction(metaclass=ABCMeta):
         pass
 
     def _getblkheight(self) -> float:
-        return cti.get_text_size(self.instruction_text)[1] + 5#padding
+        return cti.get_text_size(self.instruction_text)[1] + cti.PADDING_Y #padding
 
     def _getblkwidth(self) -> float:
-        return cti.get_text_size(self.instruction_text)[0]+50 #padding
+        return cti.get_text_size(self.instruction_text)[0] + cti.PADDING_X #padding
 
 
 class generic_instruction(Iinstruction):
