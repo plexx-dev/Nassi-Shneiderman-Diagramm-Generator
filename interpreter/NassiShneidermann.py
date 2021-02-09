@@ -1,5 +1,3 @@
-from os import stat
-from interpreter.interpret_source import Function_scope
 from typing import Dict, List, Optional
 from PySimpleGUI import one_line_progress_meter
 import logging
@@ -8,6 +6,7 @@ import os.path
 import secrets
 
 from interpreter.interpret_source import JavaInterpreter
+from interpreter.function_scope import Function_scope
 from draw.code_to_image_wrapper import NSD_writer
 import draw.code_to_image as cti
 
@@ -50,7 +49,7 @@ class NassiShneidermanDiagram:
                 return filepath
             else:
                 while os.path.exists(filepath+".png"):
-                    filepath = filepath + str(secrets.token_hex(1))
+                    filepath += str(secrets.token_hex(1))
                 return filepath
         return filepath
 

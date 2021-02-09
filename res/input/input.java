@@ -329,47 +329,52 @@
 //         final int value;
 //     };
 // }
-public void test_function() {
-    int rot = getRotation();
 
-    if (richtung=="vorne" && rot==0 || richtung=="rechts" && rot==270 || richtung=="links" && rot==90)
-    {
-        if(getOneObjectAtOffset(1,0,Huegel.class)!=null && ((Huegel)getOneObjectAtOffset(1,0,Huegel.class)).getSteigung() >30)
-        {
-            return true;
-        }
-    }
+class Testing {
 
-    if (richtung=="vorne" && rot==180 || richtung=="rechts" && rot==90 || richtung=="links" && rot==270)
-    {
-        if(getOneObjectAtOffset(-1,0,Huegel.class)!=null && ((Huegel)getOneObjectAtOffset(-1,0,Huegel.class)).getSteigung() >30)
-        {
-            return true;
-        }
-    }
+    public void test_function() {
+        int rot = getRotation();
 
-    if (richtung=="vorne" && rot==90 || richtung=="rechts" && rot==0 || richtung=="links" && rot==180)
-    {
-        if(getOneObjectAtOffset(0,1,Huegel.class)!=null && ((Huegel)getOneObjectAtOffset(0,1,Huegel.class)).getSteigung() >30)
+        if (richtung=="vorne" && rot==0 || richtung=="rechts" && rot==270 || richtung=="links" && rot==90)
         {
-            return true;
+            if(getOneObjectAtOffset(1,0,Huegel.class)!=null && ((Huegel)getOneObjectAtOffset(1,0,Huegel.class)).getSteigung() >30)
+            {
+                return true;
+            }
         }
 
-    }
-
-    if (richtung=="vorne" && rot==270 || richtung=="rechts" && rot==180 || richtung=="links" && rot==0)
-    {
-        if(getOneObjectAtOffset(0,-1,Huegel.class)!=null && ((Huegel)getOneObjectAtOffset(0,-1,Huegel.class)).getSteigung() >30)
+        if (richtung=="vorne" && rot==180 || richtung=="rechts" && rot==90 || richtung=="links" && rot==270)
         {
-            return true;
+            if(getOneObjectAtOffset(-1,0,Huegel.class)!=null && ((Huegel)getOneObjectAtOffset(-1,0,Huegel.class)).getSteigung() >30)
+            {
+                return true;
+            }
         }
 
+        // if (richtung=="vorne" && rot==90 || richtung=="rechts" && rot==0 || richtung=="links" && rot==180)
+        // {
+        //     if(getOneObjectAtOffset(0,1,Huegel.class)!=null && ((Huegel)getOneObjectAtOffset(0,1,Huegel.class)).getSteigung() >30)
+        //     {
+        //         return true;
+        //     }
+
+        // }
+
+        // if (richtung=="vorne" && rot==270 || richtung=="rechts" && rot==180 || richtung=="links" && rot==0)
+        // {
+        //     if(getOneObjectAtOffset(0,-1,Huegel.class)!=null && ((Huegel)getOneObjectAtOffset(0,-1,Huegel.class)).getSteigung() >30)
+        //     {
+        //         return true;
+        //     }
+
+        // }
+
+        // if(richtung!="vorne" && richtung!="links" && richtung!="rechts")
+        // {
+        //     nachricht("Befehl nicht korrekt!");
+        // }
+
+        // return false;
     }
 
-    if(richtung!="vorne" && richtung!="links" && richtung!="rechts")
-    {
-        nachricht("Befehl nicht korrekt!");
-    }
-
-    return false;
 }

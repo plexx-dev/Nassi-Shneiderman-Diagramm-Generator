@@ -25,7 +25,7 @@ class Iinstruction(metaclass=ABCMeta):
         pass
 
     def _getblkheight(self) -> float:
-        return cti.get_text_size(self.instruction_text)[1]
+        return cti.get_text_size(self.instruction_text)[1] + 5#padding
 
     def _getblkwidth(self) -> float:
         return cti.get_text_size(self.instruction_text)[0]+50 #padding
@@ -92,7 +92,7 @@ class if_instruction(Iinstruction):
         return w
 
     def getblkheight(self) -> float:
-        return max(self.get_trueheight(), self.get_falseheight())
+        return self._getblkheight() + max(self.get_trueheight(), self.get_falseheight())
 
     def getblkwidth(self) -> float:
         return max(self._getblkwidth(), self.get_truewidth() + self.get_falsewidth())
@@ -101,7 +101,7 @@ class if_instruction(Iinstruction):
     def to_image(self, x:int, y:int, x_sz: int) -> Iterable[float]:
         true_w = self.get_truewidth()
         false_w = self.get_falsewidth()
-        true_x, true_y, _, _, false_x, false_y, _, _ = cti.draw_if_statement(
+        true_x, true_y, false_x, false_y = cti.draw_if_statement(
             self.instruction_text, x, y, true_w, false_w, self.getblkheight()
         )
         self.draw_true_case(true_x, true_y, true_w)
@@ -130,7 +130,6 @@ class if_instruction(Iinstruction):
             res += "}"
         return res
 
-#TODO
 # class switch_instruction(Iinstruction):
 #     """Switch structure"""
 
