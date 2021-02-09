@@ -52,7 +52,7 @@ class Gui:
         font_filepath = None
         output_name = None
         output_path = None
-        exists_choice = OB.OVERWRITE
+        exists_choice = OB.SKIP
         types = None
         comments = None
         modifier = None
@@ -75,8 +75,8 @@ class Gui:
                 window_settings = sg.Window(title='Settings', layout=layout_settings.layout, resizable=False)
                 event_settings, values_settings = window_settings.read()
                 while event_settings != '-EXIT-':
-                    if event_settings == '-OVERWRITE-' and exists_choice != OB.OVERWWRITE:
-                        exists_choice = OB.OVERWWRITE
+                    if event_settings == '-OVERWRITE-' and exists_choice != OB.OVERWRITE:
+                        exists_choice = OB.OVERWRITE
                         break
                     elif event_settings == '-EXPICIT-' and exists_choice != OB.RANDOM_NAME:
                         exists_choice = OB.RANDOM_NAME
