@@ -104,7 +104,7 @@ class Gui:
 
                             if file_is_empty:
                                 sg.popup_annoying('Our interpreter did not find anything. --> blame Kons or yourself!', title='Empty')
-                            if path:
+                            elif path:
                                 fnames = output(path)
                                 sg.popup_annoying('Successfully created!', title='Created',
                                                 auto_close_duration=2, auto_close=True, text_color='green')
