@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-"""NassiShneidermann.py: #TODO"""
+"""NassiShneidermann.py: Classes for the Java Instruction found by the Interpreter"""
 
 __author__      = "Weckyy702"
 
@@ -20,7 +18,7 @@ import draw.code_to_image as cti
 
 class Overwrite_behaviour(IntEnum):
     SKIP = 0
-    OVERWWRITE = 1
+    OVERWRITE = 1
     RANDOM_NAME = 2
 
 OB = Overwrite_behaviour
