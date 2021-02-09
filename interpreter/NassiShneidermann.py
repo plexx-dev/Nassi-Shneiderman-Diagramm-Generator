@@ -62,6 +62,7 @@ class NassiShneidermanDiagram:
     def convert_to_image(self, output_path: str, on_conflict: Overwrite_behaviour=OB.SKIP) -> bool:
         i = 0
         for scope in self.function_scopes:
+            #No. This is bad
             cancel = one_line_progress_meter('Progress', i+1, len(self.function_scopes), '-PROGRESSBAR-')
             
 
@@ -79,6 +80,7 @@ class NassiShneidermanDiagram:
                     logging.error(f"Failed to save image {filepath}. Unknown error")
                     raise
             
+            #This is also bad
             if not cancel:
                 return False
             i+=1
