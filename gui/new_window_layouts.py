@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+
+"""new_window_layouts.py: create layouts"""
+
+__author__      = "oleting"
+
+
 import PySimpleGUI as sg
 
 class Layout_std:

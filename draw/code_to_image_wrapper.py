@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+
+"""code_to_image_wrapper.py: #TODO"""
+
+__author__      = "Weckyy702"
+
+
 import draw.code_to_image as cti
 
 class NSD_writer(object):

@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+
+"""Iinstruction.py: #TODO"""
+
+__author__      = "Weckyy702"
+
+
 from typing import Iterable, List
 from abc import ABCMeta, abstractmethod
 from draw import code_to_image as cti

@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+
+"""utils.py: utils for gui.py"""
+
+__author__      = "oleting, Weckyy702"
+
+
 from errors.custom import NoPathError
 from interpreter.NassiShneidermann import NassiShneidermanDiagram, Overwrite_behaviour, OB
 

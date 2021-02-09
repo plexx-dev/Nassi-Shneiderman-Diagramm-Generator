@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+
+"""gui.py: handle and init Gui."""
+
+__author__      = "oleting"
+
+
 from gui.utils import nassi, output
 from gui.new_window_layouts import Layout_std, Layout_settings
 from errors.custom import JavaSyntaxError, ScopeNotFoundException, InterpreterException, NoPathError
