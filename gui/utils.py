@@ -34,9 +34,7 @@ def nassi(input_path: str, output_path: str, outputname: str, types, remove_tags
 
     cancel = NSD.convert_to_image(output_directory, on_conflict=behaviour)
     
-    if not cancel:
-        return None
-
+    
     return output_directory, is_empty
 
 

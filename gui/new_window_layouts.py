@@ -15,8 +15,6 @@ class Layout_std:
                 sg.Button(button_text='Create Image', key='-CREATE-'),
                 sg.Button(button_text='Credits', key='-CREDITS-'),
                 sg.Button(button_text='Settings', key='-SETTINGS-'),
-                # * fun feature
-                sg.Button(button_text='Donate', key='-DONATE-'),
             ]
         ]
 
