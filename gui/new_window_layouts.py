@@ -20,13 +20,13 @@ class Layout_std:
 
         input_column = [
             [
-                sg.Text('Java File'),
+                sg.Text('Input:  single File'),
                 sg.In(size=(25, 1), enable_events=True, key="-JAVA IN-"),
                 sg.FileBrowse(file_types=(('Java-File', '*.java'), ('ALL Files',
                                                                     '*.*')), key='-JAVA FILE-'),
             ],
             [
-                sg.Text('Input Folder'),
+                sg.Text('Input: whole Folder (without subfolders)'),
                 sg.In(size=(25, 1), enable_events=True, key="-INPUT FOLDER-"),
                 sg.FolderBrowse(),
             ],
