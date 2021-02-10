@@ -14,7 +14,7 @@ import os
 import logging
 
 #types=types, remove_tages=modifier, comments=comments
-def nassi(input_path: str, output_path: str, outputname: str, types, remove_tags, comments, gui, behaviour: Overwrite_behaviour, font_filepath: Optional[str]=None):
+def nassi_file(input_path: str, output_path: str, outputname: str, types, remove_tags, comments, gui, behaviour: Overwrite_behaviour, font_filepath: Optional[str]=None):
     NSD = NassiShneidermanDiagram(gui.debug_mode)
     output_directory = check_and_create_output_directory(output_path + '/' + outputname)
     
@@ -43,22 +43,20 @@ def check_and_create_output_directory(output_directory):
        
     return output_directory
 
-
-
-def output(output_path, output_name=None):
+def filter_folder(path, name=None, ends_with=('.png', '.gif')):
     
-    if output_path == '':
+    if path == '':
         raise NoPathError
-    if output_name:
-        output_path = output_path + '/' + output_name
+    if name:
+        path = path + '/' + name
     try:
-        file_list = os.listdir(output_path)
+        file_list = os.listdir(path)
     except:
         file_list = []
     fnames = [
         f
         for f in file_list
-        if os.path.isfile(os.path.join(output_path, f))
-        and f.lower().endswith(('.png', '.gif'))
+        if os.path.isfile(os.path.join(path, f))
+        and f.lower().endswith(ends_with)
     ]
     return fnames

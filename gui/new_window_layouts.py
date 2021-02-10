@@ -26,6 +26,11 @@ class Layout_std:
                                                                     '*.*')), key='-JAVA FILE-'),
             ],
             [
+                sg.Text('Input Folder'),
+                sg.In(size=(25, 1), enable_events=True, key="-INPUT FOLDER-"),
+                sg.FolderBrowse(),
+            ],
+            [
                 sg.Text('Output Folder'),
                 sg.In(size=(25, 1), enable_events=True, key="-OUTPUT FOLDER-"),
                 sg.FolderBrowse(),
