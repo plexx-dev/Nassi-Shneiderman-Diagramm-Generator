@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """code_to_image.py: #TODO"""
 
 __author__      = "plexx, Weckyy702"

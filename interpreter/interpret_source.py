@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """interpret_source.py: #TODO"""
 
 __author__      = "Weckyy702"

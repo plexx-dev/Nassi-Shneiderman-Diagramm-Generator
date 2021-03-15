@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """code_to_image_wrapper.py: #TODO"""
 
 __author__      = "Weckyy702"

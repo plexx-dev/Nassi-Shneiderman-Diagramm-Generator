@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """function_scope.py: #TODO"""
 
 __author__      = "Weckyy702"

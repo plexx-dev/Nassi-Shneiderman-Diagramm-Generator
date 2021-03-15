@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """gui.py: handle and init Gui."""
 
 __author__      = "oleting"

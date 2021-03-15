@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """utils.py: utils for gui.py"""
 
 __author__      = "oleting, Weckyy702"

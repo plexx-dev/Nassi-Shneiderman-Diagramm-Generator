@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Iinstruction.py: #TODO"""
 
 __author__      = "Weckyy702"
