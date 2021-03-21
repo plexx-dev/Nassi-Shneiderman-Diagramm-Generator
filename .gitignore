@@ -1,7 +1,7 @@
-__pycache__/
+/__pycache__/
 res/output/
 res/input/
-.vscode/
+/.vscode/
 *.json
 *.pyc
 *.png
@@ -9,5 +9,4 @@ debug.py
 build/
 run.spec
 dist/
-.vscode/launch.json
 res/input/input_large.java
