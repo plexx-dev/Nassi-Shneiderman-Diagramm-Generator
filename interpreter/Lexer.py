@@ -5,7 +5,7 @@ import re
 from typing import List, overload
 
 from interpreter.function_scope import Function_scope
-from interpreter._token import Token, make_token
+from interpreter._token import Token, make_token, Token_type
 class Lexer:
     """This class will lex the provided Java source and generate a list of Function_scopes"""
 
@@ -17,9 +17,12 @@ class Lexer:
         self.source_index = 0
         self.line_number = 1
 
-    def lex(self) -> List[Token]:
+        self._tokens = []
+        self._token_index = 0
 
-        tokens = []
+        self.token_type_pattern = re.compile('(char)|(int)|(void)|(double)')
+
+    def _get_tokens(self):
 
         while char := self._consume():
 
@@ -30,10 +33,31 @@ class Lexer:
                 continue
 
             token = self._get_token(char)
-            logging.debug(f"found token \"{token}\" on line {self.line_number}")
-            #tokens.append(make_token(token))
+            #logging.debug(f"found token \"{token}\" on line {self.line_number}")
+            self._tokens.append(make_token(token, self.token_type_pattern))
 
-        return tokens
+    def get_scopes(self) -> List[Function_scope]:
+        if not self._tokens:
+            self._get_tokens()
+
+        while token := self._consume_token():
+            if token.type == Token_type.UNKNOWN:
+                logging.debug(token)
+            elif token.type == Token_type.TYPE_NAME:
+                if self._peek_token().type != Token_type.UNKNOWN:
+                    logging.error("Illegal identifier after Type name!")
+                    raise Exception("Illegal identifier after Type name!")
+                elif self._peek_token(1).type == Token_type.LEFT_PAREN:
+                    logging.debug(f"Function definition found: {token.content} {self._peek_token().content} ()")
+                    self._consume_token()
+                    self._consume_token()
+                    args = ""
+                    while function_token := self._consume_token():
+                        if function_token.type == Token_type.RIGTH_PAREN:
+                            break
+                        print(function_token.type)
+
+
 
     def _get_token(self, char: str) -> str:
         token = char
@@ -75,6 +99,17 @@ class Lexer:
 
         self.source_index += 1
         return char
+
+    def _peek_token(self, offset:int=0):
+        if (self._token_index+offset) >= len(self._tokens):
+            return None
+        return self._tokens[self._token_index+offset]
+
+    def _consume_token(self):
+        token = self._peek_token()
+        self._token_index+=1
+        return token
+
 
     @overload
     def _consume_until(self, end_token: str) -> str:...
