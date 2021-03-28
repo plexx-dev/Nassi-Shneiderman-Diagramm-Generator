@@ -1,12 +1,13 @@
-"""function_scope.py: #TODO"""
+"""function_scope.py: Class for Function scopes"""
 
 __author__      = "Weckyy702"
 
 from typing import Iterable, List
 from draw.Iinstruction import Iinstruction
 
-
 class Function_scope(Iterable):
+    """This class serves as a container for Instructions"""
+
     def __init__(self, child_instructions: List[Iinstruction], name: str, return_type: str, args: List[str]) -> None:
         self.contents = child_instructions
         self.name = name
