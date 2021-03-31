@@ -6,13 +6,13 @@ import re
 from enum import IntEnum
 from typing import Union
 
-NUMERIC_CONSTANT_PATTERN = re.compile("([0-9]+)|(true)|(false)")
-KEYWORD_PATTERN = re.compile("(return)|(continue)|(break)|(new)")
-STRING_LITERAL_PATTERN = re.compile("('|\")(.*)(\"|')")
-MATH_OP_PATTERN = re.compile("\+|-|\*|/")
+NUMERIC_CONSTANT_PATTERN = re.compile(r"""([0-9]+)|(true)|(false)""")
+KEYWORD_PATTERN = re.compile(r"""(return)|(continue)|(break)|(new)""")
+STRING_LITERAL_PATTERN = re.compile(r"""('|\")(.*)(\"|')""")
+MATH_OP_PATTERN = re.compile(r"""\+|-|\*|/|<|>""")
 
 class Token_type(IntEnum):
-    UNKNOWN=-1
+    UNKNOWN=-1 #maybe this should be renamed to IDENTIFIERs
     LEFT_PAREN=0,
     RIGTH_PAREN=1,
     LEFT_CURLY=2,
@@ -40,48 +40,48 @@ class Token:
 
     def __str__(self) -> str:
         if self.content:
-            return f"{self.type}: {self.content}"
-        return f"{self.typetype}"
+            return f"{str(self.type)}: {self.content}"
+        return f"{self.type}"
 
 def make_token(tag: str, type_name_pattern:re.Pattern) -> Token:
     if tag == '(':
-        return Token(Token_type.LEFT_PAREN)
+        return Token(Token_type.LEFT_PAREN, tag)
     elif tag == ')':
-        return Token(Token_type.RIGTH_PAREN)
+        return Token(Token_type.RIGTH_PAREN, tag)
     elif tag == '{':
-        return Token(Token_type.LEFT_CURLY)
+        return Token(Token_type.LEFT_CURLY, tag)
     elif tag == '}':
-        return Token(Token_type.RIGHT_CURLY)
+        return Token(Token_type.RIGHT_CURLY, tag)
     elif tag == '[':
-        return Token(Token_type.LEFT_BRACKET)
+        return Token(Token_type.LEFT_BRACKET, tag)
     elif tag == ']':
-        return Token(Token_type.RIGHT_BRACKET)
+        return Token(Token_type.RIGHT_BRACKET, tag)
     elif tag == ',':
-        return Token(Token_type.COMMA)
+        return Token(Token_type.COMMA, tag)
     elif tag == '=':
-        return Token(Token_type.EQUAL_SIGN)
+        return Token(Token_type.EQUAL_SIGN, tag)
     elif tag == ';':
-        return Token(Token_type.SEMICOLON)
+        return Token(Token_type.SEMICOLON, tag)
     elif MATH_OP_PATTERN.match(tag):
-        return Token(Token_type.MATH_OP)
+        return Token(Token_type.MATH_OP, tag)
     elif NUMERIC_CONSTANT_PATTERN.match(tag):
         return Token(Token_type.NUMERIC_CONSTANT, tag)
     elif tag == "if":
-        return Token(Token_type.IF_STATEMENT)
+        return Token(Token_type.IF_STATEMENT, tag)
     elif tag == "else":
-        return Token(Token_type.ELSE_STATEMENT)
+        return Token(Token_type.ELSE_STATEMENT, tag)
     elif tag == "while":
-        return Token(Token_type.WHILE_STATEMENT)
+        return Token(Token_type.WHILE_STATEMENT, tag)
     elif tag == "do":
-        return Token(Token_type.DO_WHILE_STATEMENT)
+        return Token(Token_type.DO_WHILE_STATEMENT, tag)
     elif tag == "for":
-        return Token(Token_type.FOR_STATEMENT)
+        return Token(Token_type.FOR_STATEMENT, tag)
     elif KEYWORD_PATTERN.match(tag):
         return Token(Token_type.KEY_WORD, tag)
     elif STRING_LITERAL_PATTERN.match(tag):
-        return Token(Token_type, tag[1:-1])
+        return Token(Token_type.STRING_LITERAL, tag)
     elif type_name_pattern.match(tag):
         return Token(Token_type.TYPE_NAME, tag)
     else:
-        logging.warn(f"unknown token {tag}")
+        logging.info(f"found unknown token {tag}... Function or variable name?")
         return Token(Token_type.UNKNOWN, tag)

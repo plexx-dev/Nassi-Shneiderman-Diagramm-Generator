@@ -8,8 +8,8 @@ from draw.Iinstruction import Iinstruction
 class Function_scope(Iterable):
     """This class serves as a container for Instructions"""
 
-    def __init__(self, child_instructions: List[Iinstruction], name: str, return_type: str, args: List[str]) -> None:
-        self.contents = child_instructions
+    def __init__(self, name: str, return_type: str, args: List[str]) -> None:
+        self.contents = []
         self.name = name
         self.return_type = return_type
         self.args = args
@@ -25,6 +25,12 @@ class Function_scope(Iterable):
         for inst in self.contents:
             w = max(w, inst.getblkwidth())
         return int(w)
+
+    def _add_instruction(self, inst: Iinstruction):
+        self.contents.append(inst)
+
+    def _add_instructions(self, inst: List[Iinstruction]):
+        self.contents.extend(inst)
 
     def __iter__(self):
         return self.contents.__iter__()

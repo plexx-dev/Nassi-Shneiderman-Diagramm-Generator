@@ -3,7 +3,7 @@
 __author__      = "Weckyy702"
 
 
-from typing import Iterable, List
+from typing import Iterable, List, Tuple
 from abc import ABCMeta, abstractmethod
 from draw import code_to_image as cti
 
@@ -14,7 +14,7 @@ class Iinstruction(metaclass=ABCMeta):
         self.instruction_text = instruction_text
 
     @abstractmethod
-    def to_image(self, x:int, y:int, x_sz: int) -> Iterable[float]:
+    def to_image(self, x:int, y:int, x_sz: int) -> Tuple[float]:
         pass
 
     @abstractmethod
@@ -24,6 +24,10 @@ class Iinstruction(metaclass=ABCMeta):
     @abstractmethod
     def getblkwidth(self) -> float:
         pass
+
+    # @abstractmethod
+    # def add_child_instruction(self, instruction):
+    #     pass
 
     @abstractmethod
     def __str__(self) -> str:
@@ -103,7 +107,7 @@ class if_instruction(Iinstruction):
         return max(self._getblkwidth(), self.get_truewidth() + self.get_falsewidth())
         
     
-    def to_image(self, x:int, y:int, x_sz: int) -> Iterable[float]:
+    def to_image(self, x:int, y:int, x_sz: int) -> Tuple[float]:
         true_w = self.get_truewidth()
         false_w = self.get_falsewidth()
         true_x, true_y, false_x, false_y = cti.draw_if_statement(
@@ -176,7 +180,7 @@ class while_instruction_front(Iinstruction):
     def getblkwidth(self) -> float:
         return max(self._getblkwidth(), self.get_children_width())
     
-    def to_image(self, x:int, y:int, x_sz: int) -> Iterable[float]:
+    def to_image(self, x:int, y:int, x_sz: int) -> Tuple[float]:
         children_x, children_y, children_sz_x = cti.draw_while_loop_front(self.instruction_text, x, y, x_sz, self.getblkheight())
         self.draw_children(children_x, children_y, children_sz_x)
 
