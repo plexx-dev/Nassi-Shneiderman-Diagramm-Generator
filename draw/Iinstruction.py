@@ -133,7 +133,7 @@ class if_instruction(Iinstruction):
             res += '\t'+str(inst)+";\n"
         res += "}"
         if self.false_case:
-            res += " else {"
+            res += " else {\n"
             for inst in self.true_case:
                 res += '\t'+str(inst)+";\n"
             res += "}"

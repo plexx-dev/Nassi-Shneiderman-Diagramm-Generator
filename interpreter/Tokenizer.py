@@ -4,12 +4,12 @@ import logging
 import re
 from typing import List, Optional
 
-from interpreter._token import Token, make_token
+from interpreter._token import Token, make_token, SourceLocation
 
 class Tokenizer:
     """This class will take the provided source file and convert it to a list of tokens"""
 
-    TOKEN_MATCH = re.compile(r"""\(|\)|\{|\}|;|(\n)|\+|-|\*|/|<|>|,| """) #TODO: make this modular
+    TOKEN_MATCH = re.compile(r"""\(|\)|\{|\}|;|(\n)|\+|-|\*|/|<|>|,| """)
 
     def __init__(self, file_name: str) -> None:
         with open(file_name) as f:
@@ -17,7 +17,11 @@ class Tokenizer:
         self.source_index = 0
         self.line_number = 1
 
+        self.source_text = re.sub("(private)|(public)|(protected)", "", self.source_text)
+
         self.type_name_pattern = re.compile('(char)|(int)|(void)|(double)|(Pixel)') #TODO: make this modular
+
+        self._filename = file_name
 
     def get_tokens(self) -> List[Token]:
 
@@ -33,7 +37,7 @@ class Tokenizer:
 
             token = self._get_token(char)
             logging.debug(f"found token \"{token}\" on line {self.line_number}")
-            tokens.append(make_token(token, self.type_name_pattern))
+            tokens.append(make_token(token, SourceLocation(self._filename, self.line_number), self.type_name_pattern))
 
         return tokens
 

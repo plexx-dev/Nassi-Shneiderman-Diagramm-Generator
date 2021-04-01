@@ -33,55 +33,63 @@ class Token_type(IntEnum):
     STRING_LITERAL=17
     TYPE_NAME=18
 
+class SourceLocation:
+    def __init__(self, filename: str, line: int) -> None:
+        self.filename = filename
+        self.line = line
+
+    def __str__(self) -> str:
+        return f"File {self.filename}, line {self.line}"
+
 class Token:
-    def __init__(self, type: Token_type, content: Union[str, None]=None) -> None:
+    def __init__(self, type: Token_type, location: SourceLocation, content: Union[str, None]=None) -> None:
         self.type = type
         self.content = content
+        self.location = location
 
     def __str__(self) -> str:
         if self.content:
             return f"{str(self.type)}: {self.content}"
         return f"{self.type}"
 
-def make_token(tag: str, type_name_pattern:re.Pattern) -> Token:
+def make_token(tag: str, location: SourceLocation, type_name_pattern:re.Pattern) -> Token:
     if tag == '(':
-        return Token(Token_type.LEFT_PAREN, tag)
+        return Token(Token_type.LEFT_PAREN, location, tag)
     elif tag == ')':
-        return Token(Token_type.RIGTH_PAREN, tag)
+        return Token(Token_type.RIGTH_PAREN, location, tag)
     elif tag == '{':
-        return Token(Token_type.LEFT_CURLY, tag)
+        return Token(Token_type.LEFT_CURLY, location, tag)
     elif tag == '}':
-        return Token(Token_type.RIGHT_CURLY, tag)
+        return Token(Token_type.RIGHT_CURLY, location, tag)
     elif tag == '[':
-        return Token(Token_type.LEFT_BRACKET, tag)
+        return Token(Token_type.LEFT_BRACKET, location, tag)
     elif tag == ']':
-        return Token(Token_type.RIGHT_BRACKET, tag)
+        return Token(Token_type.RIGHT_BRACKET, location, tag)
     elif tag == ',':
-        return Token(Token_type.COMMA, tag)
+        return Token(Token_type.COMMA, location, tag)
     elif tag == '=':
-        return Token(Token_type.EQUAL_SIGN, tag)
+        return Token(Token_type.EQUAL_SIGN, location, tag)
     elif tag == ';':
-        return Token(Token_type.SEMICOLON, tag)
+        return Token(Token_type.SEMICOLON, location, tag)
     elif MATH_OP_PATTERN.match(tag):
-        return Token(Token_type.MATH_OP, tag)
+        return Token(Token_type.MATH_OP, location, tag)
     elif NUMERIC_CONSTANT_PATTERN.match(tag):
-        return Token(Token_type.NUMERIC_CONSTANT, tag)
+        return Token(Token_type.NUMERIC_CONSTANT, location, tag)
     elif tag == "if":
-        return Token(Token_type.IF_STATEMENT, tag)
+        return Token(Token_type.IF_STATEMENT, location, tag)
     elif tag == "else":
-        return Token(Token_type.ELSE_STATEMENT, tag)
+        return Token(Token_type.ELSE_STATEMENT, location, tag)
     elif tag == "while":
-        return Token(Token_type.WHILE_STATEMENT, tag)
+        return Token(Token_type.WHILE_STATEMENT, location, tag)
     elif tag == "do":
-        return Token(Token_type.DO_WHILE_STATEMENT, tag)
+        return Token(Token_type.DO_WHILE_STATEMENT, location, tag)
     elif tag == "for":
-        return Token(Token_type.FOR_STATEMENT, tag)
+        return Token(Token_type.FOR_STATEMENT, location, tag)
     elif KEYWORD_PATTERN.match(tag):
-        return Token(Token_type.KEY_WORD, tag)
+        return Token(Token_type.KEY_WORD, location, tag)
     elif STRING_LITERAL_PATTERN.match(tag):
-        return Token(Token_type.STRING_LITERAL, tag)
+        return Token(Token_type.STRING_LITERAL, location, tag)
     elif type_name_pattern.match(tag):
-        return Token(Token_type.TYPE_NAME, tag)
+        return Token(Token_type.TYPE_NAME, location, tag)
     else:
-        logging.info(f"found unknown token {tag}... Function or variable name?")
-        return Token(Token_type.UNKNOWN, tag)
+        return Token(Token_type.UNKNOWN, location, tag)

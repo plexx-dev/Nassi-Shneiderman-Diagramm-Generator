@@ -1,4 +1,5 @@
 """Lexer.py: Definition for Lexer class"""
+from interpreter.Tokenizer import Tokenizer
 from os import linesep
 from draw.Iinstruction import *
 from typing import List, Optional, Union, Tuple
@@ -43,48 +44,37 @@ class Lexer:
             if self._is_function_def(line_tokens):
 
                 func_name, func_return_type, func_args = self._construct_function_header_from_tokens(line_tokens)
+                fs = Function_scope(func_name, func_return_type, func_args)
+
                 instructions = self._get_instructions_in_scope()
-                scopes.append(Function_scope(func_name, func_return_type, func_args))
-                scopes.append(instructions)
+                fs._add_instructions(instructions)
+
+                scopes.append(fs)
 
             else:
-                line = ""
-                for token in line_tokens[:-1]:
-                    line += token.content + ' '
+                #something was declared in global scope
+                self._global_instructions.append(self._construct_instruction_from_tokens(line_tokens))
 
-                self._construct_instruction_from_tokens(line_tokens)
-
-                scopes.append([line])
-
-
+        self.add_globals_to_scope_list(scopes)
         return scopes
             
 
     def _get_instructions_in_scope(self):
 
-        lines = []
+        instructions = []
 
         while self._peek():
 
             line_tokens = self.get_line_tokens()
-
-            if len(line_tokens) > 1:
-                line = ""
-                for token in line_tokens[:-1]:
-                    line += token.content + ' '
-
-                self._construct_instruction_from_tokens(line_tokens)
-
-                lines.append(line)
+            instruction = self._construct_instruction_from_tokens(line_tokens)
+            if instruction:
+                instructions.append(instruction)
 
             delimiter_token = line_tokens[-1]
-
             if delimiter_token.type == Token_type.RIGHT_CURLY:
-                return lines
-            if delimiter_token.type == Token_type.LEFT_CURLY:
-                instructions = self._get_instructions_in_scope()
-                for line in instructions:
-                    lines.append('\t'+line)
+                return instructions
+
+        raise JavaSyntaxError(f"Missing right curly!")
 
 
 
@@ -96,6 +86,13 @@ class Lexer:
                 break
         return tokens
 
+    
+
+    def add_globals_to_scope_list(self, scope_list: List[Function_scope]):
+        global_scope = Function_scope("<Global scope>", "void", [])
+        global_scope._add_instructions(self._global_instructions)
+
+        scope_list.append(global_scope)
 
 
     def _is_function_def(self, tokens: List[Token]) -> bool:
@@ -103,45 +100,110 @@ class Lexer:
         return tokens[0].type == Token_type.TYPE_NAME and tokens[1].type == Token_type.UNKNOWN and tokens[2].type == Token_type.LEFT_PAREN and tokens[-1].type == Token_type.LEFT_CURLY
 
 
+
     def _construct_instruction_from_tokens(self, tokens: List[Token]):
         instruction_token = tokens[0]
 
         if instruction_token.type == Token_type.IF_STATEMENT:
-            logging.debug("Found if construct")
-            for token in tokens:
-                print('\t', token)
+            return self._handle_if_construct(tokens)
         
         elif instruction_token.type == Token_type.WHILE_STATEMENT:
-            logging.debug("Found while construct")
-            for token in tokens:
-                print('\t', token)
+            return self._handle_while_construct(tokens)
             
         elif instruction_token.type == Token_type.DO_WHILE_STATEMENT:
-            logging.debug("Found do-while construct")
-            for token in tokens:
-                print('\t', token)
+            return self._handle_do_while_construct(tokens)
         
         elif instruction_token.type == Token_type.FOR_STATEMENT:
-            #TODO: change that
-            logging.debug("Found for construct")
-            tokens.extend(self.get_line_tokens())
-            tokens.extend(self.get_line_tokens())
-            for token in tokens:
-                print('\t', token)
+            return self._handle_for_construct(tokens)
         
         elif instruction_token.type == Token_type.TYPE_NAME:
-            logging.debug("Found Type name construct")
-            for token in tokens:
-                print('\t', token)
+            return self._handle_type_name_construct(tokens)
 
         elif instruction_token.type == Token_type.UNKNOWN:
-            logging.debug("Found generic instruction")
-            for token in tokens:
-                print('\t', token)
+            return self._handle_generic_construct(tokens)
 
     def _construct_function_header_from_tokens(self, tokens: List[Token]) -> Tuple[str, str, List[str]]:
         return "name", "return_type", ["int arg1", "String arg2"]
 
+    def _construct_variable_def_from_tokens(self, tokens: List[Token]) -> str:
+        #token_list: TYPE_NAME IDENTIFIER ;|( = EXPRESSION)
+        _ensure_correct_variable_structure(tokens)
+        if var_value:
+            return f"decalare variable '{'name'}' of type {'type'} type with value {'value'}"
+        return f"declare variable '{'name'}' of type {'type'}"
+
+    """Handler functions for different types of language structures"""
+
+    def _handle_if_construct(self, tokens: List[Token]):
+        logging.debug("Found if construct")
+
+        true_case = self._get_instructions_in_scope()
+        false_case = self._handle_else_construct()
+
+        return if_instruction("if_instruction", true_case, false_case)
+
+    def _handle_else_construct(self):
+        if self._peek().type == Token_type.ELSE_STATEMENT:
+            if self._peek(1).type == Token_type.IF_STATEMENT:
+                logging.debug("Found if-else construct")
+                else_if_tokens = self.get_line_tokens()[1:]
+                return [self._handle_if_construct(else_if_tokens)]
+            else:
+                logging.debug("Found else construct")
+                self.get_line_tokens()
+                return self._get_instructions_in_scope()
+        return None
+
+    def _handle_while_construct(self, tokens: List[Token]):
+        logging.debug("Found while construct")
+        
+        loop_instructions = self._get_instructions_in_scope()
+
+        return while_instruction_front("while_instruction", loop_instructions)
+
+    def _handle_do_while_construct(self, tokens: List[Token]):
+        logging.debug("Found do-while construct")
+
+        loop_instructions = self._get_instructions_in_scope()
+
+        self.get_line_tokens()
+
+        return while_instruction_back("while_instruction_back", loop_instructions)
+
+
+
+    def _handle_for_construct(self, tokens: List[Token]):
+        #TODO: change that
+        logging.debug("Found for construct")
+        tokens.extend(self.get_line_tokens())
+        tokens.extend(self.get_line_tokens())
+
+        loop_instructions = self._get_instructions_in_scope()
+
+        loop_instructions.append(generic_instruction("increment"))
+
+        return for_instruction("for_instruction", loop_instructions)
+
+    def _handle_type_name_construct(self, tokens: List[Token]):
+        logging.debug("Found Type name construct")
+        _ensure_correct_variable_structure(tokens)
+        return generic_instruction("type_name_construct")
+
+    def _handle_generic_construct(self, tokens: List[Token]):
+        logging.debug("Found generic instruction")
+
+        return generic_instruction("generic_instruction")
+
+def _ensure_correct_variable_structure(tokens: List[Token]):
+    #variable structure: TYPE_NAME IDENTIFIER ;|( = EXPRESSION)
+    if len(tokens) < 3:
+        raise JavaSyntaxError(f"{tokens[0].location}: Ill-formed type construct! Expected at least 3 tokens, got {len(tokens)}")
+    if tokens[1].type != Token_type.UNKNOWN:
+        raise JavaSyntaxError(f"{tokens[1].location}: Illegal token after type name! Expected UNKNOWN, got {str(tokens[1].type)}")
+    if not tokens[2].type in [Token_type.SEMICOLON, Token_type.EQUAL_SIGN]:
+        raise JavaSyntaxError(f"{tokens[2].location}: Illegal token after variable name! Expected SEMICOLON or EQUAL_SIGN, got {str(tokens[2].type)}")
+    if tokens[2].type == Token_type.EQUAL_SIGN and len(tokens) < 5:
+        raise JavaSyntaxError(f"{tokens[2].location}: Ill-formed assignment expression! Expected at least 5 tokens, got {len(tokens)}")
 
 #     def get_scopes(self) -> List[Function_scope]:
 
