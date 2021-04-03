@@ -1,6 +1,5 @@
 """Private definitions for Token class used by the Lexer"""
 
-import logging
 import re
 
 from enum import IntEnum
@@ -12,7 +11,7 @@ STRING_LITERAL_PATTERN = re.compile(r"""('|\")(.*)(\"|')""")
 MATH_OP_PATTERN = re.compile(r"""\+|-|\*|/|<|>""")
 
 class Token_type(IntEnum):
-    UNKNOWN=-1 #maybe this should be renamed to IDENTIFIERs
+    UNKNOWN=-1 #maybe this should be renamed to IDENTIFIER
     LEFT_PAREN=0,
     RIGTH_PAREN=1,
     LEFT_CURLY=2,
@@ -34,15 +33,22 @@ class Token_type(IntEnum):
     TYPE_NAME=18
 
 class SourceLocation:
-    def __init__(self, filename: str, line: int) -> None:
+
+    __slots__ = ["filename", "line", "column"]
+
+    def __init__(self, filename: str, line: int, column: int) -> None:
         self.filename = filename
         self.line = line
+        self.column = column
 
     def __str__(self) -> str:
-        return f"File {self.filename}, line {self.line}"
+        return f"File {self.filename}, {self.line}:{self.column}"
 
 class Token:
-    def __init__(self, type: Token_type, location: SourceLocation, content: Union[str, None]=None) -> None:
+
+    __slots__ = ["type", "content", "location"]
+
+    def __init__(self, type: Token_type, location: SourceLocation, content: str) -> None:
         self.type = type
         self.content = content
         self.location = location
@@ -53,6 +59,7 @@ class Token:
         return f"{self.type}"
 
 def make_token(tag: str, location: SourceLocation, type_name_pattern:re.Pattern) -> Token:
+    """Construct a token object with the provided tag and source location"""
     if tag == '(':
         return Token(Token_type.LEFT_PAREN, location, tag)
     elif tag == ')':

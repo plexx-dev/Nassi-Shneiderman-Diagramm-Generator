@@ -16,6 +16,7 @@ class Tokenizer:
             self.source_text = f.read()
         self.source_index = 0
         self.line_number = 1
+        self.column_number = 0
 
         self.source_text = re.sub("(private)|(public)|(protected)", "", self.source_text)
 
@@ -37,7 +38,7 @@ class Tokenizer:
 
             token = self._get_token(char)
             logging.debug(f"found token \"{token}\" on line {self.line_number}")
-            tokens.append(make_token(token, SourceLocation(self._filename, self.line_number), self.type_name_pattern))
+            tokens.append(make_token(token, SourceLocation(self._filename, self.line_number, self.column_number), self.type_name_pattern))
 
         return tokens
 
@@ -78,8 +79,10 @@ class Tokenizer:
 
         if char == '\n':
             self.line_number += 1
+            self.column_number = 1
 
         self.source_index += 1
+        self.column_number += 1
         return char
 
     def _consume_multiline_comment(self):
