@@ -123,24 +123,53 @@ class Lexer:
             return self._handle_generic_construct(tokens)
 
     def _construct_function_header_from_tokens(self, tokens: List[Token]) -> Tuple[str, str, List[str]]:
-        return "name", "return_type", ["int arg1", "String arg2"]
+
+        _ensure_correct_function_structure(tokens)
+
+        function_return_type = tokens[0].content
+
+        function_name = tokens[1].content
+
+        argument_list = _get_function_argument_list_from_tokens(tokens[3:-2])
+
+        return function_name, function_return_type, argument_list
 
     def _construct_variable_def_from_tokens(self, tokens: List[Token]) -> str:
-        #token_list: TYPE_NAME IDENTIFIER ;|( = EXPRESSION)
         _ensure_correct_variable_structure(tokens)
-        if var_value:
-            return f"decalare variable '{'name'}' of type {'type'} type with value {'value'}"
-        return f"declare variable '{'name'}' of type {'type'}"
+
+        variable_type = tokens[0].content
+        variable_name = tokens[1].content
+
+        if tokens[2].type == Token_type.SEMICOLON:
+            return f"declare variable '{variable_name}' of type {variable_type}"
+
+        variable_value = self._construct_source_line_from_tokens(tokens[3:])
+
+        return f"declare variable '{variable_name}' of type {variable_type} with value {variable_value}"
+
+    def _construct_source_line_from_tokens(self, tokens: List[Token]) -> str:
+        """TODO: make this function smarter"""
+        line = ""
+        for token in tokens:
+            if token.type == Token_type.SEMICOLON:
+                continue
+            line += token.content + ' '
+
+        return line[:-1] #ignore the space after the last instruction text
 
     """Handler functions for different types of language structures"""
 
     def _handle_if_construct(self, tokens: List[Token]):
         logging.debug("Found if construct")
 
+        _ensure_correct_if_structure(tokens)
+
+        condition_str = self._construct_source_line_from_tokens(tokens[2:-2])
+
         true_case = self._get_instructions_in_scope()
         false_case = self._handle_else_construct()
 
-        return if_instruction("if_instruction", true_case, false_case)
+        return if_instruction(condition_str, true_case, false_case)
 
     def _handle_else_construct(self):
         if self._peek().type == Token_type.ELSE_STATEMENT:
@@ -156,21 +185,29 @@ class Lexer:
 
     def _handle_while_construct(self, tokens: List[Token]):
         logging.debug("Found while construct")
+
+        _ensure_correct_while_structure(tokens)
+
+        condtion_str = self._construct_source_line_from_tokens(tokens[2:-2])
         
         loop_instructions = self._get_instructions_in_scope()
 
-        return while_instruction_front("while_instruction", loop_instructions)
+        return while_instruction_front(condtion_str, loop_instructions)
 
     def _handle_do_while_construct(self, tokens: List[Token]):
         logging.debug("Found do-while construct")
 
+        _ensure_correct_do_while_structure_part_1(tokens)
+
+
         loop_instructions = self._get_instructions_in_scope()
 
-        self.get_line_tokens()
 
-        return while_instruction_back("while_instruction_back", loop_instructions)
+        while_tokens = self.get_line_tokens()
+        _ensure_correct_do_while_structure_part_2(while_tokens)
+        condtion_str = self._construct_source_line_from_tokens(while_tokens[2:-2])
 
-
+        return while_instruction_back(condtion_str, loop_instructions)
 
     def _handle_for_construct(self, tokens: List[Token]):
         #TODO: change that
@@ -186,16 +223,31 @@ class Lexer:
 
     def _handle_type_name_construct(self, tokens: List[Token]):
         logging.debug("Found Type name construct")
-        _ensure_correct_variable_structure(tokens)
-        return generic_instruction("type_name_construct")
+        
+        return generic_instruction(self._construct_variable_def_from_tokens(tokens))
 
     def _handle_generic_construct(self, tokens: List[Token]):
         logging.debug("Found generic instruction")
 
-        return generic_instruction("generic_instruction")
+        return generic_instruction(self._construct_source_line_from_tokens(tokens))
+
+
+
+def _ensure_correct_function_structure(tokens: List[Token]):
+    #function structure: TYPE_NAME IDENTIFIER ( ... ) {
+    if len(tokens) < 5:
+        raise JavaSyntaxError(f"{tokens[0].location}: Ill-formed function declaration! Expected at least 5 tokens, got {len(tokens)}")
+    if tokens[-1].type != Token_type.LEFT_CURLY:
+        raise JavaSyntaxError(f"{tokens[-1].location}: Ill-formed function declaration! Expected last token to be LEFT_CURLY, got {str(tokens[-1].type)}")
+    if tokens[1].type != Token_type.UNKNOWN:
+        raise JavaSyntaxError(f"{tokens[1].location}: Illegal token after function return type! Expected UNKNWON, got {str(tokens[1].type)}")
+    if tokens[2].type != Token_type.LEFT_PAREN:
+        raise JavaSyntaxError(f"{tokens[2].location}: Illegal token after funtion name! Expected LEFT_CURLY, got {str(tokens[2].type)}")
+    if tokens[-2].type != Token_type.RIGTH_PAREN:
+        raise JavaSyntaxError(f"{tokens[-2].location}: Illegal token after function parameter list! Expected RIGHT_PAREN, got {str(tokens[-2].type)}")
 
 def _ensure_correct_variable_structure(tokens: List[Token]):
-    #variable structure: TYPE_NAME IDENTIFIER ;|( = EXPRESSION)
+    #variable structure: TYPE_NAME IDENTIFIER ;|( = EXPRESSION;)
     if len(tokens) < 3:
         raise JavaSyntaxError(f"{tokens[0].location}: Ill-formed type construct! Expected at least 3 tokens, got {len(tokens)}")
     if tokens[1].type != Token_type.UNKNOWN:
@@ -205,213 +257,75 @@ def _ensure_correct_variable_structure(tokens: List[Token]):
     if tokens[2].type == Token_type.EQUAL_SIGN and len(tokens) < 5:
         raise JavaSyntaxError(f"{tokens[2].location}: Ill-formed assignment expression! Expected at least 5 tokens, got {len(tokens)}")
 
-#     def get_scopes(self) -> List[Function_scope]:
+def _ensure_correct_if_structure(tokens: List[Token]):
+    #if structure: IF ( ... ) {  <-- the opening curly is technically not needed, but we require it anyways
+    if len(tokens) < 5:
+        raise JavaSyntaxError(f"{tokens[0].location}: Ill-formed if construct! Expected at least 5 tokens, got {len(tokens)}")
+    if tokens[-1].type != Token_type.LEFT_CURLY:
+        raise JavaSyntaxError(f"{tokens[-1].location}: Ill-formed if construct! Expected last token to be LEFT_CURLY, got {str(tokens[-1].type)}")
+    if tokens[1].type != Token_type.LEFT_PAREN:
+        raise JavaSyntaxError(f"{tokens[1].location}: Illegal token after if token! Expected LEFT_PAREN, got {str(tokens[1].type)}")
+    if tokens[-2].type != Token_type.RIGTH_PAREN:
+        raise JavaSyntaxError(f"{tokens[-2].location}: Illegal token after conditional expression! Expected RIGHT_PAREN, got {str(tokens[-2].type)}")
 
-#         while token := self._consume_token():
+def _ensure_correct_while_structure(tokens: List[Token]):
+    #while structure: WHILE ( ... ) { <-- might not be required by the standard, but is required by us
+    if len(tokens) < 5:
+        raise JavaSyntaxError(f"{tokens[0].location}: Ill-formed while construct! Expected at least 5 tokens, got {len(tokens)}")
+    if tokens[-1].type != Token_type.LEFT_CURLY:
+        raise JavaSyntaxError(f"{tokens[-1].location}: Ill-formed while construct! Expected last token to be LEFT_CURLY, got {str(tokens[-1].type)}")
+    if tokens[1].type != Token_type.LEFT_PAREN:
+        raise JavaSyntaxError(f"{tokens[1].location}: Illegal token after while token! Expected LEFT_PAREN, got {str(tokens[1].type)}")
+    if tokens[-2].type != Token_type.RIGTH_PAREN:
+        raise JavaSyntaxError(f"{tokens[-2].location}: Illegal token after while condition! Expected RIGHT_PAREN, got {str(tokens[-2].type)}")
 
-#             if token.type == Token_type.IF_STATEMENT:
-#                 self._handle_if_construct()
+def _ensure_correct_do_while_structure_part_1(tokens: List[Token]):
+    #do-while structure: do{
+    if len(tokens) != 2:
+        raise JavaSyntaxError(f"{tokens[0].location}: Ill-formed do-while construct! Expected 2 tokens, got {len(tokens)}")
+    if tokens[1].type != Token_type.LEFT_CURLY:
+        raise JavaSyntaxError(f"Illegal token after do token! Expected LEFT_CURLY, got {str(tokens[1].type)}")
 
-#             elif token.type == Token_type.WHILE_STATEMENT:
-#                 self._handle_while_construct()
-            
-#             elif token.type == Token_type.FOR_STATEMENT:
-#                 self._handle_for_construct()
-#             elif token.type == Token_type.DO_WHILE_STATEMENT:
-#                 self._handle_do_while_construct()
-
-#             elif token.type == Token_type.TYPE_NAME:
-#                 self._handle_type_identifier(token)
-
-#             elif token.type == Token_type.UNKNOWN:
-#                 self._handle_unknown_token(token)
-        
-#         self._handle_globals()
-#         return self._scopes
-
-#     def _append_scoped_instructions_to_parent(self, parent_instruction: Iinstruction):
-#         indent_depth = 1
-#         past_instructions = []
-#         current_parent_instruction = parent_instruction
-#         while (token := self._consume_token()) and indent_depth > 0:
-
-#             current_instruction = self.get_instruction_from_token(token)
-
-#             if token.type == Token_type.RIGHT_CURLY:
-#                 current_parent_instruction = past_instructions.pop()
-#                 indent_depth-=1
-
-#             if token.type == Token_type.LEFT_CURLY:
-#                 past_instructions.append(current_instruction)
-#                 current_parent_instruction = 
-
-
-#     def _handle_if_construct(self):
-#         self._check_construct("Illformed if construct!")
-
-#         logging.debug("found if construct")
-#         if_tokens = self._get_argument_tokens()
-        
-#         if_text = _construct_source_line_from_tokens(if_tokens)
-
-#         self.add_instruction_to_active_scope(if_instruction(if_text, [], []))
-
-#     def _handle_while_construct(self):
-#         self._check_construct("Illformed while construct!")
-
-#         logging.debug("Found while construct")
-#         while_tokens = self._get_argument_tokens()
-        
-#         while_text = _construct_source_line_from_tokens(while_tokens)
-
-#         self.add_instruction_to_active_scope(while_instruction_front(while_text, []))
-
-#     def _handle_for_construct(self):
-#         self._check_construct("Illformed for construct!")
-
-#         logging.debug("Found for construct")
-#         for_tokens = self._get_argument_tokens()
-
-#         variable_inst, condition_str, increment_inst = _construct_for_arguments_from_tokens(for_tokens)
-
-#         self.add_instruction_to_active_scope(variable_inst)
-#         self.add_instruction_to_active_scope(for_instruction(condition_str, []))
-
-#     def _handle_do_while_construct(self):
-#         if self._consume_token().type != Token_type.LEFT_CURLY:
-#             raise JavaSyntaxError("Illformed do-while construct!")
-        
-#         logging.debug("Found do-while contruct")
-
-#         #These are the instructions in the loops scope
-#         do_while_tokens = self._consume_tokens_until(Token_type.WHILE_STATEMENT) #this will break, but what is the best way to do this? Stack evaluation?
-        
-#         while_argument_tokens = self._get_argument_tokens();
-#         while_argument_string = _construct_source_line_from_tokens(while_argument_tokens)
-
-#         self.add_instruction_to_active_scope(while_instruction_back(while_argument_string, []))
-
-#     def _handle_type_identifier(self, token: Token):
-#         if self._token_is_function_def():
-#             logging.debug("Function definition found")
-#             self._handle_new_function_def(token)
-
-#         elif self._token_is_var_dec():
-#             logging.debug("Variable declaration found")
-#             self.add_instruction_to_active_scope(self._make_var_dec(token))
-
-#         elif self._token_is_var_def():
-#             logging.debug(f"Variable definition found")
-#             self.add_instruction_to_active_scope(self._make_var_def(token))
-
-#         else:
-#             raise JavaSyntaxError("Illegal token after type identifier!")
-
-#     def _handle_unknown_token(self, token: Token):
-#         logging.debug("Found unknown Token. Most likely function call")
-#         self.add_instruction_to_active_scope(self._make_generic_instruction(token))
+def _ensure_correct_do_while_structure_part_2(tokens: List[Token]):
+    #do-while structure: while( ... );
+    if len(tokens) < 5:
+        raise JavaSyntaxError(f"{tokens[0].location}: Ill-formed do while contruct! Expected at least 5 tokens, got {len(tokens)}")
+    if tokens[0].type != Token_type.WHILE_STATEMENT:
+        raise JavaSyntaxError(f"{tokens[0].location}: Illegal token after do block! Expected WHILE_STATEMENT, got {str(tokens[1].type)}")
+    if tokens[-1].type != Token_type.SEMICOLON:
+        raise JavaSyntaxError(f"{tokens[-1].location}: Ill-formed do-while construct! Expected last token to be SEMICOLON, got {str(tokens[-1].type)}")
+    if tokens[1].type != Token_type.LEFT_PAREN:
+        raise JavaSyntaxError(f"{tokens[1].location}: Illegal token after while token! Expected LEFT_PAREN, got {str(tokens[1].type)}")
+    if tokens[-2].type != Token_type.RIGTH_PAREN:
+        raise JavaSyntaxError(f"{tokens[-2].location}: Illegal token after do-while condition! Expected RIGHT_PAREN, got {str(tokens[-2].type)}")
 
 
 
-#     def _token_is_function_def(self) -> bool:
-#         return self._peek_token().type == Token_type.UNKNOWN and self._peek_token(1).type == Token_type.LEFT_PAREN
+def _get_function_argument_list_from_tokens(tokens: List[Token]) -> List[str]:
+    arg_tokens = _get_seperated_token_list(tokens, [Token_type.COMMA])
+
+    args = []
     
-#     def _token_is_var_dec(self) -> bool:
-#         return self._peek_token().type == Token_type.UNKNOWN and self._peek_token(1).type == Token_type.SEMICOLON
-    
-#     def _token_is_var_def(self) -> bool:
-#         return self._peek_token().type == Token_type.UNKNOWN and self._peek_token(1).type == Token_type.EQUAL_SIGN
+    for arg in arg_tokens:
+        arg_str = ""
+        for token in arg:
+            arg_str += token.content + ' '
+        arg_str = arg_str[:-1]
+        args.append(arg_str)
 
+    return args
 
+def _get_seperated_token_list(tokens: List[Token], seperator_types: List[Token_type]) -> List[List[Token]]:
+    token_segments = []
+    tokens_in_segment = []
 
-#     def _make_var_dec(self, token) -> generic_instruction:
-#         var_type = token.content
-#         var_name = self._consume_token().content
-#         return _construct_generic_instruction_from_variable_def(var_type, var_name, "")
+    for token in tokens:
+        if token.type in seperator_types:
+            token_segments.append(tokens_in_segment)
+            tokens_in_segment = []
+            continue
+        tokens_in_segment.append(token)
 
-#     def _make_var_def(self, token) -> generic_instruction:
-#         var_type = token.content
-#         var_name = self._consume_token().content
-#         line_tokens = self._get_tokens_until_semicolon()
+    token_segments.append(tokens_in_segment)
 
-#         var_value_str = _construct_source_line_from_tokens(line_tokens)
-
-#         return _construct_generic_instruction_from_variable_def(var_type, var_name, var_value_str)
-
-#     def _make_generic_instruction(self, token: Token) -> Iinstruction:
-#         line_tokens = self._get_tokens_until_semicolon()
-#         line_tokens.insert(0, token)
-#         line_text = _construct_source_line_from_tokens(line_tokens)
-
-#         return generic_instruction(line_text)
-
-#     def _handle_new_function_def(self, token: Token):
-#         function_return_type = token.content
-#         function_name = self._consume_token().content
-#         self._consume_token() #get rid of the left parenthesis
-        
-#         argument_tokens = self._get_argument_tokens()
-
-#         arg_list = _construct_arg_list_from_tokens(argument_tokens)
-
-#         self._add_scope(function_name, function_return_type, arg_list)
-
-
-#     def add_instruction_to_active_scope(self, instruction: Union[Iinstruction, List[Iinstruction]]):
-#         if isinstance(instruction, List):
-#             if self._current_scope:
-#                 self._current_scope.contents.extend(instruction)
-#             else:
-#                 self._global_instructions.extend(instruction)
-#         else:
-#             if self._current_scope:
-#                 self._current_scope._add_instruction(instruction)
-#             else:
-#                 self._global_instructions.append(instruction)
-
-
-
-#     def _add_scope(self, function_name: str, function_return_type: str, function_args: List[str]):
-#         if self._current_scope:
-#             self._scopes.append(self._current_scope) #do not append the global scope as it is still in use
-#         self._current_scope = Function_scope(function_name, function_return_type, function_args) #add a new empty function scope to the list of scopes
-
-
-#     def _handle_globals(self):
-#         """Append all globally declared instructions, if any, to the list of all scopes"""
-#         if len(self._global_instructions) > 0:
-#             global_scope = Function_scope("<Global>", "", [])
-#             global_scope._add_instructions(self._global_instructions)
-
-
-
-#     def _check_construct(self, msg:str):
-#         if self._consume_token().type != Token_type.LEFT_PAREN:
-#             raise JavaSyntaxError(msg)
-
-
-#     def _get_tokens_until_semicolon(self) -> List[Token]:
-#         return self._consume_tokens_until(Token_type.SEMICOLON)
-
-#     def _get_argument_tokens(self) -> List[Token]:
-#         return self._consume_tokens_until(Token_type.RIGTH_PAREN)
-
-#     def _consume_tokens_until(self, end_type: Token_type) -> List[Token]:
-#         tokens = []
-#         while self._peek_token() and (token := self._consume_token()).type != end_type:
-#             tokens.append(token)
-#         return tokens
-
-# def _construct_generic_instruction_from_variable_def(var_type:str, var_name: str, var_value: str) -> generic_instruction:
-#     if var_value:
-#         return generic_instruction(f"declare variable '{var_name}' of type '{var_type}' with value {var_value}")
-#     return generic_instruction(f"declare variable '{var_name}' of type '{var_type}'")
-
-# def _construct_source_line_from_tokens(tokens: List[Token]) -> str:
-#     return "src" #TODO: implement
-
-# def _construct_arg_list_from_tokens(token: List[Token]) -> List[str]:
-#     return ["arg"] #TODO: implement
-
-# def _construct_for_arguments_from_tokens(tokens: List[Token]) -> Tuple[str, str, str]:
-#     return generic_instruction("var"), "con", "inc" #TODO: implement
+    return token_segments
