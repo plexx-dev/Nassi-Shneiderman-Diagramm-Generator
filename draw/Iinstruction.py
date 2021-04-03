@@ -25,10 +25,6 @@ class Iinstruction(metaclass=ABCMeta):
     def getblkwidth(self) -> float:
         pass
 
-    # @abstractmethod
-    # def add_child_instruction(self, instruction):
-    #     pass
-
     @abstractmethod
     def __str__(self) -> str:
         pass
