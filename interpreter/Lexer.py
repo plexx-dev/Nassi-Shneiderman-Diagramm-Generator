@@ -14,9 +14,6 @@ class Lexer:
         self._token_index = 0
 
         self._scopes: List[Function_scope] = []
-        self._current_scope = None
-
-        self._current_scoped_instruction = None
 
         #in case the tokenizer finds valid tokens in the global scope, they will be saved here
         self._global_instructions = []
@@ -44,12 +41,12 @@ class Lexer:
             if self._is_function_def(line_tokens):
 
                 func_name, func_return_type, func_args = self._construct_function_header_from_tokens(line_tokens)
-                fs = Function_scope(func_name, func_return_type, func_args)
+                current_scope = Function_scope(func_name, func_return_type, func_args)
 
                 instructions = self._get_instructions_in_scope()
-                fs._add_instructions(instructions)
+                current_scope._add_instructions(instructions)
 
-                scopes.append(fs)
+                scopes.append(current_scope)
 
             else:
                 #something was declared in global scope
@@ -58,7 +55,6 @@ class Lexer:
         self.add_globals_to_scope_list(scopes)
         return scopes
             
-
     def _get_instructions_in_scope(self):
 
         instructions = []
@@ -74,17 +70,20 @@ class Lexer:
             if delimiter_token.type == Token_type.RIGHT_CURLY:
                 return instructions
 
-        raise JavaSyntaxError(f"Missing right curly!")
+        raise JavaSyntaxError(f"{self._peek(-1).location}: Missing right curly!")
 
 
 
-    def get_line_tokens(self):
+    def get_tokens_until(self, delimiter_types: List[Token_type]) -> List[Token]:
         tokens = []
         while token := self._consume():
             tokens.append(token)
-            if token.type in [Token_type.SEMICOLON, Token_type.LEFT_CURLY, Token_type.RIGHT_CURLY]:
+            if token.type in delimiter_types:
                 break
         return tokens
+
+    def get_line_tokens(self):
+        return self.get_tokens_until([Token_type.SEMICOLON, Token_type.LEFT_CURLY, Token_type.RIGHT_CURLY])
 
     
 
@@ -212,14 +211,30 @@ class Lexer:
     def _handle_for_construct(self, tokens: List[Token]):
         #TODO: change that
         logging.debug("Found for construct")
-        tokens.extend(self.get_line_tokens())
-        tokens.extend(self.get_line_tokens())
+        tokens.extend(self.get_tokens_until([Token_type.LEFT_CURLY]))
+
+        _ensure_correct_for_structure(tokens)
+
+        variable_tokens, condition_tokens, increment_tokens = _get_for_arguments_from_tokens(tokens[2:])
+        
+        variable_str = ""
+        if len(variable_tokens) > 1: #if we got more than just a semicolon
+            variable_str = self._construct_variable_def_from_tokens(variable_tokens)
+
+        condition_str = "true"
+        if condition_tokens:
+            condition_str = self._construct_source_line_from_tokens(condition_tokens)
+
+        increment_instruction = None
+        if increment_tokens:
+            increment_instruction = generic_instruction(self._construct_source_line_from_tokens(increment_tokens))
 
         loop_instructions = self._get_instructions_in_scope()
 
-        loop_instructions.append(generic_instruction("increment"))
+        if increment_instruction:
+            loop_instructions.append(increment_instruction)
 
-        return for_instruction("for_instruction", loop_instructions)
+        return for_instruction(variable_str, condition_str, loop_instructions)
 
     def _handle_type_name_construct(self, tokens: List[Token]):
         logging.debug("Found Type name construct")
@@ -299,6 +314,19 @@ def _ensure_correct_do_while_structure_part_2(tokens: List[Token]):
     if tokens[-2].type != Token_type.RIGTH_PAREN:
         raise JavaSyntaxError(f"{tokens[-2].location}: Illegal token after do-while condition! Expected RIGHT_PAREN, got {str(tokens[-2].type)}")
 
+def _ensure_correct_for_structure(tokens: List[Token]):
+    #for structure: for(...?;...?;...?) {
+    if len(tokens) < 6:
+        raise JavaSyntaxError(f"{tokens[0].location}: Illf-formed for loop construct! Expected at least 6 tokens, got {len(tokens)}")
+    if tokens[-1].type != Token_type.LEFT_CURLY:
+        raise JavaSyntaxError(f"{tokens[-1].location}: Ill-formed for loop construct! Expected last token to be LEFT_CURLY, got {str(tokens[-1].type)}")
+    if tokens[1].type != Token_type.LEFT_PAREN:
+        raise JavaSyntaxError(f"{tokens[1].location}: Illegal token after for token! Expected LEFT_PAREN, got {str(tokens[1].type)}")
+    if tokens[-2].type != Token_type.RIGTH_PAREN:
+        raise JavaSyntaxError(f"{tokens[-2].location}: Illegal token after for loop increment! Expected RIGHT_PAREN, got {str(tokens[-2].type)}")
+    if ( semicolon_count := tokens.count(Token(Token_type.SEMICOLON)) ) != 2:
+        raise JavaSyntaxError(f"Ill-formed for loop construct! Expected exactly 2 SEMICOLON tokens, got {semicolon_count}")
+
 
 
 def _get_function_argument_list_from_tokens(tokens: List[Token]) -> List[str]:
@@ -329,3 +357,37 @@ def _get_seperated_token_list(tokens: List[Token], seperator_types: List[Token_t
     token_segments.append(tokens_in_segment)
 
     return token_segments
+
+
+def _get_for_arguments_from_tokens(tokens: List[Token]) -> Tuple[List[Token], List[Token],  List[Token]]:
+    variable_tokens = []
+    condition_tokens = []
+    increment_tokens = []
+
+    token_index = 0
+
+    while True:
+        token = tokens[token_index]
+        token_index += 1
+
+        variable_tokens.append(token)
+        if token.type == Token_type.SEMICOLON:
+            break
+    
+    while True:
+        token = tokens[token_index]
+        token_index += 1
+
+        if token.type == Token_type.SEMICOLON:
+            break
+        condition_tokens.append(token)
+
+    while True:
+        token = tokens[token_index]
+        token_index += 1
+
+        if token.type == Token_type.LEFT_CURLY:
+            break
+        increment_tokens.append(token)
+
+    return variable_tokens, condition_tokens, increment_tokens[:-2]
