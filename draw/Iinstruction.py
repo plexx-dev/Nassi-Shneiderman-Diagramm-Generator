@@ -135,23 +135,6 @@ class if_instruction(Iinstruction):
             res += "}"
         return res
 
-# class switch_instruction(Iinstruction):
-#     """Switch structure"""
-
-#     def __init__(self, instruction_text: str, cases: List[List[Iinstruction]]) -> None:
-#         Iinstruction.__init__(self, instruction_text)
-#         self.child_cases = cases
-    
-#     def to_image(self, x:int, y:int, x_sz: int, y_sz: int) -> Iterable[float]:
-#         """TODO: implement"""
-#         return []
-
-#     def draw_children(self, x:float, y:float, x_sz:float, y_sz:float) -> float:
-#         """TODO: implement"""
-#         return 0.0
-
-
-
 class while_instruction_front(Iinstruction):
 
     def __init__(self, condition: str, instructions: List[Iinstruction]) -> None:
@@ -213,4 +196,19 @@ class while_instruction_back(while_instruction_front):
         return res
 
 class for_instruction(while_instruction_front):
-    pass
+    def __init__(self, variable_def: str, condition: str, instructions: List[Iinstruction]) -> None:
+        super().__init__(condition, instructions)
+        self.variable_instrucion = generic_instruction(variable_def)
+
+    def to_image(self, x: int, y: int, x_sz: int) -> Tuple[float]:
+        x, y, x_sz = self.variable_instrucion.to_image(x, y, x_sz)
+        return super().to_image(x, y, x_sz)
+
+    def getblkheight(self) -> float:
+        return super().getblkheight()+self.variable_instrucion.getblkheight()
+
+    def getblkwidth(self) -> float:
+        return max(super().getblkwidth(), self.variable_instrucion.getblkwidth())
+
+    def __str__(self) -> str:
+        return self.variable_instrucion.__str__()+';\n' + super().__str__()
