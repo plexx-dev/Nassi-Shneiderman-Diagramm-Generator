@@ -198,17 +198,23 @@ class while_instruction_back(while_instruction_front):
 class for_instruction(while_instruction_front):
     def __init__(self, variable_def: str, condition: str, instructions: List[Iinstruction]) -> None:
         super().__init__(condition, instructions)
-        self.variable_instrucion = generic_instruction(variable_def)
+        self.variable_instruction = generic_instruction(variable_def) if variable_def else None
 
     def to_image(self, x: int, y: int, x_sz: int) -> Tuple[float]:
-        x, y, x_sz = self.variable_instrucion.to_image(x, y, x_sz)
+        x, y = self.variable_instruction.to_image(x, y, x_sz)
         return super().to_image(x, y, x_sz)
 
     def getblkheight(self) -> float:
-        return super().getblkheight()+self.variable_instrucion.getblkheight()
+        if self.variable_instruction:
+            return super().getblkheight()+self.variable_instruction.getblkheight()
+        return super().getblkheight()
 
     def getblkwidth(self) -> float:
-        return max(super().getblkwidth(), self.variable_instrucion.getblkwidth())
+        if self.variable_instruction:
+            return max(super().getblkwidth(), self.variable_instruction.getblkwidth())
+        return super().getblkwidth()
 
     def __str__(self) -> str:
-        return self.variable_instrucion.__str__()+';\n' + super().__str__()
+        if self.variable_instruction:
+            return self.variable_instruction.__str__()+';\n' + super().__str__()
+        return super().__str__()
