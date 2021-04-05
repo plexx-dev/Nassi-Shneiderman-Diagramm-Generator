@@ -1,5 +1,6 @@
 """Tokenizer.py: Definition for Tokenizer class"""
 
+from errors.custom import JavaSyntaxError
 import logging
 import re
 from typing import List, Optional
@@ -20,9 +21,12 @@ class Tokenizer:
 
         self.source_text = re.sub("(private)|(public)|(protected)", "", self.source_text)
 
-        self.type_name_pattern = re.compile('(char)|(int)|(void)|(double)|(Pixel)') #TODO: make this modular
+        self.type_name_pattern = re.compile('(char)|(int)|(void)|(double)|(boolean)|(Pixel)|(String)') #TODO: make this modular
 
         self._filename = file_name
+
+        self._left_curly_number=0
+        self._right_curly_number=0
 
     def get_tokens(self) -> List[Token]:
 
@@ -36,9 +40,18 @@ class Tokenizer:
             if self._handle_comments(char):
                 continue
 
-            token = self._get_token(char)
-            logging.debug(f"found token \"{token}\" on line {self.line_number}")
-            tokens.append(make_token(token, SourceLocation(self._filename, self.line_number, self.column_number), self.type_name_pattern))
+            tag = self._get_token(char)
+            logging.debug(f"found tag \"{tag}\" on line {self.line_number}")
+
+            if tag == "{":
+                self._left_curly_number+=1
+            elif tag == "}":
+                self._right_curly_number+=1
+
+            tokens.append(make_token(tag, SourceLocation(self._filename, self.line_number, self.column_number), self.type_name_pattern))
+
+        if self._left_curly_number != self._right_curly_number:
+            raise JavaSyntaxError(f"Ill-formed Java program! Expected equal number of '{'{'}' and '{'}'}' tokens, got {self._left_curly_number} and {self._right_curly_number}")
 
         return tokens
 
