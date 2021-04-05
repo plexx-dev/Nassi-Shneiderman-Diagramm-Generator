@@ -32,17 +32,14 @@ class Token_type(IntEnum):
     STRING_LITERAL=17
     TYPE_NAME=18
 
+@dataclass(frozen=True)
 class SourceLocation:
-
-    __slots__ = ["filename", "line", "column"]
-
-    def __init__(self, filename: str, line: int, column: int) -> None:
-        self.filename = filename
-        self.line = line
-        self.column = column
+    file: str
+    line: int
+    column: int
 
     def __str__(self) -> str:
-        return f"File {self.filename}, {self.line}:{self.column}"
+        return f"File {self.file} {self.line}:{self.column}"
 
 @dataclass(frozen=True, eq=True)
 class Token:
