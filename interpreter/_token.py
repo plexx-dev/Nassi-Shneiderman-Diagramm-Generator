@@ -1,7 +1,7 @@
 """Private definitions for Token class used by the Lexer"""
 
 import re
-
+from dataclasses import dataclass, field
 from enum import IntEnum
 from typing import Union
 
@@ -44,19 +44,11 @@ class SourceLocation:
     def __str__(self) -> str:
         return f"File {self.filename}, {self.line}:{self.column}"
 
+@dataclass(frozen=True, eq=True)
 class Token:
-
-    __slots__ = ["type", "content", "location"]
-
-    def __init__(self, type: Token_type, location: SourceLocation, content: str) -> None:
-        self.type = type
-        self.content = content
-        self.location = location
-
-    def __str__(self) -> str:
-        if self.content:
-            return f"{str(self.type)}: {self.content}"
-        return f"{self.type}"
+    type: Token_type
+    location: SourceLocation = field(compare=False, default=SourceLocation("", 0, 0))
+    content: str = field(compare=False, default="")
 
 def make_token(tag: str, location: SourceLocation, type_name_pattern:re.Pattern) -> Token:
     """Construct a token object with the provided tag and source location"""
