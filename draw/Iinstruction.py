@@ -1,4 +1,4 @@
-"""Iinstruction.py: #TODO"""
+"""Iinstruction.py: Instruction classes to turn the lexing results into an image"""
 
 __author__      = "Weckyy702"
 
@@ -14,7 +14,7 @@ class Iinstruction(metaclass=ABCMeta):
         self.instruction_text = instruction_text
 
     @abstractmethod
-    def to_image(self, x:int, y:int, x_sz: int) -> Tuple[float]:
+    def to_image(self, x:int, y:int, x_sz: int) -> Tuple[float, float, float]:
         pass
 
     @abstractmethod
@@ -40,9 +40,9 @@ class generic_instruction(Iinstruction):
     """Any instruction that is not a control structure"""
 
     def __init__(self, instruction_text: str) -> None:
-        Iinstruction.__init__(self, instruction_text)
+        super().__init__(instruction_text)
  
-    def to_image(self, x:int, y:int, x_sz: int) -> Iterable[float]:
+    def to_image(self, x:int, y:int, x_sz: int) -> Tuple[float, float, float]:
         return cti.draw_generic_instruction(self.instruction_text, x, y, x_sz, self.getblkheight())
 
     def getblkheight(self) -> float:
@@ -55,14 +55,14 @@ class generic_instruction(Iinstruction):
         return self.instruction_text
 
 class if_instruction(Iinstruction):
-    """Conditional structure
+    """Conditional structurewdas
         NOT.
         A.
         LOOP
     """
 
     def __init__(self, instruction_text: str, true_case: List[Iinstruction], false_case: List[Iinstruction]=None) -> None:
-        Iinstruction.__init__(self, instruction_text)
+        super().__init__(instruction_text)
         self.true_case = true_case
         self.false_case = false_case
 
@@ -76,7 +76,7 @@ class if_instruction(Iinstruction):
         sz = 0.0
         if self.false_case:
             for inst in self.false_case:
-                sz += inst.getblkwidth()
+                sz += inst.getblkheight()
         return sz
 
     def get_truewidth(self) -> float:
@@ -100,13 +100,25 @@ class if_instruction(Iinstruction):
         return self._getblkheight() + max(self.get_trueheight(), self.get_falseheight())
 
     def getblkwidth(self) -> float:
-        return max(self._getblkwidth(), self.get_truewidth() + self.get_falsewidth())
+        text_width, true_width, false_width = self.get_widths()
+
+        return max(text_width, true_width+false_width)
+
+    def get_widths(self) -> Tuple[float, float, float]:
+        text_width = self._getblkwidth()
+        true_width = self.get_truewidth()
+        false_width = self.get_falsewidth()
+
+        true_width = max(text_width/2, true_width)
+        false_width = max(text_width/2, false_width)
+        true_width = max(text_width-false_width, true_width)
+
+        return text_width, true_width, false_width
         
     
     def to_image(self, x:int, y:int, x_sz: int) -> Tuple[float]:
-        true_w = self.get_truewidth()
-        false_w = self.get_falsewidth()
-        true_x, true_y, false_x, false_y = cti.draw_if_statement(
+        _, true_w, false_w = self.get_widths()
+        true_x, true_y, true_w, false_x, false_y, false_w = cti.draw_if_statement(
             self.instruction_text, x, y, true_w, false_w, self.getblkheight()
         )
         self.draw_true_case(true_x, true_y, true_w)
@@ -116,12 +128,12 @@ class if_instruction(Iinstruction):
 
     def draw_true_case(self, x: float, y:float, x_sz:float):
         for instruction in self.true_case:
-            x, y = instruction.to_image(x, y, x_sz)
+            x, y = instruction.to_image(x, y, x_sz)[0:2]
 
     def draw_false_case(self, x: float, y:float, x_sz:float):
         if self.false_case:
             for instruction in self.false_case:
-                x, y = instruction.to_image(x, y, x_sz)
+                x, y = instruction.to_image(x, y, x_sz)[0:2]
 
     def __str__(self) -> str:
         res = f"if({self.instruction_text}) {'{'}\n"
@@ -138,7 +150,7 @@ class if_instruction(Iinstruction):
 class while_instruction_front(Iinstruction):
 
     def __init__(self, condition: str, instructions: List[Iinstruction]) -> None:
-        Iinstruction.__init__(self, condition)
+        super().__init__(condition)
         self.child_instructions = instructions
 
     def get_children_height(self) -> float:
@@ -150,7 +162,7 @@ class while_instruction_front(Iinstruction):
     def get_children_width(self) -> float:
         w = 0.0
         for inst in self.child_instructions:
-            w += inst.getblkheight()
+            w = max(w, inst.getblkheight())
         return w
 
     def getblkheight(self) -> float:
@@ -168,7 +180,7 @@ class while_instruction_front(Iinstruction):
 
     def draw_children(self, x:float, y:float, x_sz:float):
         for inst in self.child_instructions:
-            x, y = inst.to_image(x, y, x_sz)
+            x, y = inst.to_image(x, y, x_sz)[0:2]
         return self.get_children_height()
 
     def __str__(self) -> str:
@@ -181,7 +193,7 @@ class while_instruction_front(Iinstruction):
 
 class while_instruction_back(while_instruction_front):
     def __init__(self, condition: str, instructions: List[Iinstruction]) -> None:
-        while_instruction_front.__init__(self, condition, instructions)
+        super().__init__(condition, instructions)
     
     def to_image(self, x:int, y:int, x_sz: int):
         children_x, children_y, children_sz_x = cti.draw_while_loop_back(self.instruction_text, x, y, x_sz, self.getblkheight())
@@ -201,7 +213,8 @@ class for_instruction(while_instruction_front):
         self.variable_instruction = generic_instruction(variable_def) if variable_def else None
 
     def to_image(self, x: int, y: int, x_sz: int) -> Tuple[float]:
-        x, y = self.variable_instruction.to_image(x, y, x_sz)
+        if self.variable_instruction:
+            x, y, _ = self.variable_instruction.to_image(x, y, x_sz)
         return super().to_image(x, y, x_sz)
 
     def getblkheight(self) -> float:

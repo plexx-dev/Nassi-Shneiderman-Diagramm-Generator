@@ -8,6 +8,16 @@ import logging
 from interpreter.function_scope import Function_scope
 from interpreter._token import Token, Token_type
 from errors.custom import JavaSyntaxError
+
+def print_arr(arr):
+    print("[")
+    for elem in arr:
+        if isinstance(elem, List):
+            print_arr(elem)
+        else:
+            print(elem)
+    print("]")
+
 class Lexer:
     def __init__(self, tokens: List[Token]) -> None:
         self._tokens = tokens
@@ -149,9 +159,10 @@ class Lexer:
     def _construct_source_line_from_tokens(self, tokens: List[Token]) -> str:
         """TODO: make this function smarter"""
         line = ""
+
         for token in tokens:
             if token.type == Token_type.SEMICOLON:
-                continue
+                break
             line += token.content + ' '
 
         return line[:-1] #ignore the space after the last instruction text
@@ -209,7 +220,6 @@ class Lexer:
         return while_instruction_back(condtion_str, loop_instructions)
 
     def _handle_for_construct(self, tokens: List[Token]):
-        #TODO: change that
         logging.debug("Found for construct")
         tokens.extend(self.get_tokens_until([Token_type.LEFT_CURLY]))
 
@@ -390,4 +400,4 @@ def _get_for_arguments_from_tokens(tokens: List[Token]) -> Tuple[List[Token], Li
             break
         increment_tokens.append(token)
 
-    return variable_tokens, condition_tokens, increment_tokens[:-2]
+    return variable_tokens, condition_tokens, increment_tokens[:-1]

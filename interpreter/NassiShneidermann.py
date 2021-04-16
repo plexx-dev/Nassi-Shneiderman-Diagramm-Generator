@@ -10,7 +10,8 @@ from enum import IntEnum
 import os.path
 import secrets
 
-from interpreter.interpret_source import JavaInterpreter
+from interpreter.Tokenizer import Tokenizer
+from interpreter.Lexer import Lexer
 from interpreter.function_scope import Function_scope
 from draw.code_to_image_wrapper import NSD_writer
 import draw.code_to_image as cti
@@ -38,12 +39,12 @@ class NassiShneidermanDiagram:
 
     @staticmethod
     def _save_scope(scope: Function_scope, output_path: str):
-        y_size = scope.get_height()
         x_size = scope.get_width()
+        y_size = scope.get_height()
         with NSD_writer(output_path, x_size, y_size):
             x, y = 0, 0
             for instruction in scope:
-                x, y = instruction.to_image(x, y, x_size)
+                x, y = instruction.to_image(x, y, x_size)[0:2]
 
     @staticmethod
     def check_conflicts(filepath:str, behavoiur: Overwrite_behaviour):
@@ -64,6 +65,7 @@ class NassiShneidermanDiagram:
 
             filepath = f"{output_path}/{scope.name}"
             filepath = self.check_conflicts(filepath, on_conflict)
+
             if filepath is not None:
                 logging.info(f"Saving NSD to {filepath}.png...")
 
@@ -81,9 +83,14 @@ class NassiShneidermanDiagram:
             i+=1
             
     def load_from_file(self, filepath:str, itp_custom_tags: Optional[Dict[str, List[str]]]):
-        itp = JavaInterpreter(filepath)
-        itp.reset_tags(itp_custom_tags)
-        self.function_scopes = itp.load_instruction_scopes()
+
+        tokenizer = Tokenizer(filepath)
+
+        tokens = tokenizer.get_tokens()
+
+        lexer = Lexer(tokens)
+
+        self.function_scopes = lexer.get_instructions()[:-1]
         
         if not self.function_scopes:
             return True

@@ -19,7 +19,7 @@ class Tokenizer:
         self.line_number = 1
         self.column_number = 0
 
-        self.source_text = re.sub("(private)|(public)|(protected)", "", self.source_text)
+        self.source_text = re.sub("(private)|(public)|(protected)|(final)", "", self.source_text)
 
         self.type_name_pattern = re.compile('(char)|(int)|(void)|(double)|(boolean)|(Pixel)|(String)') #TODO: make this modular
 

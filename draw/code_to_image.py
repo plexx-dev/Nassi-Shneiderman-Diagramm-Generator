@@ -16,14 +16,17 @@ output_img = None
 
 _bkp_font = ImageFont.truetype("res/fonts/NotoSans-Regular.ttf", 12) # ImageFont.load_default()
 
- #in case set_font does funky stuff, backup the original font
+ERROR_TEXT = "Output image was not initialized! Make sure to call NSD_init first"
+
+#in case set_font does funky stuff, backup the original font
 font = _bkp_font
 
 
 def NSD_init(x: float, y: float):
     #get input_img
     global img, output_img
-    #img = Image.open(input_dir + file_name + datei_endung)
+
+
     img = Image.new("RGB", (x, y), "white")
     output_img = ImageDraw.Draw(img)
 
@@ -40,18 +43,18 @@ def set_font(font_filepath: str):
 
 def get_text_size(text: str):
     if not font:
-        raise Exception("Output image was not initialized! Make sure to call NSD_init first")
+        raise Exception(ERROR_TEXT)
     return font.getsize(text)
 
 def draw_debug_tile(x, y, x_sz, y_sz):
     from random import randint
 
     output_img.rectangle((x, y) + (x + x_sz, y + y_sz), fill=(randint(0, 255)))
-    return x, y + y_sz
+    return x, y + y_sz, x_sz
 
 def draw_generic_instruction(instruction: str, x, y, xsize, ysize) -> Iterable[float]:
     if not output_img:
-        raise Exception("Output image was not initialized! Make sure to call NSD_init first")
+        raise Exception(ERROR_TEXT)
 
     #draw shit
     output_img.rectangle((x,y) + (x + xsize, y + ysize), outline=(0), width=1)
@@ -59,16 +62,16 @@ def draw_generic_instruction(instruction: str, x, y, xsize, ysize) -> Iterable[f
     #text shit
     output_img.multiline_text((x + xsize * .5, y + ysize * .5), instruction, font=font, anchor="mm", align="right", fill=(0))
 
-    return x, y + ysize
+    return x, y + ysize, xsize
 
 def draw_if_statement(condition: str, x: int, y: int, true_w: int, false_w: int, ysize: int):
     """Draw an if statement into the NSD"""
     if not output_img:
-        raise Exception("Output image was not initialized! Make sure to call NSD_init first")
+        raise Exception(ERROR_TEXT)
 
     text_sz = font.getsize(condition)
-    text_h = text_sz[1] + PADDING_Y
     text_w = text_sz[0] + PADDING_X
+    text_h = text_sz[1] + PADDING_Y
 
     box_w = max(text_w, true_w + false_w)
 
@@ -85,13 +88,13 @@ def draw_if_statement(condition: str, x: int, y: int, true_w: int, false_w: int,
     output_img.text((x + 5, y + text_h), "true", font = font, fill = (0), anchor="ld")
     output_img.text((x + box_w - 5, y + text_h), "false", font = font, fill = (0), anchor="rd")
 
-    #x, and y of "true" and "false" label
-    return x, y + text_h, x + true_w, y + text_h
+    #x, y and width of "true" and "false" label
+    return x, y + text_h, true_w, x + true_w, y + text_h, false_w
 
 def draw_while_loop_front(condition: str, x: int, y: int, xsize: int, ysize: int):
 
     if not output_img:
-        raise Exception("Output image was not initialized! Make sure to call NSD_init first")
+        raise Exception(ERROR_TEXT)
 
     text_y_sz = font.getsize(condition)[1]
 
@@ -106,13 +109,13 @@ def draw_while_loop_front(condition: str, x: int, y: int, xsize: int, ysize: int
     #the text
     output_img.text((x + xsize * .1, y + text_y_sz * .5), condition, font = font, fill = (0), anchor="lm")
 
-    #the x, y offset then the x,y draw size (the canvas)
+    #the x, y offset then the children width
     return x + xsize * .1, y + text_y_sz, xsize * .9
 
 def draw_while_loop_back(condition: str, x: int, y: int, xsize: int, ysize: int):
 
     if not output_img:
-        raise Exception("Output image was not initialized! Make sure to call NSD_init first")
+        raise Exception(ERROR_TEXT)
 
     text_y_sz = get_text_size(condition)[1]
 
