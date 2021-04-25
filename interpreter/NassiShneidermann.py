@@ -39,12 +39,12 @@ class NassiShneidermanDiagram:
 
     @staticmethod
     def _save_scope(scope: Function_scope, output_path: str):
-        x_size = scope.get_width()
-        y_size = scope.get_height()
-        with NSD_writer(output_path, x_size, y_size):
-            x, y = 0, 0
+        width = scope.get_width()
+        height = scope.get_height()
+        with NSD_writer(output_path, width, height):
+            y = 0
             for instruction in scope:
-                x, y = instruction.to_image(x, y, x_size)[0:2]
+                y = instruction.convert_to_image(0, y, width)
 
     @staticmethod
     def check_conflicts(filepath:str, behavoiur: Overwrite_behaviour):

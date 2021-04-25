@@ -3,7 +3,7 @@
 __author__      = "Weckyy702"
 
 from typing import Iterable, List
-from draw.Iinstruction import Iinstruction
+from draw.Iinstruction import instruction
 
 class Function_scope(Iterable):
     """This class serves as a container for Instructions"""
@@ -17,19 +17,19 @@ class Function_scope(Iterable):
     def get_height(self) -> int:
         h = 0.0
         for inst in self.contents:
-            h += inst.getblkheight()
+            h += inst.get_block_height()
         return int(h)
 
     def get_width(self) -> int:
-        w = 200.0 #minimum width for every block
+        w = 200 #minimum width for every block
         for inst in self.contents:
-            w = max(w, inst.getblkwidth())
-        return int(w)
+            w = max(w, inst.get_block_width())
+        return w
 
-    def _add_instruction(self, inst: Iinstruction):
+    def _add_instruction(self, inst: instruction):
         self.contents.append(inst)
 
-    def _add_instructions(self, inst: List[Iinstruction]):
+    def _add_instructions(self, inst: List[instruction]):
         self.contents.extend(inst)
 
     def __iter__(self):
