@@ -1,5 +1,7 @@
 # Nassi-Shneiderman-Diagramm-Generator
-This python code generates a Nassi Shneiderman Diagramm from Java Source Code
+This python code generates a Nassi Shneiderman Diagramm from Java Source Code.
+
+Newest Version --> 0.3 A
 
 
 How it works:
