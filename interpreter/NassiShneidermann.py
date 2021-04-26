@@ -43,7 +43,8 @@ class NassiShneidermanDiagram:
         height = scope.get_height()
         with NSD_writer(output_path, width, height):
             y = 0
-            for instruction in scope:
+            for instruction in scope:   
+                print(instruction.instruction_text)
                 y = instruction.convert_to_image(0, y, width)
 
     @staticmethod

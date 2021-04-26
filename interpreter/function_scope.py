@@ -15,10 +15,10 @@ class Function_scope(Iterable):
         self.args = args
 
     def get_height(self) -> int:
-        h = 0.0
+        h = 0
         for inst in self.contents:
             h += inst.get_block_height()
-        return int(h)
+        return max(h, 5) #a NSD has to be at least 5 pixels tall
 
     def get_width(self) -> int:
         w = 200 #minimum width for every block

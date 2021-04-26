@@ -47,6 +47,9 @@ class generic_instruction(instruction):
     def get_block_height(self):
         return super().get_block_height()
 
+    def __str__(self) -> str:
+        return self.instruction_text
+
 
 
 class if_instruction(instruction):
@@ -57,8 +60,9 @@ class if_instruction(instruction):
 
     def convert_to_image(self, x: int, y: int, width: int) -> int:
         true_width = self.get_true_width()
+        block_height = self.get_block_height()
 
-        true_x, true_y, false_x, false_y = cti.draw_if_statement(self.instruction_text, x, y, true_width, width)
+        true_x, true_y, false_x, false_y = cti.draw_if_statement(self.instruction_text, x, y, true_width, width, block_height)
 
         self.draw_children(true_x, true_y, true_width, false_x, false_y, width-true_width)
 
@@ -120,6 +124,18 @@ class if_instruction(instruction):
 
         return height
 
+    def __str__(self) -> str:
+        res = "if\n"
+        for instruction in self.true_case:
+            res += '\t' + str(instruction) + '\n'
+
+        if self.false_case:
+            res += "else\n"
+            for instruction in self.false_case:
+                res += '\t' + str(instruction) + '\n'
+        
+        return res
+
 
 
 class while_instruction_front(instruction):
@@ -156,6 +172,12 @@ class while_instruction_front(instruction):
 
         return height
 
+    def __str__(self) -> str:
+        res = "while\n"
+        for instruction in self.children:
+            res += '\t' + str(instruction) + '\n'
+        return res
+
 class while_instruction_back(while_instruction_front):
     def __init__(self, condition_text: str, child_instructions: List[instruction]) -> None:
         super().__init__(condition_text, child_instructions)
@@ -168,7 +190,12 @@ class while_instruction_back(while_instruction_front):
 
         return y + block_height
 
-
+    def __str__(self) -> str:
+        res = "do\n"
+        for instruction in self.children:
+            res += '\t' + str(instruction) + '\n'
+        res += "while"
+        return res
 
 class for_instruction(while_instruction_front):
     def __init__(self, variable_text: str, condition_text: str, child_instruction: List[instruction]) -> None:
@@ -176,5 +203,26 @@ class for_instruction(while_instruction_front):
         self.variable_instruction = generic_instruction(variable_text)
 
     def convert_to_image(self, x: int, y: int, width: int) -> int:
+        block_height = super().get_block_height()
+
         y = self.variable_instruction.convert_to_image(x, y, width)
-        return super().convert_to_image(x,y, width)
+
+        children_x, children_y, children_width = cti.draw_while_loop_front(self.instruction_text, x, y, width, block_height)
+        self.draw_children(children_x, children_y, children_width)
+
+        return y + block_height
+
+    def get_block_width(self):
+        return max(super().get_block_width(), self.variable_instruction.get_block_width())
+
+    def get_block_height(self):
+        return super().get_block_height() + self.variable_instruction.get_block_height()
+
+    def __str__(self) -> str:
+        res = str(self.variable_instruction) + '\n'
+        res += "for\n"
+
+        for instruction in self.children:
+            res += "\t" + str(instruction) + '\n'
+        
+        return res

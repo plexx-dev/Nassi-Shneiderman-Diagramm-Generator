@@ -6,7 +6,7 @@ from enum import IntEnum
 from typing import Union
 
 NUMERIC_CONSTANT_PATTERN = re.compile(r"""([0-9]+)|(true)|(false)""")
-KEYWORD_PATTERN = re.compile(r"""(return)|(continue)|(break)|(new)""")
+KEYWORD_PATTERN = re.compile(r"""(return)$|(continue)$|(break)$|(new)$""")
 STRING_LITERAL_PATTERN = re.compile(r"""('|\")(.*)(\"|')""")
 MATH_OP_PATTERN = re.compile(r"""\+|-|\*|/|<|>""")
 

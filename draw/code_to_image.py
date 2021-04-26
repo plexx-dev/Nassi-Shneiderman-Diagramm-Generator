@@ -73,7 +73,7 @@ def draw_generic_instruction(instruction: str, x: int, y: int, width:int, height
 
 
 
-def draw_if_statement(condition: str, x: int, y: int, true_width: int, block_width:int) -> Tuple[int, int, int, int]:
+def draw_if_statement(condition: str, x: int, y: int, true_width: int, block_width:int, block_height: int) -> Tuple[int, int, int, int]:
     """Draw an if statement into the NSD"""
     if not output_img:
         raise Exception(ERROR_TEXT)
@@ -91,6 +91,8 @@ def draw_if_statement(condition: str, x: int, y: int, true_width: int, block_wid
     output_img.text((x + 5, y + text_height), "true", font = font, fill = (0), anchor="ld")
     output_img.text((x + block_width - 5, y + text_height), "false", font = font, fill = (0), anchor="rd")
 
+    output_img.line((x + true_width, y + text_height) + (x + true_width, y + block_height), fill=(0))
+
     #x and y of "true" and "false" label
     return x, y + text_height, x + true_width, y + text_height
 
@@ -105,11 +107,9 @@ def draw_while_loop_front(condition: str, x: int, y: int, block_width: int, bloc
 
     #the box
     output_img.line((x,y) + (x + block_width, y), fill=(0))
-    output_img.line((x,y) + (x, y + block_width), fill=(0))
+    output_img.line((x,y) + (x, y + block_height), fill=(0))
     output_img.line((x + block_offset, y + text_height) + (x + block_width, y + text_height), fill=(0))
-    output_img.line((x + block_width, y) + (x + block_width, y + text_height), fill=(0))
-    output_img.line((x, y + block_height) + (x + block_offset, y + block_height ), fill=(0))
-    output_img.line((x + block_offset, y + block_height) + (x + block_offset, y + text_height), fill=(0))
+    output_img.line((x + block_width, y) + (x + block_width, y+text_height), fill=(0))
 
     #the text
     output_img.text((x + block_offset, y + text_height * .5), condition, font = font, fill = (0), anchor="lm")
@@ -124,19 +124,21 @@ def draw_while_loop_back(condition: str, x: int, y: int, block_width: int, block
 
     text_height = get_text_size(condition)[1]
 
+    block_offset = int(block_width * BLOCK_OFFSET_RATIO)
+
     #the box
-    output_img.line((x,y) + (x + block_width * .1, y), fill=0)
-    output_img.line((x + block_width * .1, y) + (x + block_width * .1, y + block_height - text_height), fill=0)
-    output_img.line((x + block_width * .1, y + block_height - text_height) + (x + block_width, y + block_height - text_height), fill=0)
+    output_img.line((x,y) + (x + block_offset, y), fill=0)
+    output_img.line((x + block_offset, y) + (x + block_offset, y + block_height - text_height), fill=0)
+    output_img.line((x + block_offset, y + block_height - text_height) + (x + block_width, y + block_height - text_height), fill=0)
     output_img.line((x + block_width, y + block_height - text_height) + (x + block_width, y + block_height), fill=0)
     output_img.line((x,y + block_height) + (x + block_width, y + block_height), fill=0)
     output_img.line((x,y) + (x, y + block_height), fill=0)
 
     #the text
-    output_img.multiline_text((x + block_width * .1, y + block_height - text_height * .5), condition, font = font, fill = (0), anchor="lm")
+    output_img.multiline_text((x + block_offset, y + block_height - text_height * .5), condition, font = font, fill = (0), anchor="lm")
 
-    #the x, y offset then the x,y draw size (the canvas)
-    return x + block_width * .1, y, block_width * .9
+    #x, y and width of children
+    return x + block_offset, y, block_width - block_offset
 
 def NSD_save(filepath: str):
     """Save the created file"""
