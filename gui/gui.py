@@ -104,7 +104,7 @@ class Gui:
                             if output_name is None:
                                 sg.popup_auto_close(
                                     'You didn\'t set a name for the image, it will be named randomly.')
-                                output_name = secrets.token_hex(16)
+                                output_name = "Nassi ist geil: " + secrets.token_hex(2)
                     
                             path, file_is_empty = nassi_file(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
                                   font_filepath=font_filepath, behaviour=exists_choice, types=types, remove_tags=modifier, comments=comments)
