@@ -9,3 +9,5 @@ In the final version, you will just have to execute the nassi.exe and choose you
 Using:
 Python 3.9.1 with 
 PySimpleGUI, Pillow, Flask & wtforms
+
+[Just a Visualization of our Progress](https://www.youtube.com/watch?v=WOCruSSG3qg)
