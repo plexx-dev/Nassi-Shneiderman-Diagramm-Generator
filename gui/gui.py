@@ -1,4 +1,9 @@
-from gui.utils import nassi, output
+"""gui.py: handle and init Gui."""
+
+__author__      = "oleting"
+
+
+from gui.utils import nassi_file, filter_folder
 from gui.new_window_layouts import Layout_std, Layout_settings
 from errors.custom import JavaSyntaxError, ScopeNotFoundException, InterpreterException, NoPathError
 from interpreter.NassiShneidermann import OB
@@ -41,9 +46,10 @@ class Gui:
     def gui_handler(self, window: sg.Window):
         #  handler for the gui
         
-
+        file_path = None
         font_filepath = None
         output_name = None
+        output_path = None
         exists_choice = OB.SKIP
         types = None
         comments = None
@@ -67,17 +73,19 @@ class Gui:
                 window_settings = sg.Window(title='Settings', layout=layout_settings.layout, resizable=False)
                 event_settings, values_settings = window_settings.read()
                 while event_settings != '-EXIT-':
-                    if event_settings == '-OVERWRITE-' and exists_choice != OB.OVERWWRITE:
-                        exists_choice = OB.OVERWWRITE
+                    if event_settings == '-OVERWRITE-' and exists_choice != OB.OVERWRITE:
+                        exists_choice = OB.OVERWRITE
                         break
-                    if event_settings == '-EXPICIT-' and exists_choice != OB.RANDOM_NAME:
+                    elif event_settings == '-EXPICIT-' and exists_choice != OB.RANDOM_NAME:
                         exists_choice = OB.RANDOM_NAME
                         break
-                    if event_settings == '-SKIP-' and exists_choice != OB.SKIP:
+                    elif event_settings == '-SKIP-' and exists_choice != OB.SKIP:
                         exists_choice = OB.SKIP
                         break
-                    if event_settings == sg.WIN_CLOSED or event == 'Quit':
+                    elif event_settings == sg.WIN_CLOSED or event == 'Quit':
                         break
+                    else:
+                        pass
                     
                 window_settings.close()           
             if event == '-CREATE-':
@@ -98,15 +106,18 @@ class Gui:
                                     'You didn\'t set a name for the image, it will be named randomly.')
                                 output_name = secrets.token_hex(16)
                     
-                            path = nassi(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
+                            path, file_is_empty = nassi_file(input_path=file_path, output_path=output_path, outputname=output_name, gui=self,
                                   font_filepath=font_filepath, behaviour=exists_choice, types=types, remove_tags=modifier, comments=comments)
+
+                            if file_is_empty:
+                                sg.popup_annoying('Our interpreter did not find anything. --> blame Kons or yourself!', title='Empty')
                             if path:
-                                fnames = output(path)
+                                fnames = filter_folder(path)
                                 sg.popup_annoying('Successfully created!', title='Created',
                                                 auto_close_duration=2, auto_close=True, text_color='green')
                                 window['-OUTPUT FILE LIST-'].update(fnames)
                             else: 
-                                fnames = output(output_path, output_name)
+                                fnames = filter_folder(output_path, output_name)
                                 sg.popup_annoying('There are some images created!', title='Cancel',
                                                 auto_close_duration=2, auto_close=True, text_color='green')
                                 window['-OUTPUT FILE LIST-'].update(fnames)
@@ -114,11 +125,11 @@ class Gui:
                         except JavaSyntaxError as JsE:
                             logging.error(
                                 ('||SyntaxError in Java File|| Failed to create Image with values = ' + str(values)))
-                            sg.popup_error((str(JsE)))
+                            sg.popup_error(str(JsE))
                         except ScopeNotFoundException as SnFe:
                             logging.error(
                                 ('||ScopeNotFoundExeption|| Failed to create Image with values = ' + str(values)))
-                            sg.popup_error((str(SnFe)))
+                            sg.popup_error(str(SnFe))
                         except FileNotFoundError as FnFe:
                             logging.error(
                                 ('||FileNotFoundError|| Failed to create Image with values = ' + str(values)))
@@ -130,7 +141,63 @@ class Gui:
                         except Exception as e:
                             logging.error(
                                 ('Failed to create Image with values = ' + str(values)))
-                            sg.popup_error(('Failed to create an image of one funktion correctly. ' + str(e)) + 'There may be some images created. ')
+                            sg.popup_error(('Failed to create an image of one function correctly. ' + str(e)) + 'There may be some images created. ')
+                        except:    
+                            raise
+                    
+                    
+                    elif values['-INPUT FOLDER-'] and values['-OUTPUT FOLDER-']:
+                        logging.debug(
+                            ('Try create Image with values = ' + str(values)))
+
+                        try:
+                            folder_path = os.path.join(
+                                values['-INPUT FOLDER-'],
+                            )
+                            output_path = values['-OUTPUT FOLDER-']
+                            if output_name is None:
+                                sg.popup_auto_close(
+                                    'You didn\'t set a name for the image, it will be named randomly.')
+                                output_name = secrets.token_hex(16)
+
+                            for n_file in filter_folder(folder_path, ends_with='.java'):
+                                              
+                                path, file_is_empty = nassi_file(input_path=folder_path + "/" + n_file, output_path=output_path, outputname=output_name, gui=self,
+                                    font_filepath=font_filepath, behaviour=exists_choice, types=types, remove_tags=modifier, comments=comments)
+
+                                if file_is_empty:
+                                    sg.popup_annoying('Our interpreter did not find anything. --> blame Kons or yourself!', title='Empty')
+                                if path:
+                                    fnames = filter_folder(path)
+                                    sg.popup_annoying('Successfully created!', title='Created',
+                                                    auto_close_duration=2, auto_close=True, text_color='green')
+                                    window['-OUTPUT FILE LIST-'].update(fnames)
+                                else: 
+                                    fnames = filter_folder(output_path, output_name)
+                                    sg.popup_annoying('There are some images created!', title='Cancel',
+                                                    auto_close_duration=2, auto_close=True, text_color='green')
+                                    window['-OUTPUT FILE LIST-'].update(fnames)
+
+                        except JavaSyntaxError as JsE:
+                            logging.error(
+                                ('||SyntaxError in Java File|| Failed to create Image with values = ' + str(values)))
+                            sg.popup_error(str(JsE))
+                        except ScopeNotFoundException as SnFe:
+                            logging.error(
+                                ('||ScopeNotFoundExeption|| Failed to create Image with values = ' + str(values)))
+                            sg.popup_error(str(SnFe))
+                        except FileNotFoundError as FnFe:
+                            logging.error(
+                                ('||FileNotFoundError|| Failed to create Image with values = ' + str(values)))
+                            sg.popup_error(
+                                (str(FnFe) + 'File ' + str(file_path) + ' or ' + str(output_path) + ' or ' + str(font_filepath) + ' is not reachable.'))
+                        except InterpreterException:
+                            logging.error(
+                                ('||InterpreterException|| Failed to create Image with values = ' + str(values)))
+                        except Exception as e:
+                            logging.error(
+                                ('Failed to create Image with values = ' + str(values)) + str(e))
+                            sg.popup_error(('Failed to create an image of one function correctly. ' + str(e)) + 'There may be some images created. ')
                         except:    
                             raise
 
@@ -151,21 +218,19 @@ class Gui:
                 sg.popup(
                     'This was made by plexx(Image generation), Weckyy702(Interpreter) and oleting(Frontend). Used Python 3.9.1, Libraries PySimpleGUI and Pillow.', title='Credits')
 
-            # handle fun feature
-            if event == '-DONATE-':
-                logging.debug(('event = ' + str(event)))
-                sg.popup_notify(
-                    ('You donated $' + str(random.randint(500, 100000000)) + '.'), title='Thanks')
-
 
             # needed Input
 
             # handle event select output folder
             if event == '-OUTPUT FOLDER-':
-                logging.debug(('event = ' + str(event) +
-                               ' value = ' + str(values['-OUTPUT FOLDER-'])))
-                fnames = output(values['-OUTPUT FOLDER-'])
-                window['-OUTPUT FILE LIST-'].update(fnames)
+                try:
+                    logging.debug(('event = ' + str(event) +
+                                ' value = ' + str(values['-OUTPUT FOLDER-'])))
+                    fnames = filter_folder(values['-OUTPUT FOLDER-'])
+                    window['-OUTPUT FILE LIST-'].update(fnames)
+                except Exception as e:
+                    logging.error(str(e))
+                    sg.popup_error(str(e))
             elif event == '-OUTPUT FILE LIST-':
                 logging.debug(('event = ' + str(event) +
                                ' value = ' + str(values['-OUTPUT FILE LIST-'])))
@@ -245,7 +310,7 @@ class Gui:
             # handle event REFRESH
             if event == '-REFRESH-':
                 try:
-                    fnames = output(values['-OUTPUT FOLDER-'])
+                    fnames = filter_folder(values['-OUTPUT FOLDER-'])
                     window['-OUTPUT FILE LIST-'].update(fnames)
                 except NoPathError:
                     pass

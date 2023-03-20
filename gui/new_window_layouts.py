@@ -1,3 +1,8 @@
+"""new_window_layouts.py: create layouts"""
+
+__author__      = "oleting"
+
+
 import PySimpleGUI as sg
 
 class Layout_std:
@@ -8,17 +13,20 @@ class Layout_std:
                 sg.Button(button_text='Create Image', key='-CREATE-'),
                 sg.Button(button_text='Credits', key='-CREDITS-'),
                 sg.Button(button_text='Settings', key='-SETTINGS-'),
-                # * fun feature
-                sg.Button(button_text='Donate', key='-DONATE-'),
             ]
         ]
 
         input_column = [
             [
-                sg.Text('Java File'),
+                sg.Text('Input:  single File'),
                 sg.In(size=(25, 1), enable_events=True, key="-JAVA IN-"),
                 sg.FileBrowse(file_types=(('Java-File', '*.java'), ('ALL Files',
                                                                     '*.*')), key='-JAVA FILE-'),
+            ],
+            [
+                sg.Text('Input: whole Folder (without subfolders)'),
+                sg.In(size=(25, 1), enable_events=True, key="-INPUT FOLDER-"),
+                sg.FolderBrowse(),
             ],
             [
                 sg.Text('Output Folder'),

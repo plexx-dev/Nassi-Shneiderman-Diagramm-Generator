@@ -1,10 +1,12 @@
 #!/usr/bin/env python
-from gui.gui import Gui
-import sys
 
-do_debug = "--debug" in sys.argv
+"""run.py: entrypoint"""
 
-Gui(theme='DarkGrey11', debug_mode=do_debug)
+__author__      = "oleting, Weckyy702"
 
+from gui.gui import Gui as gui
+from sys import argv
 
+do_debug = "--debug" in argv
 
+gui(theme='DarkGrey11', debug_mode=do_debug)

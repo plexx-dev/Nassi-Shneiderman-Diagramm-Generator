@@ -1,10 +1,20 @@
+"""interpret_source.py: #TODO"""
+
+__author__      = "Weckyy702"
+
+
+
 import logging
 import re
-from typing import Dict, List, Match, Tuple, Union
+from typing import Dict, List, Match, Tuple, Union, Iterable
 
 from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
+<<<<<<< HEAD
+from interpreter.function_scope import *
+=======
 from interpreter.Function_scope import Function_scope
+>>>>>>> main
 
 logging.warning("""Because the Interpreter is still WIP, some Java language features are not supported. These include:
     *foreach loops (will throw JavaSyntaxError)
@@ -191,7 +201,6 @@ class JavaInterpreter:
             instructions.append(for_instruction("while " + cond, child_instructions))
 
             return instructions, idx
-
         except IndexError:
             raise JavaSyntaxError("Ill-formed for loop construct!")
         except:
@@ -206,7 +215,7 @@ class JavaInterpreter:
             return generic_instruction(f"declare variable '{var_name}' of type {var_type}"), idx
         return generic_instruction(f"declare variable '{var_name}' of type {var_type} with value {var_value}"), idx
 
-    def _handle_instruction(self, line: str, idx:int) -> Tuple[Union[Iinstruction, List[Iinstruction]], int]:
+    def _handle_instruction(self, line: str, idx:int) -> Tuple[Union[instruction, List[instruction]], int]:
         if line.startswith("while("):
             logging.debug("Found while construct in line: %i", idx+1)
             return self._handle_while(line, idx)
@@ -231,8 +240,8 @@ class JavaInterpreter:
             logging.debug("Found generic instruction in line %i", idx+1)
             return generic_instruction(line), idx
 
-    def _get_instructions_in_scope(self, idx: int=0) -> Tuple[List[Iinstruction], int]:
-        scope: List[Iinstruction] = []
+    def _get_instructions_in_scope(self, idx: int=0) -> Tuple[List[instruction], int]:
+        scope: List[instruction] = []
         i = idx
         while i < len(self._lines):
             line = self._lines[i]
@@ -262,7 +271,7 @@ class JavaInterpreter:
         fname = groups["name"]
         return ftype, fname, fargs
 
-    def _get_function_instructions(self, function_header: str) -> List[Iinstruction]:
+    def _get_function_instructions(self, function_header: str) -> List[instruction]:
         idx = self._lines.index(function_header)
         brace_offset = self._get_scope_start_offset(idx)
         return self._get_instructions_in_scope(idx+brace_offset)[0]
