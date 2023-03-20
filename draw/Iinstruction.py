@@ -68,7 +68,40 @@ class if_instruction(instruction):
 
         return y + self.get_block_height()
 
+<<<<<<< HEAD
     def draw_children(self, true_x:int, true_y:int, true_width:int, false_x:int, false_y:int, false_width:int):
+=======
+    def get_truewidth(self) -> float:
+        w = 50
+
+        for inst in self.true_case:
+            w = max(w, inst.getblkwidth())
+        
+        return w
+    
+    def get_falsewidth(self) -> float:
+        w = 50
+
+        if self.false_case:
+            for inst in self.false_case:
+                w = max(w, inst.getblkwidth())
+
+        return w
+        
+    
+    def to_image(self, x:int, y:int, x_sz: int) -> Iterable[float]:
+        true_w = self.get_truewidth()
+        false_w = self.get_falseheight()
+        true_x, true_y, true_sz_x, _, false_x, false_y, false_sz_x, _ = cti.draw_if_statement(
+            self.instruction_text, x, y, true_w, false_w, self.getblkheight()
+        )
+        self.draw_true_case(true_x, true_y, true_sz_x)
+        self.draw_false_case(false_x, false_y, false_sz_x)
+        blk_size = self.getblkheight()
+        return x, y + blk_size
+
+    def draw_true_case(self, x: float, y:float, x_sz:float):
+>>>>>>> main
         for instruction in self.true_case:
             true_y = instruction.convert_to_image(true_x, true_y, true_width)
 
@@ -122,7 +155,46 @@ class if_instruction(instruction):
             for instruction in self.false_case:
                 height += instruction.get_block_height()
 
+<<<<<<< HEAD
         return height
+=======
+
+class while_instruction_front(Iinstruction):
+
+    def __init__(self, condition: str, instructions: List[Iinstruction]) -> None:
+        Iinstruction.__init__(self, condition)
+        self.child_instructions = instructions
+
+    def get_children_height(self) -> float:
+        children_sz = 0
+        for inst in self.child_instructions:
+            children_sz += inst.getblkheight()
+        return children_sz
+
+    def get_children_width(self) -> float:
+        w = 50.0
+        for inst in self.child_instructions:
+            w = max(w, inst.getblkheight())
+        return w
+
+    def getblkheight(self) -> float:
+        return self._getblkheight() + self.get_children_height()
+
+    def getblkwidth(self) -> float:
+        return max(self._getblkwidth(), self.get_children_width())
+    
+    def to_image(self, x:int, y:int, x_sz: int) -> Iterable[float]:
+        children_x, children_y, children_sz_x = cti.draw_while_loop_front(self.instruction_text, x, y, x_sz, self.getblkheight())
+        self.draw_children(children_x, children_y, children_sz_x)
+
+        return x, y + self.getblkheight()
+
+
+    def draw_children(self, x:float, y:float, x_sz:float):
+        for inst in self.child_instructions:
+            x, y = inst.to_image(x, y, x_sz)
+        return self.get_children_height()
+>>>>>>> main
 
     def __str__(self) -> str:
         res = "if\n"

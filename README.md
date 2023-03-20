@@ -8,6 +8,7 @@ In the final version, you will just have to execute the nassi.exe and choose you
 
 Using:
 Python 3.9.1 with 
+<<<<<<< HEAD
 PySimpleGUI, Pillow
 
 
@@ -19,3 +20,8 @@ PySimpleGUI, Pillow
 2.  ```
     python run.py
     ```
+=======
+PySimpleGUI, Pillow, Flask & wtforms
+
+[Just a Visualization of our Progress](https://www.youtube.com/watch?v=WOCruSSG3qg)
+>>>>>>> main

@@ -84,12 +84,20 @@ def draw_if_statement(condition: str, x: int, y: int, true_width: int, block_wid
     output_img.rectangle((x, y) + (x + block_width, y + text_height), outline=(0), width=1) #Box around condition text
     output_img.multiline_text((x + true_width, y + text_height / 2), condition, fill=(0), font=font, anchor="mm", spacing=4, align='right')
 
+<<<<<<< HEAD
     #fancy lines for the "true" and "false" labels
     output_img.line((x,y) + (x + true_width, y + text_height), fill=(0))
     output_img.line((x + block_width, y) + (x + true_width, y + text_height), fill=(0))
     # "true" and "false" labels
     output_img.text((x + 5, y + text_height), "true", font = font, fill = (0), anchor="ld")
     output_img.text((x + block_width - 5, y + text_height), "false", font = font, fill = (0), anchor="rd")
+=======
+    output_img.line((x,y) + (x + true_sz, y + text_y_size), fill=(0))
+    output_img.line((x + box_sz, y) + (x + true_sz, y + text_y_size), fill=(0))
+    output_img.rectangle((x, y + text_y_size) + (x + box_sz, y + ysize), outline=(0), width=1)
+    output_img.rectangle((x, y) + (x + box_sz, y + text_y_size), outline=(0), width=1)
+    output_img.line((x + true_sz, y + text_y_size) + (x + true_sz, y + ysize), fill=(0))
+>>>>>>> main
 
     output_img.line((x + true_width, y + text_height) + (x + true_width, y + block_height), fill=(0))
 

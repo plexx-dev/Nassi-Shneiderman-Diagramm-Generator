@@ -10,7 +10,11 @@ from typing import Dict, List, Match, Tuple, Union, Iterable
 
 from errors.custom import InterpreterException, JavaSyntaxError, ScopeNotFoundException
 from draw.Iinstruction import *
+<<<<<<< HEAD
 from interpreter.function_scope import *
+=======
+from interpreter.Function_scope import Function_scope
+>>>>>>> main
 
 logging.warning("""Because the Interpreter is still WIP, some Java language features are not supported. These include:
     *foreach loops (will throw JavaSyntaxError)
